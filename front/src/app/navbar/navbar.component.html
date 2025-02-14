@@ -13,8 +13,19 @@
         <a routerLink="/about-page">Qui sommes nous</a>
         <a routerLink="/faq-page">FAQ</a>
         |
-        <a (click)="openDialog()">Connexion</a>
-        <a routerLink="/register-page">Inscription</a>
+        <ng-container>
+          @if(!isLoggedIn){
+            <a (click)="openDialog()">Connexion</a>
+            <a routerLink="/register-page">Inscription</a>
+          }
+          @else{
+            <a routerLink="/profile-page">{{ userName }}</a>
+            <a (click)="logout()">Déconnexion</a>
+            <!-- TODO : can't check it because first need to actualise page to see the new version
+             (same problem than with the table of project) and second when we refresh the page the SessionStorage
+             is emptied so user is logged off-->
+          }
+        </ng-container>
       </div>
     </mat-toolbar-row>
   </mat-toolbar>
@@ -28,8 +39,16 @@
         <span class="spacer" mat-list-item></span>
         <a routerLink="/about-page" mat-list-item>Qui sommes nous</a>
         <a routerLink="/faq-page" mat-list-item>FAQ</a>
-        <a (click)="openDialog()" mat-list-item>Connexion</a>
-        <a routerLink="/register-page" mat-list-item>Inscription</a>
+        <ng-container>
+          @if(!isLoggedIn){
+            <a (click)="openDialog()">Connexion</a>
+            <a routerLink="/register-page">Inscription</a>
+          }
+          @else{
+            <a routerLink="/profile-page">{{ userName }}</a>
+            <a (click)="logout()">Déconnexion</a>
+          }
+        </ng-container>
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content >

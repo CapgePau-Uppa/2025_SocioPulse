@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {MatToolbar} from '@angular/material/toolbar';
-import {RouterLink, RouterOutlet} from '@angular/router';
+import {Router, RouterLink, RouterOutlet} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {LoginModalComponent} from '../login-modal/login-modal.component';
 import {HttpClient} from '@angular/common/http';
@@ -36,8 +36,11 @@ interface AuthResponse {
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
+  isLoggedIn: boolean = false;
+  userName: string | null = null;
   private http: HttpClient = inject(HttpClient);
-  constructor(private dialog: MatDialog) {}
+
+  constructor(private dialog: MatDialog, private router: Router) {}
 
   openDialog(): void {
     const dialogRef = this.dialog.open(LoginModalComponent, {
@@ -63,5 +66,19 @@ export class NavbarComponent {
         console.log('La dialog a été fermée sans soumission.');
       }
     });
+  }
+  OnInit(): void {
+    const userId = sessionStorage.getItem('user_id');
+    if (userId) {
+      this.isLoggedIn = true;
+      this.userName = sessionStorage.getItem('username'); // Assurez-vous que le nom de l'utilisateur est stocké dans sessionStorage
+    }
+  }
+
+  logout(): void {
+    sessionStorage.clear();
+    this.isLoggedIn = false;
+    this.userName = null;
+    this.router.navigate(['/']);
   }
 }
