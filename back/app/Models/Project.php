@@ -13,6 +13,8 @@ class Project extends Model {
         'department',
         'city',
         'description',
+        'latitude',
+        'longitude',
         'user_id'
     ];
     public function user()

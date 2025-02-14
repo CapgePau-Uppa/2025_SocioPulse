@@ -39,6 +39,7 @@ export class LandingPageComponent implements AfterViewInit {
     constructor(private projectService: ProjectsService) { }
 
     ngOnInit(): void {
+      console.log(sessionStorage.getItem('token'));
       this.projectService.getProjects().subscribe(data => {
         this.projects = data;
       });

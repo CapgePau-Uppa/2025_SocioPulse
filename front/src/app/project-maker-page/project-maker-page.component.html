@@ -1,8 +1,8 @@
-<h1>Create Project</h1>
+<h1>Publier un projet</h1>
 <form #projectForm="ngForm" (ngSubmit)="onSubmit(projectForm)">
   <mat-form-field appearance="fill" style="width: 100%;">
-    <mat-label>Name</mat-label>
-    <input matInput placeholder="Enter project name" name="name" [(ngModel)]="project.name" required>
+    <mat-label>Nom</mat-label>
+    <input matInput placeholder="Entrez le nom du projet" name="name" [(ngModel)]="project.name" required>
     @if(projectForm.submitted && projectForm.controls['name']?.errors?.['required']){
       <mat-error >
         Name is required
@@ -12,8 +12,8 @@
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%;">
-    <mat-label>Department</mat-label>
-    <input matInput placeholder="Enter department" name="department" [(ngModel)]="project.department" required>
+    <mat-label>Departement</mat-label>
+    <input matInput placeholder="Entrez le department" name="department" [(ngModel)]="project.department" required>
     @if(projectForm.submitted && projectForm.controls['department']?.errors?.['required']){
       <mat-error>
         Department is required
@@ -22,8 +22,8 @@
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%;">
-    <mat-label>City</mat-label>
-    <input matInput placeholder="Enter city" name="city" [(ngModel)]="project.city" required>
+    <mat-label>Ville</mat-label>
+    <input matInput placeholder="Entrez la ville" name="city" [(ngModel)]="project.city" required>
     @if(projectForm.submitted && projectForm.controls['city']?.errors?.['required']){
       <mat-error >
         City is required
@@ -33,10 +33,32 @@
 
   <mat-form-field appearance="fill" style="width: 100%;">
     <mat-label>Description</mat-label>
-    <textarea matInput placeholder="Enter description" name="description" [(ngModel)]="project.description" required></textarea>
+    <textarea matInput placeholder="Entrez la description" name="description" [(ngModel)]="project.description" required></textarea>
     @if(projectForm.submitted && projectForm.controls['description']?.errors?.['required']){
       <mat-error >
         Description is required
+      </mat-error>
+    }
+
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Latitude</mat-label>
+    <textarea matInput placeholder="Entrez la Latitude" name="latitude" [(ngModel)]="project.latitude" required></textarea>
+    @if(projectForm.submitted && projectForm.controls['description']?.errors?.['required']){
+      <mat-error >
+        Latitude is required
+      </mat-error>
+    }
+
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Longitude</mat-label>
+    <textarea matInput placeholder="Entrez la Longitude" name="longitude" [(ngModel)]="project.longitude" required></textarea>
+    @if(projectForm.submitted && projectForm.controls['description']?.errors?.['required']){
+      <mat-error >
+        Longitude is required
       </mat-error>
     }
 

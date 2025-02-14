@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('department');
             $table->string('city');
             $table->text('description');
+            $table->decimal('latitude', 10, 8); // Ajout de la colonne latitude
+            $table->decimal('longitude', 10, 8); // Ajout de la colonne latitude
             $table->foreignId('user_id')->constrained('users'); // Relation between table projects and users 
             $table->timestamps();
         });     

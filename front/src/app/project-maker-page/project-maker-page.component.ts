@@ -31,6 +31,8 @@ export class ProjectMakerPageComponent {
     department: '',
     city: '',
     description: '',
+    latitude:'',
+    longitude:'',
     user_id:sessionStorage.getItem('user_id')
   };
 

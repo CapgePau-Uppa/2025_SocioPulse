@@ -14,6 +14,8 @@ class ProjectController extends Controller {
             'city' => 'required|string|max:255',
             'description' => 'required|string',
             'user_id' => 'required|exists:users,id',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric'
         ]);
 
         // Project creation
@@ -34,6 +36,8 @@ class ProjectController extends Controller {
             'department' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric'
         ]);
     
         // Find the project
