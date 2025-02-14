@@ -1,0 +1,30 @@
+
+<div class="container">
+  @if (project){
+
+  <mat-card class="project-card">
+    <mat-card-header>
+      <mat-card-title>
+        <h2>
+          {{ project.name }}
+        </h2>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p><strong>Description :</strong> {{ project.description }}</p>
+      <p><strong>Ville :</strong> {{ project.city }}</p>
+      <p><strong>Département :</strong> {{ project.department }}</p>
+      <p><strong>Latitude :</strong> {{ project.latitude }}</p>
+      <p><strong>Longitude :</strong> {{ project.longitude }}</p>
+      <p><strong>Utilisateur :</strong> {{ project.user_id }}</p>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-raised-button color="primary">Modifier</button>
+      <button mat-raised-button color="warn">Supprimer</button>
+    </mat-card-actions>
+  </mat-card>
+}
+</div>
+

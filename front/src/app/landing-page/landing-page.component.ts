@@ -1,6 +1,6 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { MatButton } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { FeaturedComponent } from '../featured/featured.component';
 import * as L from 'leaflet';
 import { ProjectsService } from '../services/projects.service';
@@ -16,6 +16,7 @@ import 'leaflet/dist/leaflet.css';
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })
+
 export class LandingPageComponent implements OnInit {
   private map!: L.Map;
   projects: any[] = [];
@@ -42,5 +43,9 @@ export class LandingPageComponent implements OnInit {
     });
   }
 
-  constructor(private projectService: ProjectsService) { }
+  constructor(private projectService: ProjectsService, private router: Router) { }
+
+  navigateToProjectDetails(projectId: number): void {
+    this.router.navigate(['/project-detail-page', projectId]);
+  }
 }

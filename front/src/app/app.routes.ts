@@ -5,6 +5,7 @@ import {ProjectMakerPageComponent} from './project-maker-page/project-maker-page
 import {AboutPageComponent} from './about-page/about-page.component';
 import {FaqPageComponent} from './faq-page/faq-page.component';
 import { ProjectsListPageComponent } from './projects-list-page/projects-list-page.component';
+import { ProjectDetailPageComponent } from './project-detail-page/project-detail-page.component';
 
 export const routes: Routes = [
   {path:'', component: LandingPageComponent},
@@ -12,5 +13,6 @@ export const routes: Routes = [
   {path: 'project-maker-page', component: ProjectMakerPageComponent},
   {path: 'projects-list-page', component: ProjectsListPageComponent},
   {path: 'about-page', component: AboutPageComponent},
-  {path: 'faq-page', component: FaqPageComponent}
+  {path: 'faq-page', component: FaqPageComponent},
+  {path: 'project-detail-page/:id', component: ProjectDetailPageComponent}
 ];

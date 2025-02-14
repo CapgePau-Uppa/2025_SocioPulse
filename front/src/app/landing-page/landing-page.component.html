@@ -15,7 +15,7 @@
       </thead>
       <tbody>
         @for (project of projects; track project.id) {
-          <tr>
+          <tr (click)="navigateToProjectDetails(project.id)">
             <td>{{ project.id }}</td>
             <td>{{ project.name }}</td>
             <td>{{ project.description }}</td>
