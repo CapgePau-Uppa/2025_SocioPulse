@@ -1,0 +1,21 @@
+h1 {
+  z-index: 999;
+  font-family: 'Montserrat', sans-serif; /* Police sans empattements moderne */
+  font-size: 10rem; /* Taille de la police */
+  font-weight: 600; /* Semi-gras */
+  line-height: 1.3; /* Hauteur de ligne */
+  color: #00549e; /* Couleur (bleu) */
+  text-transform: uppercase; /* Texte en majuscules */
+  letter-spacing: 2px; /* Espacement des lettres */
+  text-align: left; /* Centrer le texte */
+}
+@media(max-width: 768px) {
+  h1 {
+    font-size: 3.5rem; /* Taille de la police */
+  }
+}
+button{
+  font-size: 25px; /* Increase font size */
+  padding: 24px 50px; /* Increase padding */
+  border-radius : 25px; /* Rounded corners */
+}

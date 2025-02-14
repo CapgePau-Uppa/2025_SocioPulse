@@ -1,0 +1,48 @@
+<h1>Create Project</h1>
+<form #projectForm="ngForm" (ngSubmit)="onSubmit(projectForm)">
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Name</mat-label>
+    <input matInput placeholder="Enter project name" name="name" [(ngModel)]="project.name" required>
+    @if(projectForm.submitted && projectForm.controls['name']?.errors?.['required']){
+      <mat-error >
+        Name is required
+      </mat-error>
+    }
+
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Department</mat-label>
+    <input matInput placeholder="Enter department" name="department" [(ngModel)]="project.department" required>
+    @if(projectForm.submitted && projectForm.controls['department']?.errors?.['required']){
+      <mat-error>
+        Department is required
+      </mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>City</mat-label>
+    <input matInput placeholder="Enter city" name="city" [(ngModel)]="project.city" required>
+    @if(projectForm.submitted && projectForm.controls['city']?.errors?.['required']){
+      <mat-error >
+        City is required
+      </mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Description</mat-label>
+    <textarea matInput placeholder="Enter description" name="description" [(ngModel)]="project.description" required></textarea>
+    @if(projectForm.submitted && projectForm.controls['description']?.errors?.['required']){
+      <mat-error >
+        Description is required
+      </mat-error>
+    }
+
+  </mat-form-field>
+
+  <div mat-dialog-actions style="justify-content: flex-end;">
+    <button mat-button type="submit" [disabled]="!projectForm.valid">Create Project</button>
+  </div>
+</form>

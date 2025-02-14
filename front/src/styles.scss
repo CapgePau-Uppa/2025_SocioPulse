@@ -1,0 +1,23 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+
+@use '@angular/material/prebuilt-themes/indigo-pink.css';
+app-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* Ensure it stays on top of other content */
+}
+
+router-outlet {
+  display: block;
+  margin-top: 100px; /* Add margin if needed */
+}
+
+//tous les styles doivent aller ici :'(
+
+
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/bootstrap';

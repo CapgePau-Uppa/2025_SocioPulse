@@ -1,0 +1,51 @@
+<h1 mat-dialog-title>Connexion</h1>
+<div mat-dialog-content>
+  <!-- Formulaire piloté par template avec ngModel -->
+  <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+    <!-- Champ Email -->
+    <mat-form-field appearance="fill" style="width: 100%;">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        placeholder="Entrez votre email"
+        name="email"
+        [(ngModel)]="email"
+        required
+        email>
+      @if(loginForm.submitted && loginForm.controls['email']?.errors?.['required']){
+        <mat-error>
+          L'email est requis
+        </mat-error>
+      }
+      @if(loginForm.submitted && loginForm.controls['email']?.errors?.['email']){
+        <mat-error>
+          Format d'email invalide
+        </mat-error>
+      }
+
+    </mat-form-field>
+
+    <!-- Champ Mot de passe -->
+    <mat-form-field appearance="fill" style="width: 100%;">
+      <mat-label>Mot de passe</mat-label>
+      <input
+        matInput
+        type="password"
+        placeholder="Entrez votre mot de passe"
+        name="password"
+        [(ngModel)]="password"
+        required>
+      @if (loginForm.submitted && loginForm.controls['password']?.errors?.['required']) {
+        <mat-error >
+          Le mot de passe est requis
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Boutons d'action -->
+    <div mat-dialog-actions style="justify-content: flex-end;">
+      <button mat-button type="button" (click)="onCancel()">Annuler</button>
+      <button mat-button type="submit" [disabled]="!loginForm.valid">Connexion</button>
+    </div>
+  </form>
+</div>
