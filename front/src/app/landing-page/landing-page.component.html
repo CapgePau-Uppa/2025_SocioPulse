@@ -1,6 +1,33 @@
-<h1>Bienvenue</h1>
-<button mat-raised-button color="primary" routerLink="/project-maker-page">creation temporaire projet</button>
-<button mat-raised-button color="primary" routerLink="/projects-list-page">Voir tout les projets</button>
-<iframe src="https://data.economie.gouv.fr/explore/embed/dataset/plan-de-relance/map/?location=10,43.16436,-0.73325&basemap=jawg.light&static=false&datasetcard=false&scrollWheelZoom=false" width="400" height="300" frameborder="0"></iframe>
-<h2>Voici quelques projets en Vogue:</h2>
-<app-featured/>
+<body >
+<div class="maDiv">
+  <div>
+    <h2>Liste des Projets</h2>
+
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nom</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (project of projects; track project.id) {
+          <tr>
+            <td>{{ project.id }}</td>
+            <td>{{ project.name }}</td>
+            <td>{{ project.description }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <button mat-raised-button color="primary" routerLink="/project-maker-page">creation temporaire projet</button>
+    <button mat-raised-button color="primary" routerLink="/projects-list-page">Voir tout les projets</button>
+  </div>
+  <div id="map" class="mapC"></div>
+</div>
+
+<!--<h2>Voici quelques projets en Vogue:</h2>
+<app-featured/>-->
+</body>
