@@ -1,2 +1,26 @@
-<app-navbar/>
-<router-outlet/>
+<div class="navbar">
+  <app-navbar [sidenav]="sidenav"> </app-navbar>
+</div>
+
+<div class="wall">
+  <mat-sidenav-container class = "content">
+    <mat-sidenav class="side-panel" #sidenav mode="side" [(opened)]="opened">
+      <mat-nav-list>
+        <br>
+        <a routerLink="/about-page" mat-list-item>Qui sommes nous</a>
+        <a routerLink="/faq-page" mat-list-item>FAQ</a>
+        <a (click)="openDialog()" mat-list-item>Connexion</a>
+        <a routerLink="/register-page" mat-list-item>Inscription</a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content >
+      <div class = "content-inside">
+        <router-outlet/>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+
+<div class="footer">
+  fodass
+</div>

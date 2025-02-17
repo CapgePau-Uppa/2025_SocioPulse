@@ -1,59 +1,12 @@
-
-<div style="height: 100vh;">
-  <mat-toolbar color="primary">
-    <mat-toolbar-row>
-      <button mat-icon-button (click)="sidenav.toggle()" >
-        <mat-icon>menu</mat-icon>
-      </button>
-      <span class="menu-spacer"></span>
-      <div class="pc-layout">
-        <!-- The following menu items will be hidden on both SM and XS screen sizes -->
-        <a id="logo" routerLink="/">SocioPulse</a>
-        <span class="spacer"></span>
-        <a routerLink="/about-page">Qui sommes nous</a>
-        <a routerLink="/faq-page">FAQ</a>
-        |
-        <ng-container>
-          @if(!isLoggedIn){
-            <a (click)="openDialog()">Connexion</a>
-            <a routerLink="/register-page">Inscription</a>
-          }
-          @else{
-            <a routerLink="/profile-page">{{ userName }}</a>
-            <a (click)="logout()">Déconnexion</a>
-            <!-- TODO : can't check it because first need to actualise page to see the new version
-             (same problem than with the table of project) and second when we refresh the page the SessionStorage
-             is emptied so user is logged off-->
-          }
-        </ng-container>
-      </div>
-    </mat-toolbar-row>
-  </mat-toolbar>
-
-  <mat-sidenav-container >
-    <mat-sidenav #sidenav>
-      <mat-nav-list>
-        <a (click)="sidenav.toggle()"  mat-list-item>Fermer <</a>
-        <!-- The following menu items will be hidden on both SM and XS screen sizes -->
-        <a id="sidelogo" routerLink="/" mat-list-item>SocioPulse</a>
-        <span class="spacer" mat-list-item></span>
-        <a routerLink="/about-page" mat-list-item>Qui sommes nous</a>
-        <a routerLink="/faq-page" mat-list-item>FAQ</a>
-        <ng-container>
-          @if(!isLoggedIn){
-            <a (click)="openDialog()">Connexion</a>
-            <a routerLink="/register-page">Inscription</a>
-          }
-          @else{
-            <a routerLink="/profile-page">{{ userName }}</a>
-            <a (click)="logout()">Déconnexion</a>
-          }
-        </ng-container>
-      </mat-nav-list>
-    </mat-sidenav>
-    <mat-sidenav-content >
-      <!-- IMPORTANT: Leave the router-outlet here, it is used to display the different pages -->
-      <router-outlet/>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-</div>
+<mat-toolbar color="primary">
+  <p><button mat-button (click)="toggleSidenav()">
+    <mat-icon>menu</mat-icon></button>
+  </p>
+  <span routerLink="/"><a mat-button>SocioPulse</a></span>
+  <div class="pc-layout" >
+    <span class="spacer"></span>
+    <a routerLink="/about-page" mat-button>FAQ</a>
+    <a routerLink="/register-page" mat-button>Inscription</a>
+    <a (click)="openDialog()" mat-button>Connexion</a>
+  </div>
+</mat-toolbar>

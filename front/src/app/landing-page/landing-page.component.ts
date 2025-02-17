@@ -1,7 +1,7 @@
 import { Component, OnInit} from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { RouterLink, Router } from '@angular/router';
-import { FeaturedComponent } from '../featured/featured.component';
+import {CarouselComponent} from '../carousel/carousel.component';
 import * as L from 'leaflet';
 import { ProjectsService } from '../services/projects.service';
 import 'leaflet/dist/leaflet.css';
@@ -11,7 +11,7 @@ import 'leaflet/dist/leaflet.css';
   imports: [
     MatButton,
     RouterLink,
-    FeaturedComponent
+    CarouselComponent
   ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'

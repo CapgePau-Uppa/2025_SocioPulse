@@ -1,59 +1,21 @@
-.mat-toolbar {
-  background-color: midnightblue; // Couleur de fond sombre
-  color: #fff; // Couleur du texte claire
-  padding: 0 16px; // Marge intérieure horizontale
-
-  a {
-    color: #fff; // Couleur des liens
-    text-decoration: none; // Supprimer le soulignement
-    margin: 0 10px; // Espacement entre les liens
-    font-weight: 500; // Police semi-grasse
-    transition: color 0.3s ease; // Transition de couleur au survol
-
-    &:hover {
-      color: #007bff; // Couleur au survol
-    }
-
-    &#logo {
-      font-weight: bold; // Logo en gras
-      font-size: 1.2em; // Taille du logo
-    }
-  }
-
-  .spacer {
-    flex: 1 1 auto; // Pousse les éléments à droite
-  }
-
-}
-.mat-sidenav-container {
-  height: 100%;
-  position: relative;
-  z-index: 2; // Ensure the sidebar is above other content
+.mat-toolbar{
+  background-color: cornflowerblue;
+  color: white;
+}.mat-button{
+   color: white;
+ }
+span{
+  flex: 1 1 auto;
 }
 
-.mat-sidenav {
-  width: 250px;
-  z-index: 3; // Ensure the sidebar is above other content
-}
-
-.mat-sidenav-content {
-  z-index: 1; // Ensure the main content is below the sidebar
-}
-
-.mat-toolbar {
-  z-index: 4; // Ensure the toolbar is above the sidebar
-}
+//responsive
 @media (min-width: 768px) {
-  .mat-sidenav {
-    display: none; // Hide sidenav on larger screens
-  }
   button{
-    display: none;
+    display:none;
   }
-
 }
 @media(max-width: 768px){
-  .pc-layout {
+  .pc-layout{
     display: none;
   }
 }

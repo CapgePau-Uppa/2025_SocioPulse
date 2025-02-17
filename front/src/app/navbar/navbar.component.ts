@@ -1,46 +1,32 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
+import {RouterLink} from '@angular/router';
 import {MatToolbar} from '@angular/material/toolbar';
-import {Router, RouterLink, RouterOutlet} from '@angular/router';
+import {MatAnchor, MatButton, MatIconButton} from '@angular/material/button';
+import {MatSidenav} from '@angular/material/sidenav';
+import {MatIcon} from '@angular/material/icon';
+import {HttpClient} from '@angular/common/http';
 import {MatDialog} from '@angular/material/dialog';
 import {LoginModalComponent} from '../login-modal/login-modal.component';
-import {HttpClient} from '@angular/common/http';
-import {MatSidenav,MatSidenavContainer, MatSidenavContent} from '@angular/material/sidenav';
-import {MatListItem, MatNavList} from '@angular/material/list';
-import {MatAnchor, MatIconButton} from '@angular/material/button';
-import {MatIcon} from '@angular/material/icon';
-import {MatToolbarRow} from '@angular/material/toolbar';
 interface AuthResponse {
   token: string;
   name: string;
   user_id: string;
 }
-
-
 @Component({
   selector: 'app-navbar',
   imports: [
-    MatToolbar,
     RouterLink,
-    MatSidenavContainer,
-    MatNavList,
-    MatListItem,
+    MatToolbar,
     MatAnchor,
-    MatIcon,
-    MatIconButton,
-    MatSidenavContent,
-    MatSidenav,
-    MatToolbarRow,
-    RouterOutlet
+    MatButton,
+    MatIcon
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
-  isLoggedIn: boolean = false;
-  userName: string | null = null;
   private http: HttpClient = inject(HttpClient);
-
-  constructor(private dialog: MatDialog, private router: Router) {}
+  constructor(private dialog: MatDialog) {}
 
   openDialog(): void {
     const dialogRef = this.dialog.open(LoginModalComponent, {
@@ -51,34 +37,25 @@ export class NavbarComponent {
       if (result) {
         console.log('Données du formulaire:', result);
         this.http.post<AuthResponse>('http://localhost:8000/api/login', result)
-        .subscribe(response => {
-          const token = response['token'];
-          const username = response['name'];
-          const user_id = response['user_id'];
-          console.log('Token:', token);
-          console.log('Nom:', username);
-          console.log('ID utilisateur:', user_id);
-          sessionStorage.setItem('auth_token', token);
-          sessionStorage.setItem('user_id',user_id);
-          sessionStorage.setItem('username', username); // Place the token in sessionStorage
-        });
+          .subscribe(response => {
+            const token = response['token'];
+            const username = response['name'];
+            const user_id = response['user_id'];
+            console.log('Token:', token);
+            console.log('Nom:', username);
+            console.log('ID utilisateur:', user_id);
+            sessionStorage.setItem('auth_token', token);
+            sessionStorage.setItem('user_id',user_id);
+            sessionStorage.setItem('username', username); // Place the token in sessionStorage
+          });
       } else {
         console.log('La dialog a été fermée sans soumission.');
       }
     });
   }
-  OnInit(): void {
-    const userId = sessionStorage.getItem('user_id');
-    if (userId) {
-      this.isLoggedIn = true;
-      this.userName = sessionStorage.getItem('username'); // Assurez-vous que le nom de l'utilisateur est stocké dans sessionStorage
-    }
+  @Input() sidenav!: MatSidenav;
+  toggleSidenav() {
+    this.sidenav.toggle();
   }
 
-  logout(): void {
-    sessionStorage.clear();
-    this.isLoggedIn = false;
-    this.userName = null;
-    this.router.navigate(['/']);
-  }
 }
