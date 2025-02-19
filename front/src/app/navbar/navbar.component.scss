@@ -1,13 +1,15 @@
 .mat-toolbar{
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  display: flex;
   background-color: cornflowerblue;
   color: white;
+  position: fixed;
 }.mat-button{
    color: white;
  }
-span{
+.spacer{
   flex: 1 1 auto;
 }
-
 //responsive
 @media (min-width: 768px) {
   button{

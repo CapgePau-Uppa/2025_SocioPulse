@@ -3,6 +3,8 @@ import {RouterLink, RouterOutlet} from '@angular/router';
 import {NavbarComponent} from './navbar/navbar.component';
 import {MatSidenav,MatSidenavContent, MatSidenavContainer} from '@angular/material/sidenav';
 import {MatListItem, MatNavList} from '@angular/material/list';
+import {LoginModalComponent} from './login-modal/login-modal.component';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +15,16 @@ import {MatListItem, MatNavList} from '@angular/material/list';
 export class AppComponent {
   title = 'socio-pulse';
   opened: boolean = false;
+  constructor(private dialog: MatDialog) {
+  }
   openDialog() {
-    console.log("sidenav_print");
+    const dialogRef = this.dialog.open(LoginModalComponent)
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result){
+        console.log(`Dialog result: ${result}`);
+      }
+     //TODO: login logic to be determined here
+    });
   }
 }

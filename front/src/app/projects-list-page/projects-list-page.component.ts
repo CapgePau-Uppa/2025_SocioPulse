@@ -1,16 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ProjectsService } from '../services/projects.service';
+import {HttpClient} from '@angular/common/http';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef, MatHeaderRow,
+  MatHeaderRowDef, MatRow, MatRowDef,
+  MatTable
+} from '@angular/material/table';
 
 @Component({
   selector: 'app-projects-list-page',
   templateUrl: './projects-list-page.component.html',
   styleUrls: ['./projects-list-page.component.scss'],
   standalone: true,
-  imports: [HttpClientModule, CommonModule]
+  imports: [CommonModule, MatTable, MatColumnDef, MatHeaderCell, MatCell, MatCellDef, MatHeaderCellDef, MatHeaderRowDef, MatRowDef, MatHeaderRow, MatRow]
 })
 export class ProjectsListPageComponent implements OnInit {
+  displayedColumns: string[] = ['position', 'name', 'weight'];
   projects: any[] = [];
 
   constructor(private projectService: ProjectsService) { }
