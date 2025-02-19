@@ -7,6 +7,8 @@ use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful; // Import
 use Illuminate\Http\Middleware\HandleCors;// Import du middleware CORS
 use Illuminate\Routing\Middleware\SubstituteBindings; // Import du middleware SubstituteBindings
 
+
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         api: __DIR__.'/../routes/api.php', //Ajout de la route api 
