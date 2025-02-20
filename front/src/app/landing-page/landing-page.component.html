@@ -1,11 +1,11 @@
-
-<h1>Bienvenu</h1>
-<div class="maDiv">
-  <div>
-    <h2>Liste des Projets</h2>
-
-    <table class="tableau">
-      <thead>
+<h1>Bienvenue</h1>
+<div class="grid-container">
+  <div class="map-container"><app-map/></div>
+  <div class="maDiv">
+    <div>
+      <h2>Liste des Projets</h2>
+      <table class="tableau">
+        <thead>
         <tr>
           <th>ID</th>
           <th>Nom</th>
@@ -13,30 +13,23 @@
           <th>Ville</th>
           <th>Departement</th>
         </tr>
-      </thead>
-      <tbody>
-        @for (project of projects; track project.id) {
-          <tr (click)="navigateToProjectDetails(project.id)">
-            <td>{{ project.id }}</td>
-            <td>{{ project.name }}</td>
-            <td>{{ project.description }}</td>
-            <td>{{ project.city }}</td>
-            <td>{{ project.department }}</td>
-          </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (project of projects; track project.id) {
+            <tr (click)="navigateToProjectDetails(project.id)">
+              <td>{{ project.id }}</td>
+              <td>{{ project.name }}</td>
+              <td>{{ project.description }}</td>
+              <td>{{ project.city }}</td>
+              <td>{{ project.department }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
 
-    <button mat-raised-button color="primary" routerLink="/project-maker-page">creation temporaire projet</button>
-    <button mat-raised-button color="primary" routerLink="/projects-list-page">Voir tout les projets</button>
+    </div>
   </div>
-  <div id="map" class="mapC"></div>
+
 </div>
 
-<!--  Commented out because of issues with bootstrap and styling
-<h2>Quelques projets en Vogue!</h2>
-<div class="carousel">
-  <app-carousel />
-</div>
--->
 

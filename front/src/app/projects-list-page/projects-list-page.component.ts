@@ -20,11 +20,9 @@ import {
   imports: [CommonModule, MatTable, MatColumnDef, MatHeaderCell, MatCell, MatCellDef, MatHeaderCellDef, MatHeaderRowDef, MatRowDef, MatHeaderRow, MatRow]
 })
 export class ProjectsListPageComponent implements OnInit {
-  displayedColumns: string[] = ['position', 'name', 'weight'];
+  displayedColumns: string[] = ['position', 'name', 'description', 'city', 'latitude', 'longitude'];
   projects: any[] = [];
-
   constructor(private projectService: ProjectsService) { }
-
   ngOnInit(): void {
     this.projectService.getProjects().subscribe(data => {
       this.projects = data;
