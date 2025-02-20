@@ -12,9 +12,14 @@ export class MapComponent implements AfterViewInit {
   projects: any[] = [];
 
   private initMap(): void {
-    this.map = L.map('map').setView([43.3, -0.3667], 6); // Set initial coordinates and zoom
+    this.map = L.map('map', {
+      center: [ 43.3, -0.3667],
+      zoom: 6
+    }); // Set initial coordinates and zoom
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    const tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      minZoom: 3,
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
 
