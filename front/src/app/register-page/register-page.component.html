@@ -1,5 +1,5 @@
 <h1>Register</h1>
-<form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
+<form #registerForm="ngForm" (ngSubmit)="register()">
   <mat-form-field appearance="fill" style="width: 100%;">
     <mat-label>Name</mat-label>
     <input matInput placeholder="Enter your name" name="name" [(ngModel)]="user.name" required>
@@ -9,7 +9,8 @@
       </mat-error>
     }
   </mat-form-field>
-
+  <h2>Inscription</h2>
+  
   <mat-form-field appearance="fill" style="width: 100%;">
     <mat-label>Email</mat-label>
     <input matInput placeholder="Enter your email" name="email" [(ngModel)]="user.email" required email>

@@ -5,10 +5,18 @@
   <span routerLink="/"><a mat-button>SocioPulse</a></span>
   <span class="spacer"></span>
   <div class="pc-layout" >
-    <a routerLink="/projects-list-page" mat-button><b>Liste des Projets</b></a>
+    <button (click)="checkAccess()">Tester l'accès sécurisé</button>
+    <a (click)="checkAccess()" mat-button><b>Tester l'accès sécurisé</b></a>
     <a routerLink="/project-maker-page" mat-button><b>Créér un Projet</b></a>
     <a routerLink="/about-page" mat-button>FAQ</a>
     <a routerLink="/register-page" mat-button>Inscription</a>
     <a (click)="openDialog()" mat-button>Connexion</a>
+    <!--<a (click)="logout()" *ngIf="isAuthenticated()">Déconnexion</a>-->
+    
   </div>
 </mat-toolbar>
+<nav>
+  <a routerLink="/register">S'inscrire</a>
+  <a routerLink="/login">Connexion</a>
+  <!--<a (click)="logout()" *ngIf="isAuthenticated()">Déconnexion</a>-->
+</nav>

@@ -7,15 +7,30 @@ use Illuminate\Http\Request;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectController;
- 
+
+Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [AuthController::class, 'user']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+});
+Route::post('/register', [AuthController::class, 'register']);
+
+
+Route::middleware('auth:sanctum')->get('/secure-data', function (Request $request) {
+    return response()->json([
+        'message' => 'Accès autorisé !',
+        'user' => $request->user(),
+    ]);
+});
+
+
 /*
 Route::post('/login', function (Request $request) {
     print("Passage dans login");
     return response()->json(['message' => 'Authentification en cours...']);
 })->withoutMiddleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class]);
 */
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
+
 
 // Route protégée par Sanctum (nécessite une authentification)
 Route::middleware('auth:sanctum')->get('/test-auth', function (Request $request) {

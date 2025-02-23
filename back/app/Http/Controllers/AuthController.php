@@ -4,41 +4,71 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    // 1. Login : Vérifie les identifiants et génère un token
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
 
-        
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            return response()->json(['token' => $user->createToken('socioPulse')->plainTextToken, 'user_id' => $user->id, 'name' => $user->name], 200);
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['Les identifiants sont incorrects.']
+            ]);
         }
 
-        return response()->json(['message' => 'Tu fais quoi là ?'], 401);
+        // Génère un token Bearer avec un nom
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token
+        ]);
     }
 
-    public function register(Request $request){
-        $request->validate([
-            'email' => 'required|string|email|unique:users',
-            'name' => 'required|string|max:255',
-            'password' => 'required|string|min:6',
-        ]); 
+    // 2. Vérifie l'utilisateur actuel
+    public function user(Request $request)
+    {
+        return response()->json($request->user());
+    }
 
-        $user = User::create([
-            'email' => $request->email,
-            'name' => $request->name,
-            'password' => Hash::make($request->password)
+    // 3. Déconnexion : Supprime le token
+    public function logout(Request $request)
+    {
+        $request->user()->tokens()->delete(); // Supprime tous les tokens de l'utilisateur
+        return response()->json(['message' => 'Déconnexion réussie']);
+    }
+
+    // 4. Inscription : Crée un nouvel utilisateur
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6|confirmed'
         ]);
+    
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+    
+        // Génère un token directement après l'inscription
+        $token = $user->createToken('auth_token')->plainTextToken;
+    
         return response()->json([
-            'message' => 'Utilisateur créé avec succès',
-            'user' => $user
+            'user' => $user,
+            'token' => $token
         ], 201);
     }
+    
 }

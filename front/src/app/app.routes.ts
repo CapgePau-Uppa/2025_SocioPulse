@@ -6,6 +6,8 @@ import {AboutPageComponent} from './about-page/about-page.component';
 import {FaqPageComponent} from './faq-page/faq-page.component';
 import { ProjectsListPageComponent } from './projects-list-page/projects-list-page.component';
 import { ProjectDetailPageComponent } from './project-detail-page/project-detail-page.component';
+import { LoginModalComponent } from './login-modal/login-modal.component';
+//import { LogoutModalComponent } from './logout/logout-modal.component';
 
 export const routes: Routes = [
   {path:'', component: LandingPageComponent},
@@ -14,5 +16,7 @@ export const routes: Routes = [
   {path: 'projects-list-page', component: ProjectsListPageComponent},
   {path: 'about-page', component: AboutPageComponent},
   {path: 'faq-page', component: FaqPageComponent},
-  {path: 'project-detail-page/:id', component: ProjectDetailPageComponent}
+  {path: 'project-detail-page/:id', component: ProjectDetailPageComponent},
+  { path: 'login', component: LoginModalComponent },
+ // { path: 'logout', component: LogoutModalComponent },
 ];

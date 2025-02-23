@@ -14,5 +14,5 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => true,  // Obligatoire pour que les cookies soient partagés
+    'supports_credentials' => false,  // Obligatoire pour que les cookies soient partagés
 ];
