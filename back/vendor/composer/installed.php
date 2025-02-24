@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-SocioPulseWIP',
         'version' => 'dev-SocioPulseWIP',
-        'reference' => '1e1380313860b9ca95f8a06224b5960d9bcfb29a',
+        'reference' => '4d30cb7973e4995ac849193c9f83a673feb979b3',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -388,7 +388,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-SocioPulseWIP',
             'version' => 'dev-SocioPulseWIP',
-            'reference' => '1e1380313860b9ca95f8a06224b5960d9bcfb29a',
+            'reference' => '4d30cb7973e4995ac849193c9f83a673feb979b3',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

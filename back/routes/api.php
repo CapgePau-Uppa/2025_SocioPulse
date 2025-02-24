@@ -15,15 +15,20 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::post('/register', [AuthController::class, 'register']);
 
-
+/*
 Route::middleware('auth:sanctum')->get('/secure-data', function (Request $request) {
     return response()->json([
         'message' => 'Accès autorisé !',
         'user' => $request->user(),
     ]);
-});
+});*/
 
-
+Route::get('/secure-data', function (Request $request) {
+    return response()->json([
+        'message' => 'Accès autorisé !',
+        'user' => $request->user(),
+    ]);
+})->middleware('auth:sanctum');
 /*
 Route::post('/login', function (Request $request) {
     print("Passage dans login");
