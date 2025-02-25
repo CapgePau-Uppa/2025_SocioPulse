@@ -40,6 +40,30 @@ export class ProjectMakerPageComponent implements OnInit {
   ngOnInit() {
     this.initMap();
   }
+
+  private async getLocationDetails(lat: number, lng: number): Promise<void> {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=fr`;
+
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'SocioPulse' // Replace with your app name
+        }
+      });
+      const data = await response.json();
+
+      if (data.address) {
+        this.project.city = data.address.city || data.address.town || data.address.village || '';
+        this.project.department = data.address.county || '';
+        //todo: eventually use the postcode for sending or smth
+        console.log(data.address.postcode);
+      }
+    } catch (error) {
+      console.error('Error fetching location details:', error);
+    }
+  }
+
   private initMap(): void {
     this.map = L.map('map', {
       center: [ 43.3, -0.3667],
@@ -52,13 +76,14 @@ export class ProjectMakerPageComponent implements OnInit {
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
 
-    this.map.on('click', (e: L.LeafletMouseEvent) => {
+    this.map.on('click', async(e: L.LeafletMouseEvent) => {
       const lat = e.latlng.lat;
       const lng = e.latlng.lng;
 
       this.project.latitude = lat.toString();
       this.project.longitude = lng.toString();
-
+      //todo: get city and department from lat and lng
+      await this.getLocationDetails(lat, lng);
       // Update marker position
       if (this.marker) {
         this.map.removeLayer(this.marker);
