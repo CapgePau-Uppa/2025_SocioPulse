@@ -25,33 +25,6 @@ import { firstValueFrom } from 'rxjs';
     MatDialogActions
   ]
 })
-/*
-export class RegisterPageComponent {
-  private http: HttpClient = inject(HttpClient);
-  private router: Router = inject(Router);
-  user = {
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-  };
-
-  onSubmit(form: any): void {
-    if (form.valid/* && this.user.password === this.user.confirmPassword*) {
-      console.log('User data:', this.user);
-      this.http.post('http://localhost:8000/api/register', this.user).subscribe({
-        next: () => {
-          console.log("Inscription réussie!");
-          this.router.navigate(['/']);  // ✅ Redirect to home after success
-        },
-        error: (error: any) => {
-          console.error("Erreur lors de l'inscription:", error);
-        }
-      });
-      this.router.navigate(['/']);
-    }
-  }
-*/
 
 export class RegisterPageComponent {
 	user = {

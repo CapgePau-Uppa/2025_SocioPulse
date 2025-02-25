@@ -56,4 +56,35 @@ class User extends Authenticatable
     {
         return $this->hasMany(Project::class); // A user can have many projects
     }
+
+    /**
+     * Get the roles associated with the user.
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'roles_users');
+    }
+    
+    
+    /**
+     * Get a unique collection of permission names associated with the user's roles.
+     *
+     * This method retrieves the user's roles along with their associated permissions,
+     * flattens the permissions collection, and returns a unique list of permission names.
+     *
+     * @return \Illuminate\Support\Collection A collection of unique permission names.
+     */
+    public function permissions()
+    {
+        return $this->roles()->with('permissions')->get()->pluck('permissions')->flatten()->pluck('name')->unique();
+    }
+
+    /**
+     * Summary of permissions method
+     * A user can have many permissions
+     */
+    public function hasPermission($permission)
+    {
+        return $this->permissions()->contains($permission);
+    }
 }

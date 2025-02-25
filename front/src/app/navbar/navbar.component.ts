@@ -53,6 +53,7 @@ export class NavbarComponent {
             console.log('Données du formulaire:', result);
             try {
             const response = await this.authService.login(result.email, result.password);
+            sessionStorage.setItem('user', response.user);
             sessionStorage.setItem('auth_token', response.token);
             sessionStorage.setItem('user_id', response.user.id);
             sessionStorage.setItem('username', response.user.name);
@@ -74,9 +75,6 @@ export class NavbarComponent {
         });
     }
 
-    checkAccess() {
-        this.authService.checkSecureData();
-    }
     logout(): void {
         sessionStorage.clear();
         this.isLoggedIn = false;

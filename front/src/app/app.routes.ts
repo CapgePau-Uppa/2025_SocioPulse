@@ -17,6 +17,4 @@ export const routes: Routes = [
   {path: 'about-page', component: AboutPageComponent},
   {path: 'faq-page', component: FaqPageComponent},
   {path: 'project-detail-page/:id', component: ProjectDetailPageComponent},
-  { path: 'login', component: LoginModalComponent },
- // { path: 'logout', component: LogoutModalComponent },
 ];
