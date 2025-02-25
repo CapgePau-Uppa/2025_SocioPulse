@@ -16,80 +16,77 @@ interface AuthResponse {
   user_id: string;
 }*/
 @Component({
-	selector: 'app-navbar',
-	imports: [
-		RouterLink,
-		MatToolbar,
-		MatAnchor,
-		MatButton,
-		MatIcon
-	],
-	templateUrl: './navbar.component.html',
-	styleUrl: './navbar.component.scss'
+    selector: 'app-navbar',
+    imports: [
+        RouterLink,
+        MatToolbar,
+        MatAnchor,
+        MatButton,
+        MatIcon
+    ],
+    templateUrl: './navbar.component.html',
+    styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
-	private http: HttpClient = inject(HttpClient);
-	constructor(private dialog: MatDialog, private authService: AuthService, private router: Router) {}
 
-  /*
-  openDialog(): void {
-    const dialogRef = this.dialog.open(LoginModalComponent, {
-      width: '400px'
-    });
+    isLoggedIn: boolean = false;
+    userName: string | null = null;
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        console.log('Données du formulaire:', result);
-        this.http.post<AuthResponse>('http://localhost:8000/api/login', result)
-          .subscribe(response => {
-            const token = response['token'];
-            const username = response['name'];
-            const user_id = response['user_id'];
-            console.log('Token:', token);
-            console.log('Nom:', username);
-            console.log('ID utilisateur:', user_id);
-            sessionStorage.setItem('auth_token', token);
-            sessionStorage.setItem('user_id',user_id);
-            sessionStorage.setItem('username', username); // Place the token in sessionStorage
-          });
-      } else {
-        console.log('La dialog a été fermée sans soumission.');
+    private http: HttpClient = inject(HttpClient);
+    constructor(private dialog: MatDialog, private authService: AuthService, private router: Router) {}
+
+    ngOnInit(): void {
+      const userId = sessionStorage.getItem('user_id');
+      if (userId) {
+        this.isLoggedIn = true;
+        this.userName = sessionStorage.getItem('username'); // Assurez-vous que le nom de l'utilisateur est stocké dans sessionStorage
       }
+    }
+
+    openDialog(): void {
+    const dialogRef = this.dialog.open(LoginModalComponent, {
+        width: '400px'
     });
-  }
-*/
 
-	openDialog(): void {
-	const dialogRef = this.dialog.open(LoginModalComponent, {
-		width: '400px'
-	});
+        dialogRef.afterClosed().pipe().subscribe(async result => {
+        if (result) {
+            console.log('Données du formulaire:', result);
+            try {
+            const response = await this.authService.login(result.email, result.password);
+            sessionStorage.setItem('auth_token', response.token);
+            sessionStorage.setItem('user_id', response.user.id);
+            sessionStorage.setItem('username', response.user.name);
+            console.log('Connexion réussie affichage données front:', response);
+            const userId = sessionStorage.getItem('user_id');
+            console.log('Nom de l\'utilisateur:', userId);
+            if (userId) {
+              this.isLoggedIn = true;
+              this.userName = sessionStorage.getItem('username'); // Assurez-vous que le nom de l'utilisateur est stocké dans sessionStorage
+              console.log('Nom de l\'utilisateur:', this.userName);
+            }
+            this.router.navigate(['/']); // Redirection après connexion
+            } catch (error) {
+            console.error('Erreur de connexion', error);
+            }
+        } else {
+                console.log('La dialog a été fermée sans soumission.');
+            }
+        });
+    }
 
-		dialogRef.afterClosed().pipe().subscribe(async result => {
-		if (result) {
-			console.log('Données du formulaire:', result);
-			try {
-			const response = await this.authService.login(result.email, result.password);
-			sessionStorage.setItem('auth_token', response.token);
-			sessionStorage.setItem('user_id', response.user_id);
-			sessionStorage.setItem('username', response.name);
-			console.log('Connexion réussie:', response);
-			this.router.navigate(['/']); // Redirection après connexion
-			} catch (error) {
-			console.error('Erreur de connexion', error);
-			}
-		} else {
-				console.log('La dialog a été fermée sans soumission.');
-			}
-		});
-	}
+    checkAccess() {
+        this.authService.checkSecureData();
+    }
+    logout(): void {
+        sessionStorage.clear();
+        this.isLoggedIn = false;
+        this.userName = null;
+        this.router.navigate(['/']);
+    }
 
-	checkAccess() {
-		this.authService.checkSecureData();
-	}
-
-	@Input() sidenav!: MatSidenav;
-		toggleSidenav() {
-			this.sidenav.toggle();
-	}
+    @Input() sidenav!: MatSidenav;
+        toggleSidenav() {
+            this.sidenav.toggle();
+    }
 
 }

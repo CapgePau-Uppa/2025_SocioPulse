@@ -6,17 +6,16 @@
   <span class="spacer"></span>
   <div class="pc-layout" >
     <a routerLink="/projects-list-page" mat-button><b>Liste des Projets</b></a>
-    <!--<a (click)="checkAccess()" mat-button><b>Tester l'accès sécurisé</b></a>-->
     <a routerLink="/project-maker-page" mat-button><b>Créér un Projet</b></a>
     <a routerLink="/about-page" mat-button>FAQ</a>
-    <a routerLink="/register-page" mat-button>Inscription</a>
-    <a (click)="openDialog()" mat-button>Connexion</a>
-    <!--<a (click)="logout()" *ngIf="isAuthenticated()">Déconnexion</a>-->
-    
+    @if(!isLoggedIn){
+      <a (click)="openDialog()" mat-button>Connexion</a>
+      <a routerLink="/register-page" mat-button>Inscription</a>
+    }
+    @else{
+      <a routerLink="/profile-page" mat-button>{{ userName }}</a>
+      <a (click)="logout()" mat-button>Déconnexion</a>
+    }
   </div>
 </mat-toolbar>
-<nav>
-  <a routerLink="/register">S'inscrire</a>
-  <a routerLink="/login">Connexion</a>
-  <!--<a (click)="logout()" *ngIf="isAuthenticated()">Déconnexion</a>-->
-</nav>
+
