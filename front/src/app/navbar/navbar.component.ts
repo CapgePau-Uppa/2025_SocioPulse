@@ -53,16 +53,16 @@ export class NavbarComponent {
             console.log('Données du formulaire:', result);
             try {
             const response = await this.authService.login(result.email, result.password);
-            sessionStorage.setItem('auth_token', response.token);
-            sessionStorage.setItem('user_id', response.user.id);
-            sessionStorage.setItem('username', response.user.name);
-            console.log('Connexion réussie affichage données front:', response);
-            const userId = sessionStorage.getItem('user_id');
-            console.log('Nom de l\'utilisateur:', userId);
-            if (userId) {
-              this.isLoggedIn = true;
-              this.userName = sessionStorage.getItem('username'); // Assurez-vous que le nom de l'utilisateur est stocké dans sessionStorage
-              console.log('Nom de l\'utilisateur:', this.userName);
+              sessionStorage.setItem('auth_token', response.token);
+              sessionStorage.setItem('user_id', response.user.id);
+              sessionStorage.setItem('username', response.user.name);
+              console.log('Connexion réussie affichage données front:', response);
+              const userId = sessionStorage.getItem('user_id');
+              console.log('Nom de l\'utilisateur:', userId);
+              if (userId) {
+                this.isLoggedIn = true;
+                this.userName = sessionStorage.getItem('username'); // Assurez-vous que le nom de l'utilisateur est stocké dans sessionStorage
+                console.log('Nom de l\'utilisateur:', this.userName);
             }
             this.router.navigate(['/']); // Redirection après connexion
             } catch (error) {
@@ -77,6 +77,7 @@ export class NavbarComponent {
     checkAccess() {
         this.authService.checkSecureData();
     }
+
     logout(): void {
         sessionStorage.clear();
         this.isLoggedIn = false;
@@ -88,5 +89,4 @@ export class NavbarComponent {
         toggleSidenav() {
             this.sidenav.toggle();
     }
-
 }
