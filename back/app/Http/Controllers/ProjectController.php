@@ -66,4 +66,20 @@ class ProjectController extends Controller {
         // Return all projects in JSON
         return response()->json($projects);
     }
+    
+    public function destroy($id) {
+        // Find the project
+        $project = Project::find($id);
+
+        // Project not found
+        if (!$project) {
+            return response()->json(['message' => 'Projet non trouvé'], 404);
+        }
+
+        // Delete the project
+        $project->delete();
+
+        // Return a success message
+        return response()->json(['message' => 'Projet supprimé avec succès'], 200);
+    }
 }

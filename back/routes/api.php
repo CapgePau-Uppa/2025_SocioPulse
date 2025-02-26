@@ -12,6 +12,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/deleteUser', [AuthController::class, 'deleteAccount']);
 });
 Route::post('/register', [AuthController::class, 'register']);
 
@@ -44,7 +45,6 @@ Route::middleware('auth:sanctum')->get('/test-auth', function (Request $request)
 
 //route pour le CSRF cookie
 //Route::get('/sanctum/csrf-cookie', [CsrfCookieController::class, 'show']);
-
 
 
 
