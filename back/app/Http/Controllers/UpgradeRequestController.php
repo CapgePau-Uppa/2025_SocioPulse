@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\UpgradeRequest; // Ajoutez cette ligne
+use App\Models\User;
 
 class UpgradeRequestController extends Controller
 {
@@ -16,6 +18,12 @@ class UpgradeRequestController extends Controller
 
         // Project creation
         $upgradeRequest = UpgradeRequest::create($request->all());
+
+        // Find the user and update the role
+        // TO DELETE LATER
+        $user = User::find($request->user_id);
+        $user->role = $request->role;
+        $user->save();
 
         return response()->json([
             'message' => 'Requete créé avec succès',

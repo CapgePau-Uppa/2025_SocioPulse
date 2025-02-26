@@ -7,15 +7,17 @@ use Illuminate\Http\Request;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\UpgradeRequestController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/deleteUser', [AuthController::class, 'deleteAccount']);
+    Route::post('/upgradeRequete', [UpgradeRequestController::class, 'store']);
+    
 });
 Route::post('/register', [AuthController::class, 'register']);
-
 /*
 Route::middleware('auth:sanctum')->get('/secure-data', function (Request $request) {
     return response()->json([

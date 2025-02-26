@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('upgrade-request', function (Blueprint $table) {
+        Schema::create('upgrade_request', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users'); // Relation between table projects and users 
             $table->enum('role', ['industriel', 'collectivité']); // Restrict role to specific values

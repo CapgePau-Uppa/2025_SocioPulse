@@ -56,6 +56,10 @@ export class NavbarComponent {
               sessionStorage.setItem('auth_token', response.token);
               sessionStorage.setItem('user_id', response.user.id);
               sessionStorage.setItem('username', response.user.name);
+              sessionStorage.setItem('email', response.user.email);
+              sessionStorage.setItem('role', response.user.role);
+              console.log('email:', sessionStorage.getItem('email'));
+              console.log('role:', sessionStorage.getItem('role'));
               console.log('Connexion réussie affichage données front:', response);
               const userId = sessionStorage.getItem('user_id');
               console.log('Nom de l\'utilisateur:', userId);

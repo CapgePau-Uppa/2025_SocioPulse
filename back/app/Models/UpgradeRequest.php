@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UpgradeRequest extends Model
 {
+    protected $table = 'upgrade_request';
     protected $fillable = [
         'role',
         'user_id'
