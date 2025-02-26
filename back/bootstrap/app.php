@@ -7,6 +7,10 @@ use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful; // Import
 use Illuminate\Http\Middleware\HandleCors;// Import du middleware CORS
 use Illuminate\Routing\Middleware\SubstituteBindings; // Import du middleware SubstituteBindings
 use App\Http\Middleware\CheckPermission;
+use App\Http\Middleware\CheckAdminRole;
+use App\Http\Middleware\CheckCitoyenRole;
+use App\Http\Middleware\CheckCommunauteRole;
+use App\Http\Middleware\CheckEntrepriseRole;
 
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -21,8 +25,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(append: [
             HandleCors::class,  // Ajoute le middleware CORS pour les requêtes API
             EnsureFrontendRequestsAreStateful::class,  // Gère la session d'authentification pour l'API
-            SubstituteBindings::class,                 // Gère la liaison automatique des paramètres de route
-            CheckPermission::class,                    // Permission middleware
+            SubstituteBindings::class, // Gère la liaison automatique des paramètres de route
+        ]);
+
+        // Enregistrement du middleware CheckPermission en alias (mais pas global)
+        $middleware->alias([
+            'checkPermission' => CheckPermission::class,
+            'checkAdminRole' => CheckAdminRole::class,
+            'checkCitoyenRole' => CheckCitoyenRole::class,
+            'checkCommunauteRole' => CheckCommunauteRole::class,
+            'checkEntrepriseRole' => CheckEntrepriseRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

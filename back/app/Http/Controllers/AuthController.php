@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Models\Role;
 
 class AuthController extends Controller
 {
@@ -33,10 +34,16 @@ class AuthController extends Controller
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
-                'roles' => $user->roles->pluck('name'),
-                'permissions' => $user->roles->flatMap->permissions->pluck('name')->unique()
+                'role' => $user->role->name, // Nom du rôle de l'utilisateur
+                'permissions' => [
+                    'canDelete' => $user->role->canDelete,
+                    'canCreate' => $user->role->canCreate,
+                    'canComment' => $user->role->canComment,
+                    'canGrade' => $user->role->canGrade
+                ]
             ]
         ]);
+        
     }
 
     // Vérifie l'utilisateur actuel

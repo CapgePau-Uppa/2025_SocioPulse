@@ -3,21 +3,80 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Role;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
+    public function run()
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Création des rôles
+        $adminRole = Role::firstOrCreate([
+            'name' => 'administrator',
+        ], [
+            'canDelete' => true,
+            'canCreate' => true,
+            'canComment' => true,
+            'canGrade' => true
         ]);
+
+        $citoyenRole = Role::firstOrCreate([
+            'name' => 'citoyen',
+        ], [
+            'canDelete' => false,
+            'canCreate' => false,
+            'canComment' => true,
+            'canGrade' => false
+        ]);
+
+        $communauteRole = Role::firstOrCreate([
+            'name' => 'communaute',
+        ], [
+            'canDelete' => false,
+            'canCreate' => true,
+            'canComment' => true,
+            'canGrade' => false
+        ]);
+
+        $entrepriseRole = Role::firstOrCreate([
+            'name' => 'entreprise',
+        ], [
+            'canDelete' => false,
+            'canCreate' => true,
+            'canComment' => true,
+            'canGrade' => false
+        ]);
+
+        // Création des utilisateurs par défaut avec leurs rôles
+        $admin = User::create([
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
+            'password' => Hash::make('password'),
+            'role_id' => $adminRole->id
+        ]);
+
+        $citoyen = User::create([
+            'name' => 'Citoyen',
+            'email' => 'citoyen@example.com',
+            'password' => Hash::make('password'),
+            'role_id' => $citoyenRole->id
+        ]);
+
+        $communaute = User::create([
+            'name' => 'Communaute',
+            'email' => 'communaute@example.com',
+            'password' => Hash::make('password'),
+            'role_id' => $communauteRole->id
+        ]);
+
+        $entreprise = User::create([
+            'name' => 'Entreprise',
+            'email' => 'entreprise@example.com',
+            'password' => Hash::make('password'),
+            'role_id' => $entrepriseRole->id
+        ]);
+
+        echo "Les utilisateurs par défaut ont été créés avec succès !\n";
     }
 }

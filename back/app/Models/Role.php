@@ -9,16 +9,13 @@ class Role extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'canCreate', 'canDelete', 'canEdit', 'canView'];
 
+    // Relation avec les utilisateurs
     public function users()
     {
-        return $this->belongsToMany(User::class, 'roles_users');
+        return $this->hasMany(User::class); // Un rôle a plusieurs utilisateurs
     }
-    
 
-    public function permissions()
-    {
-        return $this->belongsToMany(Permission::class, 'roles_permissions');
-    }
 }
+

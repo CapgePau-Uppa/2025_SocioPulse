@@ -9,15 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // nom du rôle (Administrateur, Citoyen, Communaute, Entreprise)
+            $table->string('name')->unique();
+            $table->boolean('canDelete')->default(false);
+            $table->boolean('canCreate')->default(false);
+            $table->boolean('canComment')->default(false);
+            $table->boolean('canGrade')->default(false);
             $table->timestamps();
         });
     }
-
+    
     /**
      * Reverse the migrations.
      */

@@ -9,6 +9,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Middleware\CheckPermission;
+use App\Http\Middleware\CheckEntrepriseRole;
+use App\Http\Middleware\CheckCitoyenRole;
+use App\Http\Middleware\CheckCommunauteRole;
+use App\Http\Middleware\CheckAdminRole;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
@@ -26,11 +31,27 @@ Route::get('/secure-data', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
+Route::middleware(['auth:sanctum', 'checkEntrepriseRole', 'checkPermission:canDelete'])
+    ->get('/test', function () {
+        return response()->json([
+            'message' => 'Accès autorisé, vous avez les bonnes permissions et rôle pour créer un projet.',
+            'status' => 'success'
+        ]);
+    });
+
 // Route protégée par Sanctum (nécessite une authentification)
 Route::middleware('auth:sanctum')->get('/test-auth', function (Request $request) {
     return response()->json(['message' => 'Connexion réussie avec authentification Sanctum!']);
 });
-
+/*
+// Route protégée par Sanctum  et permissions administrator
+Route::middleware(['auth:sanctum', 'permission:manage_users'])->get('/test-middleware', function () {
+    return response()->json(['message' => 'Accès autorisé au middleware avec permissions admin'], 200);
+});
+*/
+Route::middleware(['permission:manage_users'])->get('/test-permission', function () {
+    return response()->json(['message' => 'Accès autorisé']);
+});
 
 /**
  * API Routes for managing roles and permissions.
@@ -41,7 +62,7 @@ Route::middleware('auth:sanctum')->get('/test-auth', function (Request $request)
  * - RoleController: Handles role-related actions.
  * - UserController: Handles user-related actions.
  */
-Route::middleware(['auth:sanctum', 'permission:admin'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/roles/{roleId}/assign-permission', [RoleController::class, 'assignPermission']);
     Route::post('/roles/{roleId}/remove-permission', [RoleController::class, 'removePermission']);
 
