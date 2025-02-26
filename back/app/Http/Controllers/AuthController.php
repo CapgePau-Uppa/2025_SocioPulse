@@ -82,5 +82,21 @@ class AuthController extends Controller
             'token' => $token
         ], 201);
     }
-    
+    // Supprime le compte de l'utilisateur
+    public function deleteAccount(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $user = User::find($request->user_id);
+
+        // Supprime tous les tokens de l'utilisateur
+        $user->tokens()->delete();
+
+        // Supprime l'utilisateur
+        $user->delete();
+
+        return response()->json(['message' => 'Compte supprimé avec succès'], 200);
+    }
 }
