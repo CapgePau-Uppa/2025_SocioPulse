@@ -10,13 +10,13 @@ import { ProfilePageComponent } from './profile-page/profile-page.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';  // Assurez-vous que ce composant existe
 
 export const routes: Routes = [
-  {path:'', component: LandingPageComponent},
-  {path: 'register-page', component: RegisterPageComponent},
-  {path: 'project-maker-page', component: ProjectMakerPageComponent},
-  {path: 'projects-list-page', component: ProjectsListPageComponent},
-  {path: 'about-page', component: AboutPageComponent},
-  {path: 'profile-page', component: ProfilePageComponent},
-  {path: 'faq-page', component: FaqPageComponent},
-  {path: 'project-detail-page/:id', component: ProjectDetailPageComponent},
-  { path: 'admin-dashboard', component: AdminDashboardComponent },
+    { path: '', loadComponent: () => import('./landing-page/landing-page.component').then(m => m.LandingPageComponent) },
+    { path: 'register-page', loadComponent: () => import('./register-page/register-page.component').then(m => m.RegisterPageComponent) },
+    { path: 'project-maker-page', loadComponent: () => import('./project-maker-page/project-maker-page.component').then(m => m.ProjectMakerPageComponent) },
+    { path: 'projects-list-page', loadComponent: () => import('./projects-list-page/projects-list-page.component').then(m => m.ProjectsListPageComponent) },
+    { path: 'about-page', loadComponent: () => import('./about-page/about-page.component').then(m => m.AboutPageComponent) },
+    { path: 'profile-page', loadComponent: () => import('./profile-page/profile-page.component').then(m => m.ProfilePageComponent) },
+    { path: 'faq-page', loadComponent: () => import('./faq-page/faq-page.component').then(m => m.FaqPageComponent) },
+    { path: 'project-detail-page/:id', loadComponent: () => import('./project-detail-page/project-detail-page.component').then(m => m.ProjectDetailPageComponent) },
+    { path: 'admin-dashboard', loadComponent: () => import('./admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent) },
 ];
