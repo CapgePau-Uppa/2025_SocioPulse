@@ -15,6 +15,7 @@ use App\Http\Middleware\CheckCitoyenRole;
 use App\Http\Middleware\CheckCommunauteRole;
 use App\Http\Middleware\CheckAdminRole;
 use App\Http\Controllers\UpgradeRequestController;
+use App\Http\Controllers\AdminController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
@@ -57,27 +58,19 @@ Route::middleware(['permission:manage_users'])->get('/test-permission', function
     return response()->json(['message' => 'Accès autorisé']);
 });
 
-/**
- * API Routes for managing roles and permissions.
- * 
- * These routes are protected by 'auth:sanctum' and 'permission:admin' middleware.
- * 
- * Controllers:
- * - RoleController: Handles role-related actions.
- * - UserController: Handles user-related actions.
- */
-Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
-    Route::post('/roles/{roleId}/assign-permission', [RoleController::class, 'assignPermission']);
-    Route::post('/roles/{roleId}/remove-permission', [RoleController::class, 'removePermission']);
-
-    Route::post('/users/{userId}/assign-role', [UserController::class, 'assignRole']);
-    Route::post('/users/{userId}/remove-role', [UserController::class, 'removeRole']);
+Route::middleware(['auth:sanctum', 'checkAdminRole'])->group(function () {
+    Route::get('/roles', [AdminController::class, 'getRoles']);
+    Route::get('/users', [AdminController::class, 'getUsers']);
+    Route::put('/users/{id}/role', [AdminController::class, 'updateUserRole']);
+    Route::get('/roles/{id}/permissions', [AdminController::class, 'getPermissions']);
+    Route::put('/roles/{id}/permissions', [AdminController::class, 'updateRolePermissions']);
 });
+
 
 //Path for the project requests
 Route::get('/projects', [ProjectController::class, 'index']); // List of available projects
 Route::/*middleware('auth:sanctum')->*/post('/projects', [ProjectController::class, 'store']); // Create a project
-Route::middleware('auth:sanctum')->put('/projects/{id}', [ProjectController::class, 'update']); // Update a project
+Route::middleware(['auth:sanctum', 'checkEntrepriseRole'||'checkAdminRole', 'checkPermission:canCreate'])->put('/projects/{id}', [ProjectController::class, 'update']); // Update a project
 Route::middleware('auth:sanctum')->delete('/projects/{id}', [ProjectController::class, 'destroy']); // Delete a project
 
 /*

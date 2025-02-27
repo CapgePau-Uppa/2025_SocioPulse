@@ -37,7 +37,7 @@ class UpgradeRequestController extends Controller
         $upgradeRequests = UpgradeRequest::all();
 
         // Return all projects in JSON
-        return response()->json($projects);
+        //return response()->json($projects);
     }
 
     public function destroy($id) {

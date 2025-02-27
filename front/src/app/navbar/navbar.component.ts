@@ -9,6 +9,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {LoginModalComponent} from '../login-modal/login-modal.component';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 /*
 interface AuthResponse {
   token: string;
@@ -22,7 +23,8 @@ interface AuthResponse {
         MatToolbar,
         MatAnchor,
         MatButton,
-        MatIcon
+        MatIcon,
+        CommonModule
     ],
     templateUrl: './navbar.component.html',
     styleUrl: './navbar.component.scss'
@@ -31,16 +33,18 @@ export class NavbarComponent {
 
     isLoggedIn: boolean = false;
     userName: string | null = null;
+    userRole: string | null = null;
 
     private http: HttpClient = inject(HttpClient);
     constructor(private dialog: MatDialog, private authService: AuthService, private router: Router) {}
 
     ngOnInit(): void {
-      const userId = sessionStorage.getItem('user_id');
-      if (userId) {
-        this.isLoggedIn = true;
-        this.userName = sessionStorage.getItem('username'); // Assurez-vous que le nom de l'utilisateur est stocké dans sessionStorage
-      }
+        const userId = sessionStorage.getItem('user_id');
+        if (userId) {
+            this.isLoggedIn = true;
+            this.userName = sessionStorage.getItem('username'); // Assurez-vous que le nom de l'utilisateur est stocké dans sessionStorage
+        }
+        this.userRole = sessionStorage.getItem('role');
     }
 
     openDialog(): void {
@@ -76,10 +80,6 @@ export class NavbarComponent {
                 console.log('La dialog a été fermée sans soumission.');
             }
         });
-    }
-
-    checkAccess() {
-        this.authService.checkSecureData();
     }
 
     logout(): void {

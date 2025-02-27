@@ -7,6 +7,7 @@ import {FaqPageComponent} from './faq-page/faq-page.component';
 import { ProjectsListPageComponent } from './projects-list-page/projects-list-page.component';
 import { ProjectDetailPageComponent } from './project-detail-page/project-detail-page.component';
 import { ProfilePageComponent } from './profile-page/profile-page.component';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';  // Assurez-vous que ce composant existe
 
 export const routes: Routes = [
   {path:'', component: LandingPageComponent},
@@ -17,4 +18,5 @@ export const routes: Routes = [
   {path: 'profile-page', component: ProfilePageComponent},
   {path: 'faq-page', component: FaqPageComponent},
   {path: 'project-detail-page/:id', component: ProjectDetailPageComponent},
+  { path: 'admin-dashboard', component: AdminDashboardComponent },
 ];

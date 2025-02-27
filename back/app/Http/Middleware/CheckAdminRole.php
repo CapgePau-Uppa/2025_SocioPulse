@@ -14,7 +14,7 @@ class CheckAdminRole
         $user = Auth::user();
         
         // Vérifier si l'utilisateur a le rôle "admin"
-        if ($user->role->name !== 'admin') {
+        if ($user->role->name !== 'administrator') {
             return response()->json(['message' => 'Accès refusé. Seul un administrateur peut accéder à cette ressource.'], 403);
         }
 

@@ -1,43 +1,46 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
-
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
-
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
-
-# IDEs and editors
+# IDE config files
 .idea/
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
+.vscode/
 
-# Visual Studio Code
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.history/*
+# Frontend node modules
+/front/node_modules/
 
-# Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
+# Build and dist directories for frontend
+/front/dist/
+/front/.angular/
 
-# System files
+# Backend .env file (sensitive data)
+/back/.env
+
+# Log files
+*.log
+*.log.*
+
+# OS generated files
 .DS_Store
 Thumbs.db
-.env
+
+# Angular test and coverage files
+/front/test/
+/front/coverage/
+
+# Backend database files (e.g., SQLite)
+/back/database/
+
+# Backend storage files (except logs)
+# Keeps app and framework directories
+/back/storage/*
+!/back/storage/app
+!/back/storage/framework
+!/back/storage/logs
+
+# Composer files for backend (if using Laravel/Symfony)
+# Ignoring vendor folder
+/back/vendor/
+
+# Composer lock files
+/back/composer.lock
+/back/composer.json
+
+# PHP unit result cache
+/back/.phpunit.result.cache
