@@ -70,6 +70,7 @@ FRONTEND :
 2) ng serve
 
 /----------Seeder----------/
+
 admin@example.com
 password
 
