@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'laravel/laravel',
-        'pretty_version' => 'dev-SocioPulseWIP',
-        'version' => 'dev-SocioPulseWIP',
-        'reference' => '4d30cb7973e4995ac849193c9f83a673feb979b3',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '1f8d337cdc3cef55152bff58e90e73c93d9c198c',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -386,9 +386,9 @@
             'dev_requirement' => false,
         ),
         'laravel/laravel' => array(
-            'pretty_version' => 'dev-SocioPulseWIP',
-            'version' => 'dev-SocioPulseWIP',
-            'reference' => '4d30cb7973e4995ac849193c9f83a673feb979b3',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '1f8d337cdc3cef55152bff58e90e73c93d9c198c',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

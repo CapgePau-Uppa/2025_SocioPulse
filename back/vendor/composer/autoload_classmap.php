@@ -6,10 +6,12 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Http\\Controllers\\AdminController' => $baseDir . '/app/Http/Controllers/AdminController.php',
     'App\\Http\\Controllers\\AuthController' => $baseDir . '/app/Http/Controllers/AuthController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\ProjectController' => $baseDir . '/app/Http/Controllers/ProjectController.php',
     'App\\Http\\Controllers\\RoleController' => $baseDir . '/app/Http/Controllers/RoleController.php',
+    'App\\Http\\Controllers\\UpgradeRequestController' => $baseDir . '/app/Http/Controllers/UpgradeRequestController.php',
     'App\\Http\\Controllers\\UserController' => $baseDir . '/app/Http/Controllers/UserController.php',
     'App\\Http\\Middleware\\CheckAdminRole' => $baseDir . '/app/Http/Middleware/CheckAdminRole.php',
     'App\\Http\\Middleware\\CheckCitoyenRole' => $baseDir . '/app/Http/Middleware/CheckCitoyenRole.php',
@@ -18,6 +20,7 @@ return array(
     'App\\Http\\Middleware\\CheckPermission' => $baseDir . '/app/Http/Middleware/CheckPermission.php',
     'App\\Models\\Project' => $baseDir . '/app/Models/Project.php',
     'App\\Models\\Role' => $baseDir . '/app/Models/Role.php',
+    'App\\Models\\UpgradeRequest' => $baseDir . '/app/Models/UpgradeRequest.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',

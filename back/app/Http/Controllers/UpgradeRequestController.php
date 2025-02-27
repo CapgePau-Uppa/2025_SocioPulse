@@ -12,7 +12,7 @@ class UpgradeRequestController extends Controller
     public function store(Request $request) {
         // Validation of recieved request
         $request->validate([
-            'role' => 'required|string',
+            'role_id' => 'required|string',
             'user_id' => 'required|exists:users,id',
         ]);
 
@@ -22,7 +22,7 @@ class UpgradeRequestController extends Controller
         // Find the user and update the role
         // TO DELETE LATER
         $user = User::find($request->user_id);
-        $user->role = $request->role;
+        $user->role_id = $request->role_id;
         $user->save();
 
         return response()->json([

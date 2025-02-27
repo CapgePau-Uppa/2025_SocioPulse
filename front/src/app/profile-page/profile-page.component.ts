@@ -31,7 +31,7 @@ export class ProfilePageComponent implements OnInit{
     const token = sessionStorage.getItem('auth_token');
     if (userId) {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      this.http.post('http://localhost:8000/api/upgradeRequete', { user_id: userId, role: 'industriel' }, { headers })
+      this.http.post('http://localhost:8000/api/upgradeRequete', { user_id: userId, role_id: '4' }, { headers })
         .subscribe(response => {
           console.log('Compte amélioré avec succès', response);
           // Ajoutez ici toute logique supplémentaire après l'amélioration du compte

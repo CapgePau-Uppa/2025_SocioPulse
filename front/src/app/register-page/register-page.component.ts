@@ -5,11 +5,12 @@ import { MatInput } from '@angular/material/input';
 import { MatLabel } from '@angular/material/form-field';
 import { MatError } from '@angular/material/form-field';
 import { HttpClient } from '@angular/common/http';
-import {MatButton} from '@angular/material/button';
+import {MatButton, MatButtonModule} from '@angular/material/button';
 import {MatDialogActions} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { firstValueFrom } from 'rxjs';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-register-page',
@@ -22,7 +23,9 @@ import { firstValueFrom } from 'rxjs';
     MatLabel,
     MatError,
     MatButton,
-    MatDialogActions
+    MatDialogActions,
+	MatButtonModule,
+	MatCardModule
   ]
 })
 

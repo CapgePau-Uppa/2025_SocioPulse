@@ -1,0 +1,59 @@
+.container {
+    display: flex;
+    min-height: 95vh;
+    width: 75%;
+    margin: 80px auto;
+  }
+  
+  .profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: whitesmoke;
+    padding: 40px;
+    border-radius: 16px;
+    width: 100%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  
+  
+  button {
+    padding: 12px 24px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  
+    &[color="primary"] {
+      background-color: #1a237e;
+      color: white;
+    }
+    &[color="warn"] {
+      background-color: red ;
+      color: white;
+    }
+  
+  }
+  mat-card-content {
+    margin: 24px 0;
+    color: #4a4a4a;
+  
+    p {
+      margin: 16px 0;
+      font-size: 1.1rem;
+      line-height: 1.8;
+  
+      strong {
+        color: #2c2c2c;
+        font-weight: 600;
+        margin-right: 8px;
+      }
+    }
+  }
+  
+  mat-card-title h2 {
+    font-family: "Candara", sans-serif;
+    font-size: 4rem;
+    margin-bottom: 24px;
+    color: #1a1a1a;
+    letter-spacing: -0.5px;
+  }
+  

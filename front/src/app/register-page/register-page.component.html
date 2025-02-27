@@ -1,58 +1,69 @@
-<h1>Register</h1>
-<form #registerForm="ngForm" (ngSubmit)="register()">
-  <mat-form-field appearance="fill" style="width: 100%;">
-    <mat-label>Name</mat-label>
-    <input matInput placeholder="Enter your name" name="name" [(ngModel)]="user.name" required>
-    @if(registerForm.submitted && registerForm.controls['name']?.errors?.['required']){
-      <mat-error>
-        Name is required
-      </mat-error>
-    }
-  </mat-form-field>
-  <h2>Inscription</h2>
-  
-  <mat-form-field appearance="fill" style="width: 100%;">
-    <mat-label>Email</mat-label>
-    <input matInput placeholder="Enter your email" name="email" [(ngModel)]="user.email" required email>
-    @if(registerForm.submitted && registerForm.controls['email']?.errors?.['required']){
-      <mat-error>
-        Email is required
-      </mat-error>
-    }
-    @if(registerForm.submitted && registerForm.controls['email']?.errors?.['email']){
-      <mat-error>
-        Invalid email format
-      </mat-error>
-    }
-  </mat-form-field>
+<div class='container'>
+  <mat-card class="profile-card">
+  <mat-card-header>
+    <mat-card-title>
+      <h2>
+        Inscription
+      </h2>
+    </mat-card-title>
+  </mat-card-header>
+<mat-card-content>
+  <form #registerForm="ngForm" (ngSubmit)="register()">
+    <mat-form-field appearance="fill" style="width: 100%;">
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Enter your name" name="name" [(ngModel)]="user.name" required>
+      @if(registerForm.submitted && registerForm.controls['name']?.errors?.['required']){
+        <mat-error>
+          Name is required
+        </mat-error>
+      }
+    </mat-form-field>
 
-  <mat-form-field appearance="fill" style="width: 100%;">
-    <mat-label>Password</mat-label>
-    <input matInput type="password" placeholder="Enter your password" name="password" [(ngModel)]="user.password" required>
-    @if(registerForm.submitted && registerForm.controls['password']?.errors?.['required']){
-      <mat-error>
-        Password is required
-      </mat-error>
-    }
-  </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 100%;">
+      <mat-label>Email</mat-label>
+      <input matInput placeholder="Enter your email" name="email" [(ngModel)]="user.email" required email>
+      @if(registerForm.submitted && registerForm.controls['email']?.errors?.['required']){
+        <mat-error>
+          Email is required
+        </mat-error>
+      }
+      @if(registerForm.submitted && registerForm.controls['email']?.errors?.['email']){
+        <mat-error>
+          Invalid email format
+        </mat-error>
+      }
+    </mat-form-field>
 
-  <mat-form-field appearance="fill" style="width: 100%;">
-    <mat-label>Confirm Password</mat-label>
-    <input matInput type="password" placeholder="Confirm your password" name="confirmPassword" [(ngModel)]="user.confirmPassword" required>
-    @if(registerForm.submitted && registerForm.controls['confirmPassword']?.errors?.['required']){
-      <mat-error>
-        Confirm Password is required
-      </mat-error>
-    }
-    @if(registerForm.submitted && user.password !== user.confirmPassword){
-      <mat-error>
-        Passwords do not match
-      </mat-error>
-    }
-  </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 100%;">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" placeholder="Enter your password" name="password" [(ngModel)]="user.password" required>
+      @if(registerForm.submitted && registerForm.controls['password']?.errors?.['required']){
+        <mat-error>
+          Password is required
+        </mat-error>
+      }
+    </mat-form-field>
 
-  <div mat-dialog-actions style="justify-content: flex-end;">
-    <button mat-button type="submit" [disabled]="!registerForm.valid || user.password !== user.confirmPassword">Register</button>
+    <mat-form-field appearance="fill" style="width: 100%;">
+      <mat-label>Confirm Password</mat-label>
+      <input matInput type="password" placeholder="Confirm your password" name="confirmPassword" [(ngModel)]="user.confirmPassword" required>
+      @if(registerForm.submitted && registerForm.controls['confirmPassword']?.errors?.['required']){
+        <mat-error>
+          Confirm Password is required
+        </mat-error>
+      }
+      @if(registerForm.submitted && user.password !== user.confirmPassword){
+        <mat-error>
+          Passwords do not match
+        </mat-error>
+      }
+    </mat-form-field>
 
-  </div>
-</form>
+    <div mat-dialog-actions style="justify-content: flex-end;">
+      <button mat-button type="submit" [disabled]="!registerForm.valid || user.password !== user.confirmPassword">Register</button>
+
+    </div>
+  </form>
+</mat-card-content>
+</mat-card>
+</div>

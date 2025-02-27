@@ -521,10 +521,12 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
     );
 
     public static $classMap = array (
+        'App\\Http\\Controllers\\AdminController' => __DIR__ . '/../..' . '/app/Http/Controllers/AdminController.php',
         'App\\Http\\Controllers\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/AuthController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\ProjectController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProjectController.php',
         'App\\Http\\Controllers\\RoleController' => __DIR__ . '/../..' . '/app/Http/Controllers/RoleController.php',
+        'App\\Http\\Controllers\\UpgradeRequestController' => __DIR__ . '/../..' . '/app/Http/Controllers/UpgradeRequestController.php',
         'App\\Http\\Controllers\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/UserController.php',
         'App\\Http\\Middleware\\CheckAdminRole' => __DIR__ . '/../..' . '/app/Http/Middleware/CheckAdminRole.php',
         'App\\Http\\Middleware\\CheckCitoyenRole' => __DIR__ . '/../..' . '/app/Http/Middleware/CheckCitoyenRole.php',
@@ -533,6 +535,7 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
         'App\\Http\\Middleware\\CheckPermission' => __DIR__ . '/../..' . '/app/Http/Middleware/CheckPermission.php',
         'App\\Models\\Project' => __DIR__ . '/../..' . '/app/Models/Project.php',
         'App\\Models\\Role' => __DIR__ . '/../..' . '/app/Models/Role.php',
+        'App\\Models\\UpgradeRequest' => __DIR__ . '/../..' . '/app/Models/UpgradeRequest.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
