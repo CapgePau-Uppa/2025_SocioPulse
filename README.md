@@ -68,3 +68,16 @@ Ready in http://localhost:8000/
 FRONTEND :
 1) npm install
 2) ng serve
+
+/----------Seeder----------/
+admin@example.com
+password
+
+entreprise@example.com
+password
+
+citoyen@example.com
+password
+
+communaute@example.com
+password
