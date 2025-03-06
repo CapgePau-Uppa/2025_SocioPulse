@@ -9,7 +9,7 @@ class Role extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'canCreate', 'canDelete', 'canEdit', 'canView'];
+    protected $fillable = ['name', 'canCreate', 'canDelete', 'canComment', 'canGrade'];
 
     // Relation avec les utilisateurs
     public function users()

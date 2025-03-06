@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -50,26 +51,32 @@ class AdminController extends Controller
     }
 
     // Mettre à jour les permissions d'un rôle
-    public function updateRolePermissions(Request $request, $id) {
-        $role = Role::findOrFail($id);
+    public function updateRolePermissions(Request $request, $roleId)
+    {
+        $role = Role::findOrFail($roleId);
 
-        // On s'assure que les permissions sont présentes et ne sont pas nulles
-        $permissions = $request->permissions;
+        // Vérification de ce que Laravel reçoit
+        Log::info('Permissions reçues:', $request->all());
 
-        if ($permissions === null) {
-            return response()->json(['message' => 'Permissions cannot be null'], 400);
-        }
+        // Extraction des permissions depuis le tableau
+        $permissions = $request->input('permissions', []);
+        $validatedData = [
+            'canCreate' => $permissions[0] ?? false,
+            'canDelete' => $permissions[1] ?? false,
+            'canComment' => $permissions[2] ?? false,
+            'canGrade' => $permissions[3] ?? false,
+        ];
 
-        // Mettre à jour les permissions sous forme de booléens
-        $role->update([
-            'canCreate' => $request->canCreate,
-            'canDelete' => $request->canDelete,
-            'canComment' => $request->canComment,
-            'canGrade' => $request->canGrade,
+        // Vérification après extraction
+        Log::info('Données validées avant update:', $validatedData);
+
+        // Mise à jour du rôle
+        $role->update($validatedData);
+
+        return response()->json([
+            'message' => "Permissions mises à jour pour le rôle '{$role->name}'",
+            'role' => $role
         ]);
-
-        $role->save();
-
-        return response()->json(['message' => 'Permissions updated successfully'], 200);
     }
+
 }

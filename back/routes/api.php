@@ -17,6 +17,7 @@ use App\Http\Middleware\CheckAdminRole;
 use App\Http\Controllers\UpgradeRequestController;
 use App\Http\Controllers\AdminController;
 
+
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
