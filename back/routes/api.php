@@ -16,6 +16,7 @@ use App\Http\Middleware\CheckCommunauteRole;
 use App\Http\Middleware\CheckAdminRole;
 use App\Http\Controllers\UpgradeRequestController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\EntrepriseController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -28,7 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::post('/register', [AuthController::class, 'register']);
 
-
+Route::get('/entreprises', [EntrepriseController::class, 'index']);
 Route::get('/secure-data', function (Request $request) {
     return response()->json([
         'message' => 'Accès autorisé !',

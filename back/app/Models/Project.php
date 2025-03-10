@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model {
     use HasFactory;
-// this table protects the model from masive assignations
+
+    // Autoriser l'assignation en masse pour ces champs
     protected $fillable = [
         'name',
         'department',
@@ -15,11 +16,32 @@ class Project extends Model {
         'description',
         'latitude',
         'longitude',
-        'user_id'
+        'user_id',
+        'entreprise_id',
+        'volet_relance',
+        'mesure',
+        'mesure_light',
+        'mise_a_jour',
+        'filiere',
+        'notation_general',
+        'notation_commune',
+        'notation_citoyen',
+        'status'
     ];
+
+    /**
+     * Un projet appartient à un utilisateur.
+     */
     public function user()
     {
-        return $this->belongsTo(User::class); // A project belongs to a user
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Un projet appartient à une entreprise.
+     */
+    public function entreprise()
+    {
+        return $this->belongsTo(Entreprise::class);
     }
 }
-

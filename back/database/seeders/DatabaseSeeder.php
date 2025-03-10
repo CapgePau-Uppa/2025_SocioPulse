@@ -4,13 +4,22 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Entreprise;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
     public function run()
-    {
+    {   
+        $entreprise = Entreprise::firstOrCreate([
+            'siren' => '123456789',
+            'nom' => 'Entreprise123',
+            'type_entreprise' => 'TPE/PME',
+            'note_generale' => 0,
+            'note_citoyenne' => 0,
+            'note_commune' => 0
+        ]);
         // Création des rôles
         $adminRole = Role::firstOrCreate([
             'name' => 'administrator',

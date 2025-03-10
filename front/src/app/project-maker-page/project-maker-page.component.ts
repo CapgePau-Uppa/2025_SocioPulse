@@ -1,19 +1,26 @@
-import {Component, inject, OnInit} from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {MatFormField} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-import {MatLabel} from '@angular/material/form-field';
-import {MatError} from '@angular/material/form-field';
-import {HttpClient} from '@angular/common/http';
-import {MatDialogActions} from '@angular/material/dialog';
-import {MatButton} from '@angular/material/button';
-import {Router} from '@angular/router';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatLabel } from '@angular/material/form-field';
+import { MatError } from '@angular/material/form-field';
+import { HttpClient } from '@angular/common/http';
+import { MatDialogActions } from '@angular/material/dialog';
+import { MatButton } from '@angular/material/button';
+import { Router } from '@angular/router';
 import * as L from 'leaflet';
+import { CommonModule } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+
 @Component({
   selector: 'app-project-maker-page',
   templateUrl: './project-maker-page.component.html',
   imports: [
     FormsModule,
+    CommonModule,
+    MatSelectModule,
+    MatOptionModule,
     MatFormField,
     MatInput,
     MatLabel,
@@ -33,12 +40,18 @@ export class ProjectMakerPageComponent implements OnInit {
     department: '',
     city: '',
     description: '',
-    latitude:'',
-    longitude:'',
-    user_id:sessionStorage.getItem('user_id')
+    latitude: '',
+    longitude: '',
+    user_id: sessionStorage.getItem('user_id'),
+    status: 'En cours',
+    entreprise_id: '' // Ajoutez ce champ pour lier l'entreprise sélectionnée
   };
+  entreprises: any[] = [];
+
   ngOnInit() {
     this.initMap();
+    this.loadEntreprises();
+    console.log("entreprises", this.entreprises);
   }
 
   private async getLocationDetails(lat: number, lng: number): Promise<void> {
@@ -66,7 +79,7 @@ export class ProjectMakerPageComponent implements OnInit {
 
   private initMap(): void {
     this.map = L.map('map', {
-      center: [ 43.3, -0.3667],
+      center: [43.3, -0.3667],
       zoom: 6
     }); // Set initial coordinates and zoom
 
@@ -76,7 +89,7 @@ export class ProjectMakerPageComponent implements OnInit {
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
 
-    this.map.on('click', async(e: L.LeafletMouseEvent) => {
+    this.map.on('click', async (e: L.LeafletMouseEvent) => {
       const lat = e.latlng.lat;
       const lng = e.latlng.lng;
 
@@ -91,14 +104,27 @@ export class ProjectMakerPageComponent implements OnInit {
       this.marker = L.marker([lat, lng]).addTo(this.map);
     });
   }
+
+  private loadEntreprises(): void {
+    this.http.get<any[]>('http://localhost:8000/api/entreprises')
+      .subscribe(data => {
+        this.entreprises = data;
+      }, error => {
+        console.error('Erreur lors du chargement des entreprises', error);
+      });
+      console.log("entreprises", this.entreprises);
+  }
+
   onSubmit(form: any): void {
+    console.log("entreprises", this.entreprises);
     if (form.valid) {
+      this.project.entreprise_id = this.project.entreprise_id.toString();
       console.log('Project data:', this.project);
+
       this.http.post('http://localhost:8000/api/projects', this.project).subscribe(
         response => console.log(response),
         error => console.log(error));
       this.router.navigate(['/']);
     }
   }
-
 }
