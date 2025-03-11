@@ -24,9 +24,6 @@ Thumbs.db
 /front/test/
 /front/coverage/
 
-# Backend database files (e.g., SQLite)
-/back/database/
-
 # Backend storage files (except logs)
 # Keeps app and framework directories
 /back/storage/*
