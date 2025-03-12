@@ -1,4 +1,4 @@
-import { Component,ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectsService } from '../services/projects.service';
 import {MatButtonModule} from '@angular/material/button';
@@ -22,6 +22,7 @@ export class ProjectDetailPageComponent implements OnInit {
 
   ngOnInit(): void {
     const projectId = +(this.route.snapshot.paramMap.get('id') ?? 0);
+    console.log('ID du projet :', this.route);
     this.projectsService.getProjects().subscribe(data => {
       this.project = data.find(project => project.id === projectId);
     });
@@ -42,6 +43,6 @@ export class ProjectDetailPageComponent implements OnInit {
     }
   }
   goToProjectReport(): void {
-    this.router.navigate(['/project-repport-page']);
+    this.router.navigate(['/project-repport-page', this.project.id]);
   }
 }

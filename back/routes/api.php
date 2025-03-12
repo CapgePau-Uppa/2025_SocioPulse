@@ -17,7 +17,7 @@ use App\Http\Middleware\CheckAdminRole;
 use App\Http\Controllers\UpgradeRequestController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EntrepriseController;
-
+use App\Http\Controllers\ReportController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
@@ -28,7 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
 });
 Route::post('/register', [AuthController::class, 'register']);
-
+Route::post('/upload', [ReportController::class, 'upload']);
 Route::get('/entreprises', [EntrepriseController::class, 'index']);
 Route::get('/secure-data', function (Request $request) {
     return response()->json([

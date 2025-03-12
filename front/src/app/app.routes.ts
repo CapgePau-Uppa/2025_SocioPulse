@@ -19,5 +19,5 @@ export const routes: Routes = [
     { path: 'faq-page', loadComponent: () => import('./faq-page/faq-page.component').then(m => m.FaqPageComponent) },
     { path: 'project-detail-page/:id', loadComponent: () => import('./project-detail-page/project-detail-page.component').then(m => m.ProjectDetailPageComponent) },
     { path: 'admin-dashboard', loadComponent: () => import('./admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent) },
-    {path: 'project-repport-page', loadComponent: () => import('./project-repport-page/project-repport-page.component').then(m => m.ProjectRepportPageComponent)}
+    {path: 'project-repport-page/:id', loadComponent: () => import('./project-repport-page/project-repport-page.component').then(m => m.ProjectRepportPageComponent)}
 ];

@@ -1,1 +1,11 @@
-<p>project-repport-page works!</p>
+<!-- report-list.component.html -->
+<div class="container">
+  <button mat-raised-button class="add-report-button" (click)="openDialog()">
+    Ajouter un rapport
+  </button>
+  <mat-list>
+    <mat-list-item *ngFor="let report of reports">
+      {{ report }}
+    </mat-list-item>
+  </mat-list>
+</div>
