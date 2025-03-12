@@ -54,7 +54,7 @@ export class NavbarComponent {
             this.isLoggedIn = true;
             this.userName = sessionStorage.getItem('username');
             this.userRole = sessionStorage.getItem('role');
-            this.canCreate = sessionStorage.getItem('canCreate') === 'true';
+            this.canCreate = sessionStorage.getItem('canCreate') === '1';
         } else {
             this.isLoggedIn = false;
             this.userName = null;
@@ -82,11 +82,11 @@ export class NavbarComponent {
                     sessionStorage.setItem('email', response.user.email);
                     sessionStorage.setItem('role', response.user.role);
                     sessionStorage.setItem('canCreate', response.user.permissions.canCreate.toString());
-
+                    console.log('Session storage:', sessionStorage); // Debugging
                     this.isLoggedIn = true;
                     this.userName = response.user.name;
                     this.userRole = response.user.role;
-                    this.canCreate = response.user.permissions.canCreate;
+                    this.canCreate = sessionStorage.getItem('canCreate') === '1';
 
                     this.toastr.success("Connexion réussie!");
                     this.router.navigate(['/']);
