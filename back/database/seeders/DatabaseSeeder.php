@@ -20,15 +20,6 @@ class DatabaseSeeder extends Seeder
             'note_citoyenne' => 0,
             'note_commune' => 0
         ]);
-        // Création des rôles
-        $adminRole = Role::firstOrCreate([
-            'name' => 'administrator',
-        ], [
-            'canDelete' => true,
-            'canCreate' => true,
-            'canComment' => true,
-            'canGrade' => true
-        ]);
 
         $citoyenRole = Role::firstOrCreate([
             'name' => 'citoyen',
@@ -37,6 +28,16 @@ class DatabaseSeeder extends Seeder
             'canCreate' => false,
             'canComment' => true,
             'canGrade' => false
+        ]);
+
+        // Création des rôles
+        $adminRole = Role::firstOrCreate([
+            'name' => 'administrator',
+        ], [
+            'canDelete' => true,
+            'canCreate' => true,
+            'canComment' => true,
+            'canGrade' => true
         ]);
 
         $communauteRole = Role::firstOrCreate([
