@@ -10,6 +10,7 @@ import {LoginModalComponent} from '../login-modal/login-modal.component';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import {ToastrService} from 'ngx-toastr';
 /*
 interface AuthResponse {
   token: string;
@@ -36,7 +37,7 @@ export class NavbarComponent {
     userRole: string | null = null;
 
     private http: HttpClient = inject(HttpClient);
-    constructor(private dialog: MatDialog, private authService: AuthService, private router: Router) {}
+    constructor(private toastr:ToastrService,private dialog: MatDialog, private authService: AuthService, private router: Router) {}
 
     ngOnInit(): void {
         const userId = sessionStorage.getItem('user_id');
@@ -65,6 +66,8 @@ export class NavbarComponent {
               console.log('email:', sessionStorage.getItem('email'));
               console.log('role:', sessionStorage.getItem('role'));
               console.log('Connexion réussie affichage données front:', response);
+
+              this.toastr.success("Connexion réussie!");
               const userId = sessionStorage.getItem('user_id');
               this.userRole = sessionStorage.getItem('role');
               console.log('Nom de l\'utilisateur:', userId);
@@ -73,11 +76,14 @@ export class NavbarComponent {
                 this.userName = sessionStorage.getItem('username'); // Assurez-vous que le nom de l'utilisateur est stocké dans sessionStorage
                 console.log('Nom de l\'utilisateur:', this.userName);
             }
-            this.router.navigate(['/']); // Redirection après connexion
-            } catch (error) {
-            console.error('Erreur de connexion', error);
+              this.router.navigate(['/']); // Redirection après connexion
             }
-        } else {
+            catch (error) {
+              this.toastr.error('Erreur de connexion');
+              console.error('Erreur de connexion', error);
+            }
+        }
+        else {
                 console.log('La dialog a été fermée sans soumission.');
             }
         });

@@ -41,14 +41,16 @@ export class RegisterPageComponent {
 
 	async register(): Promise<void> {
 		try {
-		const response = await firstValueFrom(
-      this.authService.register(this.user.name, this.user.email, this.user.password, this.user.confirmPassword)
-		);
-		console.log('Inscription réussie:', response);
-		this.authService.setToken(response.token);
-		this.router.navigate(['/']); // Redirige après inscription
-		} catch (error) {
-		console.error('Erreur d\'inscription', error);
+		  const response = await firstValueFrom(
+        this.authService.register(this.user.name, this.user.email, this.user.password, this.user.confirmPassword)
+		  );
+
+		  console.log('Inscription réussie:', response);
+		  this.authService.setToken(response.token);
+		  this.router.navigate(['/']); // Redirige après inscription
+		}
+    catch (error) {
+		  console.error('Erreur d\'inscription', error);
 		}
 	}
 }
