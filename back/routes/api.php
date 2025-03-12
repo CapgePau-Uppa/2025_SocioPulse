@@ -71,9 +71,9 @@ Route::middleware(['auth:sanctum', 'checkAdminRole'])->group(function () {
 
 //Path for the project requests
 Route::get('/projects', [ProjectController::class, 'index']); // List of available projects
-Route::/*middleware('auth:sanctum')->*/post('/projects', [ProjectController::class, 'store']); // Create a project
-Route::middleware(['auth:sanctum', 'checkEntrepriseRole'||'checkAdminRole', 'checkPermission:canCreate'])->put('/projects/{id}', [ProjectController::class, 'update']); // Update a project
-Route::middleware('auth:sanctum')->delete('/projects/{id}', [ProjectController::class, 'destroy']); // Delete a project
+Route::middleware(['auth:sanctum', 'checkAdminRole', 'checkPermission:canCreate'])->post('/projects', [ProjectController::class, 'store']); // Create a project
+Route::middleware(['auth:sanctum', 'checkAdminRole', 'checkPermission:canUpdate'])->put('/projects/{id}', [ProjectController::class, 'update']); // Update a project
+Route::middleware(['auth:sanctum', 'checkAdminRole', 'checkPermission:canDelete'])->delete('/projects/{id}', [ProjectController::class, 'destroy']); // Delete a project
 
 /*
 Route::middleware('auth:sanctum')->get('/secure-data', function (Request $request) {

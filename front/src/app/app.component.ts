@@ -5,10 +5,11 @@ import {MatSidenav,MatSidenavContent, MatSidenavContainer} from '@angular/materi
 import {MatListItem, MatNavList} from '@angular/material/list';
 import {LoginModalComponent} from './login-modal/login-modal.component';
 import {MatDialog} from '@angular/material/dialog';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent, MatSidenavContainer,MatSidenavContent, MatNavList, RouterLink, MatSidenav, MatListItem],
+  imports: [RouterOutlet, NavbarComponent, MatSidenavContainer, MatSidenavContent, MatNavList, RouterLink, MatSidenav, MatListItem, MatButton],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -25,6 +26,7 @@ export class AppComponent {
         console.log(`Dialog result: ${result}`);
       }
      //TODO: login logic to be determined here
+
     });
   }
 }
