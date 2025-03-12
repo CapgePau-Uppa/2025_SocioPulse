@@ -16,10 +16,12 @@
       <p><strong>Ville :</strong> {{ project.city }}</p>
       <p><strong>Département :</strong> {{ project.department }}</p>
       <p><strong>Utilisateur :</strong> {{ project.user_id }}</p>
+      <button mat-raised-button (click)="goToProjectReport()">Consulter les documents</button>
     </mat-card-content>
 
     <mat-card-actions>
       <button mat-raised-button color="primary">Modifier</button>
+
       <button mat-raised-button color="warn" (click)="deleteProject()">Supprimer</button>
     </mat-card-actions>
   </mat-card>

@@ -41,4 +41,7 @@ export class ProjectDetailPageComponent implements OnInit {
         });
     }
   }
+  goToProjectReport(): void {
+    this.router.navigate(['/project-repport-page']);
+  }
 }
