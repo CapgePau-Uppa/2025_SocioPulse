@@ -1,21 +1,16 @@
-import {Component, inject, Input} from '@angular/core';
-import {RouterLink} from '@angular/router';
-import {MatToolbar} from '@angular/material/toolbar';
-import {MatAnchor, MatButton, MatIconButton} from '@angular/material/button';
-import {MatSidenav} from '@angular/material/sidenav';
-import {MatIcon} from '@angular/material/icon';
-import {HttpClient} from '@angular/common/http';
-import {MatDialog} from '@angular/material/dialog';
-import {LoginModalComponent} from '../login-modal/login-modal.component';
+import { Component, inject, Input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { MatToolbar } from '@angular/material/toolbar';
+import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
+import { MatSidenav } from '@angular/material/sidenav';
+import { MatIcon } from '@angular/material/icon';
+import { HttpClient } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
+import { LoginModalComponent } from '../login-modal/login-modal.component';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-/*
-interface AuthResponse {
-  token: string;
-  name: string;
-  user_id: string;
-}*/
+
 @Component({
     selector: 'app-navbar',
     imports: [
@@ -30,69 +25,95 @@ interface AuthResponse {
     styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
-
     isLoggedIn: boolean = false;
     userName: string | null = null;
     userRole: string | null = null;
+    canCreate: boolean = false; // Property for checking permissions
 
     private http: HttpClient = inject(HttpClient);
+    
     constructor(private dialog: MatDialog, private authService: AuthService, private router: Router) {}
 
     ngOnInit(): void {
-        const userId = sessionStorage.getItem('user_id');
-        if (userId) {
-            this.isLoggedIn = true;
-            this.userName = sessionStorage.getItem('username'); // Assurez-vous que le nom de l'utilisateur est stocké dans sessionStorage
-        }
-        this.userRole = sessionStorage.getItem('role');
+        this.loadUserData();
     }
 
-    openDialog(): void {
-    const dialogRef = this.dialog.open(LoginModalComponent, {
-        width: '400px'
-    });
+    /**
+     * Loads user information and permissions dynamically from sessionStorage
+     */
+    loadUserData(): void {
+        const userId = sessionStorage.getItem('user_id');
+        
+        // Si l'utilisateur est connecté (données en sessionStorage)
+        if (userId) {
+            this.isLoggedIn = true;
+            this.userName = sessionStorage.getItem('username');
+            this.userRole = sessionStorage.getItem('role');
+            this.canCreate = sessionStorage.getItem('canCreate') === 'true'; // On vérifie les permissions
 
-        dialogRef.afterClosed().pipe().subscribe(async result => {
-        if (result) {
-            console.log('Données du formulaire:', result);
-            try {
-            const response = await this.authService.login(result.email, result.password);
-              sessionStorage.setItem('auth_token', response.token);
-              sessionStorage.setItem('user_id', response.user.id);
-              sessionStorage.setItem('username', response.user.name);
-              sessionStorage.setItem('email', response.user.email);
-              sessionStorage.setItem('role', response.user.role);
-              console.log('email:', sessionStorage.getItem('email'));
-              console.log('role:', sessionStorage.getItem('role'));
-              console.log('Connexion réussie affichage données front:', response);
-              const userId = sessionStorage.getItem('user_id');
-              this.userRole = sessionStorage.getItem('role');
-              console.log('Nom de l\'utilisateur:', userId);
-              if (userId) {
-                this.isLoggedIn = true;
-                this.userName = sessionStorage.getItem('username'); // Assurez-vous que le nom de l'utilisateur est stocké dans sessionStorage
-                console.log('Nom de l\'utilisateur:', this.userName);
-            }
-            this.router.navigate(['/']); // Redirection après connexion
-            } catch (error) {
-            console.error('Erreur de connexion', error);
-            }
         } else {
-                console.log('La dialog a été fermée sans soumission.');
+            // Si l'utilisateur n'est pas connecté
+            this.isLoggedIn = false;
+            this.userName = null;
+            this.userRole = null;
+            this.canCreate = false;
+        }
+    }
+
+    /**
+     * Opens the login dialog and handles authentication
+     */
+    openDialog(): void {
+        const dialogRef = this.dialog.open(LoginModalComponent, { width: '400px' });
+
+        dialogRef.afterClosed().subscribe(async result => {
+            if (result) {
+                try {
+                    const response = await this.authService.login(result.email, result.password);
+                    
+                    console.log('User response:', response.user); // Debugging
+
+                    sessionStorage.setItem('auth_token', response.token);
+                    sessionStorage.setItem('user_id', response.user.id);
+                    sessionStorage.setItem('username', response.user.name);
+                    sessionStorage.setItem('email', response.user.email);
+                    sessionStorage.setItem('role', response.user.role);
+
+                    // Stocker les permissions
+                    sessionStorage.setItem('canCreate', response.user.permissions.canCreate.toString());
+
+                    // Mise à jour de l'état interne
+                    this.isLoggedIn = true;
+                    this.userName = response.user.name;
+                    this.userRole = response.user.role;
+                    this.canCreate = response.user.permissions.canCreate;
+
+                    this.router.navigate(['/']); // Redirection après connexion
+                } catch (error) {
+                    console.error('Login error', error);
+                }
             }
         });
     }
 
+    /**
+     * Logs out the user and clears session data
+     */
     logout(): void {
         sessionStorage.clear();
         this.isLoggedIn = false;
         this.userName = null;
         this.userRole = null;
+        this.canCreate = false;
         this.router.navigate(['/']);
     }
 
     @Input() sidenav!: MatSidenav;
-        toggleSidenav() {
-            this.sidenav.toggle();
+    
+    /**
+     * Toggles the sidenav menu
+     */
+    toggleSidenav(): void {
+        this.sidenav.toggle();
     }
 }

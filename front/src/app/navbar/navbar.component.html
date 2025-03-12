@@ -1,24 +1,34 @@
 <mat-toolbar color="primary">
-  <p><button mat-button (click)="toggleSidenav()">
-    <mat-icon>menu</mat-icon></button>
+  <p>
+    <button mat-button (click)="toggleSidenav()">
+      <mat-icon>menu</mat-icon>
+    </button>
   </p>
+  
   <span routerLink="/"><a mat-button>SocioPulse</a></span>
   <span class="spacer"></span>
-  <div class="pc-layout" >
-    <ng-container *ngIf="userRole === 'administrator'">
+  
+  <div class="pc-layout">
+    
+    @if (userRole === 'administrator') {
       <a routerLink="/admin-dashboard" mat-button>Gestion des rôles</a>
-    </ng-container>
+    }
+    
     <a routerLink="/projects-list-page" mat-button><b>Liste des Projets</b></a>
-    <a *ngIf="userRole === 'administrator' || userRole === 'entreprise'" routerLink="/project-maker-page" mat-button><b>Créér un Projet</b></a>
+
+    @if (userRole === 'administrator' || canCreate) {
+      <a routerLink="/project-maker-page" mat-button><b>Créer un Projet</b></a>
+    }
+
     <a routerLink="/about-page" mat-button>FAQ</a>
-    @if(!isLoggedIn){
+
+    @if (!isLoggedIn) {
       <a (click)="openDialog()" mat-button>Connexion</a>
       <a routerLink="/register-page" mat-button>Inscription</a>
-    }
-    @else{
+    } @else {
       <a routerLink="/profile-page" mat-button>{{ userName }}</a>
       <a (click)="logout()" mat-button>Déconnexion</a>
     }
+    
   </div>
 </mat-toolbar>
-
