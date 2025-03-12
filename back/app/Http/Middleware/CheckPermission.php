@@ -27,7 +27,7 @@ class CheckPermission
         $role = $user->role;
 
         // Vérifier si le rôle possède un attribut correspondant à la permission et si la permission est activée (true)
-        if (isset($role->$permission) && $role->$permission) {
+        if (isset($role->$permission) && ($role->$permission)) {
             return $next($request);
         }
 

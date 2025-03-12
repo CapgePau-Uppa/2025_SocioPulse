@@ -12,6 +12,8 @@ import * as L from 'leaflet';
 import { CommonModule } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+import { HttpHeaders } from '@angular/common/http';
+
 @Component({
   selector: 'app-project-maker-page',
   templateUrl: './project-maker-page.component.html',
@@ -115,12 +117,18 @@ export class ProjectMakerPageComponent implements OnInit {
   }
 
   onSubmit(form: any): void {
+    const token = sessionStorage.getItem('auth_token');
+    console.log('Token:', token);
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,  // Ajouter le token dans l'en-tête
+      'Content-Type': 'application/json'
+    });
     console.log("entreprises", this.entreprises);
     if (form.valid) {
       this.project.entreprise_id = this.project.entreprise_id.toString();
       console.log('Project data:', this.project);
 
-      this.http.post('http://localhost:8000/api/projects', this.project).subscribe(
+      this.http.post('http://localhost:8000/api/projects', this.project, { headers }).subscribe(
         response => console.log(response),
         error => console.log(error));
       this.router.navigate(['/']);
