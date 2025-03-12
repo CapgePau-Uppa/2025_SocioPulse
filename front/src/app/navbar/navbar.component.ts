@@ -66,6 +66,7 @@ export class NavbarComponent {
               console.log('role:', sessionStorage.getItem('role'));
               console.log('Connexion réussie affichage données front:', response);
               const userId = sessionStorage.getItem('user_id');
+              this.userRole = sessionStorage.getItem('role');
               console.log('Nom de l\'utilisateur:', userId);
               if (userId) {
                 this.isLoggedIn = true;
@@ -86,6 +87,7 @@ export class NavbarComponent {
         sessionStorage.clear();
         this.isLoggedIn = false;
         this.userName = null;
+        this.userRole = null;
         this.router.navigate(['/']);
     }
 
