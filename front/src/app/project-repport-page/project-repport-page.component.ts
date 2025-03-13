@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http'; // Ajout pour gérer l'upload
 import { AddReportModalComponent } from '../add-report-modal/add-report-modal.component';
 import { ProjectsService } from '../services/projects.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-project-repport-page',
@@ -24,7 +25,7 @@ export class ProjectRepportPageComponent implements OnInit {
   reports = ['Rapport 1', 'Rapport 2', 'Rapport 3'];
   name: string = '';
 
-  constructor(private route: ActivatedRoute, private projectsService: ProjectsService, private dialog: MatDialog, private router: Router, private http: HttpClient) {}
+  constructor(private toastr: ToastrService,private route: ActivatedRoute, private projectsService: ProjectsService, private dialog: MatDialog, private router: Router, private http: HttpClient) {}
 
   ngOnInit(): void {
     const projectId = +(this.route.snapshot.paramMap.get('id') ?? 0);
@@ -61,6 +62,7 @@ export class ProjectRepportPageComponent implements OnInit {
       (response) => {
         console.log("Upload réussi :", response);
         this.reports.push(`${name} (${response.path})`);
+        this.toastr.success('Rapport ajouté avec succès !');
       },
       (error) => {
         console.error("Erreur lors de l'upload :", error);
