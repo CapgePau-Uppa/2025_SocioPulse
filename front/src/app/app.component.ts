@@ -6,10 +6,11 @@ import {MatListItem, MatNavList} from '@angular/material/list';
 import {LoginModalComponent} from './login-modal/login-modal.component';
 import {MatDialog} from '@angular/material/dialog';
 import {MatButton} from '@angular/material/button';
+import { MatCard } from '@angular/material/card';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent, MatSidenavContainer, MatSidenavContent, MatNavList, RouterLink, MatSidenav, MatListItem, MatButton],
+  imports: [RouterOutlet, NavbarComponent, MatSidenavContainer, MatSidenavContent, MatNavList, RouterLink, MatSidenav, MatListItem, MatButton, MatCard],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

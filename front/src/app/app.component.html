@@ -1,9 +1,8 @@
-<div class="navbar">
-  <app-navbar [sidenav]="sidenav"> </app-navbar>
-</div>
-
 <div class="wall">
+  <app-navbar [sidenav]="sidenav"> </app-navbar>
+
   <mat-sidenav-container class = "content">
+
     <mat-sidenav class="side-panel" #sidenav mode="side" [(opened)]="opened">
       <mat-nav-list>
         <br>
@@ -14,16 +13,19 @@
         <a routerLink="/register-page" mat-list-item>Inscription</a>
       </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content >
+  </mat-sidenav-container>
+
+    <mat-card class="card">
       <div class = "content-inside">
         <router-outlet/>
       </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+    </mat-card>
+
 </div>
 
+<!--
 <div class="footer">
   <a routerLink="/faq-page" >FAQ</a>
   <a routerLink="/about-page" >Qui Sommes Nous</a>
 </div>
-
+-->
