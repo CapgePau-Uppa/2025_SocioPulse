@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { AuthService } from '../services/auth.service';
 import { HttpHeaders } from '@angular/common/http';
+import {ToastrService} from 'ngx-toastr';
 
 interface Permission {
 	name: string;
@@ -23,7 +24,7 @@ interface Role {
 
 @Component({
     selector: 'app-admin-dashboard',
-    
+
     templateUrl: './admin-dashboard.component.html',
     styleUrls: ['./admin-dashboard.component.scss'],
     imports: [
@@ -45,7 +46,7 @@ export class AdminDashboardComponent implements OnInit {
     selectedRole: any = null;
     selectedUser: any = null;
 
-    constructor(private adminService: AdminService) {}
+    constructor(private toastr:ToastrService,private adminService: AdminService) {}
 
     ngOnInit() {
         this.loadRoles();
@@ -62,15 +63,17 @@ export class AdminDashboardComponent implements OnInit {
 					this.selectedRole = this.roles[0];  // Select the first role
 					this.loadPermissions(this.selectedRole.id);  // Load permissions for the selected role
 				} else {
-					console.error("No roles found!");
+					console.error("Rôle non trouvé!");
+          this.toastr.error("No roles found!");
 				}
 			},
 			(error) => {
+        this.toastr.error("Erreur pour acquérir les rôles");
 				console.error('Error fetching roles:', error);
 			}
 		);
 	}
-	
+
 	loadUsers(): void {
 		this.adminService.getUsers().subscribe(
 			(data) => {
@@ -79,6 +82,7 @@ export class AdminDashboardComponent implements OnInit {
 			},
 			(error) => {
 				console.error('Error fetching users:', error);
+        this.toastr.error("Erreur pour acquérir les utilisateurs");
 			}
 		);
 	}
@@ -87,10 +91,11 @@ export class AdminDashboardComponent implements OnInit {
 		this.selectedRole = role;
 		this.loadPermissions(role.id);
 	}
-	
+
 	loadPermissions(roleId: number): void {
 		if (!roleId) {
 			console.error('No valid roleId found');
+      this.toastr.error("RoleId non trouvé");
 			return;
 		}
 
@@ -98,12 +103,12 @@ export class AdminDashboardComponent implements OnInit {
 			(data) => {
 				if (data && data.permissions && typeof data.permissions === 'object') {
 					this.permissions = Object.keys(data.permissions).map(key => ({
-						name: key, 
+						name: key,
 						value: !!data.permissions[key] // Convert to boolean
 					}));
 
 					// Assign these permissions to the selected role
-					this.selectedRole.permissions = [...this.permissions];  
+					this.selectedRole.permissions = [...this.permissions];
 				} else {
 					this.permissions = [];
 					this.selectedRole.permissions = [];
@@ -116,7 +121,7 @@ export class AdminDashboardComponent implements OnInit {
 			}
 		);
 	}
-	
+
 	updateRolePermissions(roleId: number, selectedPermissions: number[]): void {
 		this.adminService.updateRolePermissions(roleId, selectedPermissions).subscribe(
 		  () => {
@@ -147,7 +152,7 @@ export class AdminDashboardComponent implements OnInit {
 
 	togglePermission(role: any, perm: any, isChecked: boolean) {
 		if (!role || !perm) return;
-	
+
 		// Ensure the role has a permissions array
 		if (!role.permissions) {
 			role.permissions = [];
@@ -168,6 +173,7 @@ export class AdminDashboardComponent implements OnInit {
 	deleteUser(userId: number) {
 		this.adminService.deleteUser(userId).subscribe(() => {
 			console.log('User deleted');
+      this.toastr.info("Utilisateur supprimé");
 			this.users = this.users.filter(u => u.id !== userId);
 		});
 	}
@@ -178,6 +184,7 @@ export class AdminDashboardComponent implements OnInit {
 
 	updatePermissions() {
 		if (!this.selectedRole || !this.selectedRole.permissions) {
+      this.toastr.error("Aucun rôle ou permission trouvé");
 			console.error("No role or permissions found");
 			return;
 		}
@@ -194,9 +201,11 @@ export class AdminDashboardComponent implements OnInit {
 		this.adminService.updateRolePermissions(this.selectedRole.id, permissionsArray).subscribe(
 			() => {
 				console.log('Permissions successfully updated');
+        this.toastr.success("Permissions mises à jour");
 			},
 			(error) => {
 				console.error('Error updating permissions:', error);
+        this.toastr.error("Erreur de mise à jour des permissions");
 			}
 		);
 	}

@@ -110,6 +110,7 @@ export class NavbarComponent {
         this.userRole = null;
         this.canCreate = false;
         this.router.navigate(['/']);
+        this.toastr.success("Déconnexion réussie");
     }
 
     @Input() sidenav!: MatSidenav;

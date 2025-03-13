@@ -11,6 +11,7 @@ import {Router} from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { firstValueFrom } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-register-page',
@@ -37,7 +38,7 @@ export class RegisterPageComponent {
 		confirmPassword: ''
 	};
 
-	constructor(private authService: AuthService, private router: Router) {}
+	constructor(private toastr: ToastrService,private authService: AuthService, private router: Router) {}
 
 	async register(): Promise<void> {
 		try {
@@ -48,9 +49,11 @@ export class RegisterPageComponent {
 		  console.log('Inscription réussie:', response);
 		  this.authService.setToken(response.token);
 		  this.router.navigate(['/']); // Redirige après inscription
+      this.toastr.success('Inscription réussie');
 		}
     catch (error) {
 		  console.error('Erreur d\'inscription', error);
+      this.toastr.error('Erreur d\'inscription');
 		}
 	}
 }

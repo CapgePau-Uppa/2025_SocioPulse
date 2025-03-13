@@ -3,9 +3,21 @@
   background: transparent;
   display: flex;
   position: fixed;
-}.mat-button{
-   color: white;
- }
+}
+
+
+a {
+  color: white;
+  border-radius: 20px;
+  background-color: rgba(15, 21, 76, 0.6); // Lighter version of #0f154c
+  margin: 0 4px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgba(15, 21, 76, 0.9);
+    transform: translateY(-2px);
+  }
+}
 .spacer{
   flex: 1 1 auto;
 }

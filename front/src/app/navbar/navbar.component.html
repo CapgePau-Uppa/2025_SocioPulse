@@ -1,19 +1,19 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="mat-toolbar">
   <p>
     <button mat-button (click)="toggleSidenav()">
       <mat-icon>menu</mat-icon>
     </button>
   </p>
-  
+
   <span routerLink="/"><a mat-button>SocioPulse</a></span>
   <span class="spacer"></span>
-  
+
   <div class="pc-layout">
-    
+
     @if (userRole === 'administrator') {
       <a routerLink="/admin-dashboard" mat-button>Gestion des rôles</a>
     }
-    
+
     <a routerLink="/projects-list-page" mat-button><b>Liste des Projets</b></a>
 
     @if (userRole === 'administrator' || canCreate) {
@@ -29,6 +29,6 @@
       <a routerLink="/profile-page" mat-button>{{ userName }}</a>
       <a (click)="logout()" mat-button>Déconnexion</a>
     }
-    
+
   </div>
 </mat-toolbar>
