@@ -1,0 +1,15 @@
+<div class="container">
+    <h2>Demandes d'accès aux fichiers</h2>
+  
+    <div *ngFor="let request of requests">
+      <p>Utilisateur {{ request.user_id }} demande l'accès au fichier PDF</p>
+    
+      <div *ngIf="isAuthorizedToManageRequests()">
+        <button mat-raised-button color="primary" (click)="approveRequest(request)">Accepter</button>
+        <button mat-raised-button color="warn" (click)="rejectRequest(request)">Refuser</button>
+      </div>
+    </div>    
+  
+    <p *ngIf="requests.length === 0">Aucune demande en attente.</p>
+  </div>
+  

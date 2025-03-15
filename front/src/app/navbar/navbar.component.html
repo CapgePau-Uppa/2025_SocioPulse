@@ -11,7 +11,7 @@
   <div class="pc-layout">
 
     @if (userRole === 'administrator') {
-      <a routerLink="/admin-dashboard" mat-button>Gestion des rôles</a>
+      <a routerLink="/admin-dashboard" mat-button><b>Gestion des rôles</b></a>
     }
 
     <a routerLink="/projects-list-page" mat-button><b>Liste des Projets</b></a>
@@ -20,7 +20,11 @@
       <a routerLink="/project-maker-page" mat-button><b>Créer un Projet</b></a>
     }
 
-    <a routerLink="/about-page" mat-button>FAQ</a>
+    @if (userRole === 'administrator' || userRole === 'entreprise') {
+      <a routerLink="/access-requests" mat-button><b>Demandes d'accès</b></a>
+    }
+    
+    <a>||</a>
 
     @if (!isLoggedIn) {
       <a (click)="openDialog()" mat-button>Connexion</a>

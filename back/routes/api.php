@@ -1,23 +1,14 @@
 <?php
 
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\RoleController;
-use App\Http\Middleware\CheckPermission;
-use App\Http\Middleware\CheckEntrepriseRole;
-use App\Http\Middleware\CheckCitoyenRole;
-use App\Http\Middleware\CheckCommunauteRole;
-use App\Http\Middleware\CheckAdminRole;
 use App\Http\Controllers\UpgradeRequestController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EntrepriseController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\PdfAccessRequestController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
@@ -50,12 +41,7 @@ Route::middleware(['auth:sanctum', 'checkEntrepriseRole', 'checkPermission:canDe
 Route::middleware('auth:sanctum')->get('/test-auth', function (Request $request) {
     return response()->json(['message' => 'Connexion réussie avec authentification Sanctum!']);
 });
-/*
-// Route protégée par Sanctum  et permissions administrator
-Route::middleware(['auth:sanctum', 'permission:manage_users'])->get('/test-middleware', function () {
-    return response()->json(['message' => 'Accès autorisé au middleware avec permissions admin'], 200);
-});
-*/
+
 Route::middleware(['permission:manage_users'])->get('/test-permission', function () {
     return response()->json(['message' => 'Accès autorisé']);
 });
@@ -69,11 +55,27 @@ Route::middleware(['auth:sanctum', 'checkAdminRole'])->group(function () {
 });
 
 
-//Path for the project requests
+//Path for the project management requests
 Route::get('/projects', [ProjectController::class, 'index']); // List of available projects
 Route::middleware(['auth:sanctum', 'checkPermission:canCreate'])->post('/projects', [ProjectController::class, 'store']); // Create a project
 Route::middleware(['auth:sanctum', 'checkAdminRole', 'checkPermission:canUpdate'])->put('/projects/{id}', [ProjectController::class, 'update']); // Update a project
 Route::middleware(['auth:sanctum', 'checkAdminRole', 'checkPermission:canDelete'])->delete('/projects/{id}', [ProjectController::class, 'destroy']); // Delete a project
+
+
+//Path for the project access requests
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/projects/access-requests', [PdfAccessRequestController::class, 'getRequests']);
+    Route::post('/projects/{id}/access-requests', [PdfAccessRequestController::class, 'createRequest']);
+    Route::post('/projects/{id}/access-requests/{requestId}/approve', [PdfAccessRequestController::class, 'approveRequest']);
+    Route::post('/projects/{id}/access-requests/{requestId}/reject', [PdfAccessRequestController::class, 'rejectRequest']);
+});
+
+/*
+// Route protégée par Sanctum  et permissions administrator
+Route::middleware(['auth:sanctum', 'permission:manage_users'])->get('/test-middleware', function () {
+    return response()->json(['message' => 'Accès autorisé au middleware avec permissions admin'], 200);
+});
+*/
 
 /*
 Route::middleware('auth:sanctum')->get('/secure-data', function (Request $request) {

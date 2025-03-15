@@ -44,6 +44,10 @@ export class NavbarComponent {
         this.loadUserData();
     }
 
+    goToAccessRequests() {
+        this.router.navigate(['/access-requests']);
+    }
+
     /**
      * Loads user information and permissions dynamically from sessionStorage
      */

@@ -1,30 +1,35 @@
-
 <div class="container">
-  @if (project){
+  @if (project) {
+    <mat-card class="project-card">
+      <mat-card-header>
+        <mat-card-title>
+          <h2>{{ project.name }}</h2>
+        </mat-card-title>
+      </mat-card-header>
 
-  <mat-card class="project-card">
-    <mat-card-header>
-      <mat-card-title>
-        <h2>
-          {{ project.name }}
-        </h2>
-      </mat-card-title>
-    </mat-card-header>
+      <mat-card-content>
+        <p><strong>Description :</strong> {{ project.description }}</p>
+        <p><strong>Ville :</strong> {{ project.city }}</p>
+        <p><strong>Département :</strong> {{ project.department }}</p>
+        <p><strong>Utilisateur :</strong> {{ project.user_id }}</p>
 
-    <mat-card-content>
-      <p><strong>Description :</strong> {{ project.description }}</p>
-      <p><strong>Ville :</strong> {{ project.city }}</p>
-      <p><strong>Département :</strong> {{ project.department }}</p>
-      <p><strong>Utilisateur :</strong> {{ project.user_id }}</p>
-      <button mat-raised-button (click)="goToProjectReport()">Consulter les documents</button>
-    </mat-card-content>
+        <button mat-raised-button (click)="goToProjectReport()">Consulter les documents</button>
 
-    <mat-card-actions>
-      <button mat-raised-button color="primary">Modifier</button>
+        @if (requestStatus === 'none') {
+          <button mat-raised-button color="primary" (click)="requestAccess()">Demander l'accès</button>
+        }
+        @if (requestStatus === 'pending') {
+          <p>Demande en attente...</p>
+        }
+        @if (requestStatus === 'approved') {
+          <p>Accès accordé ! <a href="{{ project.pdf_url }}">Voir le PDF</a></p>
+        }
+      </mat-card-content>
 
-      <button mat-raised-button color="warn" (click)="deleteProject()">Supprimer</button>
-    </mat-card-actions>
-  </mat-card>
-}
+      <mat-card-actions>
+        <button mat-raised-button color="primary">Modifier</button>
+        <button mat-raised-button color="warn" (click)="deleteProject()">Supprimer</button>
+      </mat-card-actions>
+    </mat-card>
+  }
 </div>
-
