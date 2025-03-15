@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string('volet_relance')->nullable();
             $table->string('mesure')->nullable();
             $table->string('mesure_light')->nullable();
-            $table->date('mise_a_jour')->nullable();
             $table->string('filiere')->nullable();
             $table->integer('notation_general')->nullable();
             $table->integer('notation_commune')->nullable();

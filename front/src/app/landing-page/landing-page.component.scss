@@ -26,8 +26,8 @@
   box-shadow: 0 5px 50px rgba(0, 0, 0, 0.15);
   cursor: pointer;
   border: 2px solid midnightblue;
+  font-family: "Candara", sans-serif;
 }
-
 
 h1 {
   color: whitesmoke;
@@ -72,6 +72,7 @@ thead tr{
   background-color: midnightblue;
   color:#fff;
   text-align: left;
+
 }
 
 th, td{
@@ -80,6 +81,7 @@ th, td{
 
 tbody tr, td, th{
   border: 1px solid #ddd;
+
 }
 
 tbody tr:nth-child(even){

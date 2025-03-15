@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectsService } from '../services/projects.service';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import * as L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 @Component({
   selector: 'app-project-detail-page',
@@ -13,12 +15,31 @@ import { CommonModule } from '@angular/common';
   imports: [
     MatButtonModule,
     CommonModule,
+    MatButton,
     MatCardModule
   ],
 })
-export class ProjectDetailPageComponent implements OnInit {
+export class ProjectDetailPageComponent implements AfterViewInit {
   project: any;
   requestStatus: string = 'none';
+  private map!: L.Map;
+
+  private initMap(): void {
+    this.map = L.map('map', {
+      center: [ this.project.latitude, this.project.longitude],
+      zoom: 6
+    }); // Set initial coordinates and zoom
+
+    const tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      minZoom: 3,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(this.map);
+
+      L.marker([this.project.latitude, this.project.longitude]).addTo(this.map)
+        .bindPopup(this.project.name)
+        .openPopup();
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -27,16 +48,20 @@ export class ProjectDetailPageComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+
     const projectId = +(this.route.snapshot.paramMap.get('id') ?? 0);
     console.log('ID du projet :', projectId);
-
     this.projectsService.getProjects().subscribe(data => {
       this.project = data.find(project => project.id === projectId);
       if (this.project) {
         this.checkAccessRequest();
+        setTimeout(() => {
+          this.initMap();
+        }, 0);
       }
     });
+
   }
 
   deleteProject(): void {
@@ -62,6 +87,7 @@ export class ProjectDetailPageComponent implements OnInit {
     const token = sessionStorage.getItem('auth_token');
     const userId = sessionStorage.getItem('user_id');
     if (!token || !userId) return;
+    console.log('projet : ', this.project);
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
@@ -95,5 +121,9 @@ export class ProjectDetailPageComponent implements OnInit {
         console.error('Erreur lors de la demande', error);
         alert('Vous avez déjà envoyé une demande.');
       });
+  }
+
+  openDialog(): void {
+    alert('Fonctionnalité non implémentée');
   }
 }
