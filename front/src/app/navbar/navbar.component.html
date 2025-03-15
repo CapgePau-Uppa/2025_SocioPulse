@@ -23,7 +23,7 @@
     @if (userRole === 'administrator' || userRole === 'entreprise') {
       <a routerLink="/access-requests" mat-button><b>Demandes d'accès</b></a>
     }
-    
+
     <a>||</a>
 
     @if (!isLoggedIn) {
@@ -31,7 +31,7 @@
       <a routerLink="/register-page" mat-button>Inscription</a>
     } @else {
       <a routerLink="/profile-page" mat-button>{{ userName }}</a>
-      <a (click)="logout()" mat-button>Déconnexion</a>
+      <a (click)="logout()" class="logout" mat-button>Déconnexion</a>
     }
 
   </div>

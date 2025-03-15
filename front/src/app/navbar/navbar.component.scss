@@ -2,13 +2,22 @@
   font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
   background: transparent;
   display: flex;
+  background-color: rgba(13, 17, 56, 0.9);
+  border-radius: 45px; /* 15 */
+  overflow: hidden;
+  margin: 15px;
+  width: 97vw;
+  color: white;
   position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
 }
 
 
 a {
   color: white;
-  border-radius: 20px;
+  border-radius: 25px;
   background-color: rgba(15, 21, 76, 0.6); // Lighter version of #0f154c
   margin: 0 4px;
   transition: all 0.3s ease;
@@ -18,6 +27,10 @@ a {
     transform: translateY(-2px);
   }
 }
+.logout{
+  background-color: rgba(163, 17, 17, 0.938); // Lighter version of #0f154c
+}
+
 .spacer{
   flex: 1 1 auto;
 }
