@@ -19,3 +19,11 @@ table{
   border-radius: 30px;
   box-shadow: 0 5px 50px rgba(0, 0, 0, 0.15);
 }
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}

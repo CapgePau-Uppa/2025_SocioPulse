@@ -11,6 +11,7 @@ import {
   MatHeaderRowDef, MatRow, MatRowDef,
   MatTable
 } from '@angular/material/table';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-projects-list-page',
@@ -22,10 +23,13 @@ import {
 export class ProjectsListPageComponent implements OnInit {
   displayedColumns: string[] = ['position', 'name', 'description', 'city'];
   projects: any[] = [];
-  constructor(private projectService: ProjectsService) { }
+  constructor(private router:Router,private projectService: ProjectsService) { }
   ngOnInit(): void {
     this.projectService.getProjects().subscribe(data => {
       this.projects = data;
     });
+  }
+  navigateToProjectDetails(projectId: number): void {
+    this.router.navigate(['/project-detail-page', projectId]);
   }
 }
