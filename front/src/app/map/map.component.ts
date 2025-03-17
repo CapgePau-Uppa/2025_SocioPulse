@@ -1,7 +1,8 @@
-import { Component, AfterViewInit } from '@angular/core';
+import {Component, AfterViewInit, inject} from '@angular/core';
 import { ProjectsService } from '../services/projects.service';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import {ProjectUpdateService} from '../services/project-update-service.service';
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -29,8 +30,35 @@ export class MapComponent implements AfterViewInit {
         .openPopup();
     }
   }
-  constructor(private projectService: ProjectsService) { }
+  constructor(private projectUpdateService : ProjectUpdateService,
+              private projectService: ProjectsService) {
+    // Subscribe to project updates
+    this.projectUpdateService.projectUpdated$.subscribe(() => {
+     this.refreshProjects();
+    });
 
+  }
+  refreshProjects(): void {
+    this.projectService.getProjects().subscribe((data: any[]) => {
+      this.projects = data;
+      if (this.map) {
+        // Clear existing markers
+        this.map.eachLayer(layer => {
+          if (layer instanceof L.Marker) {
+            this.map.removeLayer(layer);
+          }
+        });
+        // Add markers for updated projects
+        for (let project of this.projects) {
+          if (project.latitude && project.longitude) {
+            L.marker([project.latitude, project.longitude]).addTo(this.map)
+              .bindPopup(project.name)
+              .openPopup();
+          }
+        }
+      }
+    });
+  }
   ngAfterViewInit(): void {
     this.projectService.getProjects().subscribe((data: any[]) => {
       this.projects = data;

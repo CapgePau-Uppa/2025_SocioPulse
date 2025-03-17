@@ -6,5 +6,10 @@ import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideToastr(),provideHttpClient(),provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideAnimationsAsync()]
+  providers: [
+    provideToastr({
+    timeOut: 10000,
+    positionClass: 'toast-bottom-right',
+    preventDuplicates: true,
+  }),provideHttpClient(),provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideAnimationsAsync()]
 };

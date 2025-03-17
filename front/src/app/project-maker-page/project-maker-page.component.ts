@@ -14,6 +14,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { HttpHeaders } from '@angular/common/http';
 import 'leaflet/dist/leaflet.css';
+import {ProjectsService} from '../services/projects.service';
+import {ProjectUpdateService} from '../services/project-update-service.service';
 
 @Component({
   selector: 'app-project-maker-page',
@@ -35,6 +37,7 @@ import 'leaflet/dist/leaflet.css';
 export class ProjectMakerPageComponent implements OnInit {
   private http: HttpClient = inject(HttpClient);
   private router: Router = inject(Router);
+  private projectUpdateService: ProjectUpdateService = inject(ProjectUpdateService);
   private map!: L.Map;
   private marker!: L.Marker;
   project = {
@@ -129,10 +132,13 @@ export class ProjectMakerPageComponent implements OnInit {
       this.project.entreprise_id = this.project.entreprise_id.toString();
       console.log('Project data:', this.project);
 
+
       this.http.post('http://localhost:8000/api/projects', this.project, { headers }).subscribe(
-        response => console.log(response),
-        error => console.log(error));
+      response => console.log(response),
+      error => console.log(error));
       this.router.navigate(['/']);
+      //notify the map
+      this.projectUpdateService.notifyProjectUpdate(); // Notify project update
     }
   }
 }

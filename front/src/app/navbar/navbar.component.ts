@@ -91,9 +91,8 @@ export class NavbarComponent {
                     this.userName = response.user.name;
                     this.userRole = response.user.role;
                     this.canCreate = sessionStorage.getItem('canCreate') === '1';
-
                     this.toastr.success("Connexion réussie!");
-                    this.router.navigate(['/']);
+                    this.router.navigate(['/'])
                 } catch (error) {
                     this.toastr.error('Erreur de connexion');
                     console.error('Login error', error);
