@@ -51,14 +51,14 @@ export class ProjectDetailPageComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     const projectId = +(this.route.snapshot.paramMap.get('id') ?? 0);
-    
+
     this.projectsService.getProjects().subscribe(data => {
       this.project = data.find(project => project.id === projectId);
-      
+
       if (this.project) {
         this.checkUserAccess();  // Vérifier si l'utilisateur peut accéder aux documents
         this.checkAccessRequest(); // Vérifier s'il y a une demande en attente
-        
+
         setTimeout(() => {
           this.initMap();
         }, 0);
@@ -74,9 +74,10 @@ export class ProjectDetailPageComponent implements AfterViewInit {
   public checkUserAccess(): void {
     const userId = sessionStorage.getItem('user_id');
     const userEntreprise_id = Number(sessionStorage.getItem('entreprise_id'));
-    const userRole = sessionStorage.getItem('user_role');
+    const userRole = sessionStorage.getItem('role');
 
-    this.canAccess = (userId !== null && this.project.entreprise_id === userEntreprise_id) || userRole === 'administrator';
+    //TODO add condition for communaute
+    this.canAccess = ((userId !== null && this.project.entreprise_id === userEntreprise_id) || (userRole === 'administrator'));
 
     console.log('project.company_id ?:', this.project.entreprise_id);
     console.log('entreprise_id:', userEntreprise_id);
@@ -86,7 +87,7 @@ export class ProjectDetailPageComponent implements AfterViewInit {
   deleteProject(): void {
     const projectId = this.project?.id;
     const token = sessionStorage.getItem('auth_token');
-    
+
     if (projectId && token) {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       this.http.delete(`http://localhost:8000/api/projects/${projectId}`, { headers })
