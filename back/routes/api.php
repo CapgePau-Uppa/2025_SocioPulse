@@ -65,6 +65,7 @@ Route::middleware(['auth:sanctum', 'checkAdminRole', 'checkPermission:canDelete'
 //Path for the project access requests
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/projects/access-requests', [PdfAccessRequestController::class, 'getRequests']);
+    Route::get('/projects/{id}/access-requests', [PdfAccessRequestController::class, 'index']);
     Route::post('/projects/{id}/access-requests', [PdfAccessRequestController::class, 'createRequest']);
     Route::post('/projects/{id}/access-requests/{requestId}/approve', [PdfAccessRequestController::class, 'approveRequest']);
     Route::post('/projects/{id}/access-requests/{requestId}/reject', [PdfAccessRequestController::class, 'rejectRequest']);

@@ -45,19 +45,38 @@ class PdfAccessRequestController extends Controller
     public function getRequests()
     {
         $user = Auth::user();
-
+        
         // Si l'utilisateur est administrateur, il voit toutes les demandes en attente
         if ($user->role->name === 'administrator') {
-            return response()->json(PdfAccessRequest::where('status', 'pending')->get());
+            $requests = PdfAccessRequest::with('project') // Charger les projets associés
+                ->where('status', 'pending')
+                ->get();
+            return response()->json($requests);
         }
-        // Sinon, il ne voit que les demandes pour ses propres projets
-        $projectsOwned = Project::where('entreprise_id', $user->entreprise_id)->pluck('id');
-        $requests = PdfAccessRequest::whereIn('project_id', $projectsOwned)
-            ->where('status', 'pending')
-            ->get();
+    
+        // Si l'utilisateur est d'une entreprise, il ne voit que les demandes des projets de son entreprise
+        if ($user->entreprise_id) {
+            $projectsOwned = Project::where('entreprise_id', $user->entreprise_id)->pluck('id');
+            $requests = PdfAccessRequest::with('project') // Charger les projets associés
+                ->whereIn('project_id', $projectsOwned)
+                ->where('status', 'pending')
+                ->get();
+            return response()->json($requests);
+        }
+    
+        // Par défaut, retourner un tableau vide si l'utilisateur n'est pas autorisé
+        return response()->json([]);
+    }
 
+    /**
+     * Récupérer une demande spécifique à un projet
+     */    
+    public function index($projectId)
+    {
+        $requests = PdfAccessRequest::where('project_id', $projectId)->get();
         return response()->json($requests);
     }
+        
 
     public function requestAccess($projectId)
     {
@@ -114,33 +133,33 @@ class PdfAccessRequestController extends Controller
     }
     
 
-/**
- * Rejeter une demande d'accès
- */
-public function rejectRequest($id, $requestId)
-{
-    $user = Auth::user();
+    /**
+     * Rejeter une demande d'accès
+     */
+    public function rejectRequest($id, $requestId)
+    {
+        $user = Auth::user();
 
-    // Vérifier si l'utilisateur est administrateur
-    if ($user->role->name === 'administrator') {
+        // Vérifier si l'utilisateur est administrateur
+        if ($user->role->name === 'administrator') {
+            $request = PdfAccessRequest::findOrFail($requestId);
+            $request->status = 'rejected';
+            $request->save();
+            return response()->json(['message' => 'Demande rejetée avec succès.']);
+        }
+
+        // Vérifier si l'utilisateur est propriétaire du projet
+        $project = Project::findOrFail($id);
+        if ($project->entreprise_id != $user->entreprise_id) {
+            return response()->json(['message' => 'Accès refusé : Vous ne pouvez rejeter que les demandes pour vos projets'], 403);
+        }
+
+        // Rejeter la demande
         $request = PdfAccessRequest::findOrFail($requestId);
         $request->status = 'rejected';
         $request->save();
+
         return response()->json(['message' => 'Demande rejetée avec succès.']);
     }
-
-    // Vérifier si l'utilisateur est propriétaire du projet
-    $project = Project::findOrFail($id);
-    if ($project->entreprise_id != $user->entreprise_id) {
-        return response()->json(['message' => 'Accès refusé : Vous ne pouvez rejeter que les demandes pour vos projets'], 403);
-    }
-
-    // Rejeter la demande
-    $request = PdfAccessRequest::findOrFail($requestId);
-    $request->status = 'rejected';
-    $request->save();
-
-    return response()->json(['message' => 'Demande rejetée avec succès.']);
-}
 
 }

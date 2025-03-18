@@ -102,29 +102,35 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
-            'role_id' => $adminRole->id
+            'role_id' => $adminRole->id,
+            'entreprise_id' => null
+            
         ]);
 
         $citoyen = User::create([
             'name' => 'Citoyen',
             'email' => 'citoyen@example.com',
             'password' => Hash::make('password'),
-            'role_id' => $citoyenRole->id
+            'role_id' => $citoyenRole->id,
+            'entreprise_id' => null
         ]);
-
+        
         $communaute = User::create([
             'name' => 'Communaute',
             'email' => 'communaute@example.com',
             'password' => Hash::make('password'),
-            'role_id' => $communauteRole->id
+            'role_id' => $communauteRole->id,
+            'entreprise_id' => null
         ]);
-
+        
         $entreprise = User::create([
             'name' => 'Entreprise',
             'email' => 'entreprise@example.com',
             'password' => Hash::make('password'),
-            'role_id' => $entrepriseRole->id
+            'role_id' => $entrepriseRole->id,
+            'entreprise_id' => 4
         ]);
+        
         
         echo "Les utilisateurs par défaut ont été créés avec succès !\n";
         $projects = [
@@ -135,8 +141,8 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Développement de nouvelles infrastructures énergétiques pour répondre aux besoins croissants.',
                 'latitude' => 48.892, 
                 'longitude' => 2.206,
-                'user_id' => 1,
-                'entreprise_id' => 1,
+                'user_id' => 4,
+                'entreprise_id' => 4,
                 'volet_relance' => 'Énergie et transition écologique',
                 'mesure' => 'Développement durable',
                 'mesure_light' => 'Énergie renouvelable',
@@ -155,8 +161,8 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Nouvelle unité de production pour la fabrication de composants électroniques avancés.',
                 'latitude' => 48.8566,
                 'longitude' => 2.3522,
-                'user_id' => 2,
-                'entreprise_id' => 2,
+                'user_id' => 4,
+                'entreprise_id' => 4,
                 'volet_relance' => 'Indépendance / Compétitivité',
                 'mesure' => 'Relocalisation industrielle',
                 'mesure_light' => 'Électronique',
@@ -176,7 +182,7 @@ class DatabaseSeeder extends Seeder
                 'latitude' => 48.9675,
                 'longitude' => 2.4393,
                 'user_id' => 4,
-                'entreprise_id' => 3,
+                'entreprise_id' => 4,
                 'volet_relance' => 'Innovation technologique',
                 'mesure' => 'Cloud hybride',
                 'mesure_light' => 'Technologies vertes',
@@ -216,8 +222,8 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Développement d’un nouvel avion éco-responsable.',
                 'latitude' => 44.843,
                 'longitude' => -0.701,
-                'user_id' => 1,
-                'entreprise_id' => 5,
+                'user_id' => 4,
+                'entreprise_id' => 4,
                 'volet_relance' => 'Innovation technologique',
                 'mesure' => 'Recherche & Développement',
                 'mesure_light' => 'Aéronautique',
@@ -236,8 +242,8 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Projet de modernisation des équipements industriels pour la fabrication de moteurs.',
                 'latitude' => 48.634,
                 'longitude' => 2.445,
-                'user_id' => 2,
-                'entreprise_id' => 2,
+                'user_id' => 4,
+                'entreprise_id' => 4,
                 'volet_relance' => 'Industrie 4.0',
                 'mesure' => 'Automatisation',
                 'mesure_light' => 'Innovation',
@@ -256,8 +262,8 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Déploiement d’un centre de données à faible impact environnemental.',
                 'latitude' => 48.8231,
                 'longitude' => 2.2711,
-                'user_id' => 3,
-                'entreprise_id' => 3,
+                'user_id' => 4,
+                'entreprise_id' => 4,
                 'volet_relance' => 'Transformation digitale',
                 'mesure' => 'Cloud souverain',
                 'mesure_light' => 'Numérique',
@@ -296,8 +302,8 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Construction d’un centre de recherche pour l’innovation aéronautique.',
                 'latitude' => 44.843,
                 'longitude' => -0.701,
-                'user_id' => 3,
-                'entreprise_id' => 5,
+                'user_id' => 4,
+                'entreprise_id' => 4,
                 'volet_relance' => 'Innovation technologique',
                 'mesure' => 'Recherche & Développement',
                 'mesure_light' => 'Aéronautique',
@@ -317,7 +323,7 @@ class DatabaseSeeder extends Seeder
                 'latitude' => 50.6292,
                 'longitude' => 3.0573,
                 'user_id' => 4,
-                'entreprise_id' => 1,
+                'entreprise_id' => 4,
                 'volet_relance' => 'Transition écologique',
                 'mesure' => 'Énergies renouvelables',
                 'mesure_light' => 'Décarbonation',

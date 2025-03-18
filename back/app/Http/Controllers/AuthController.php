@@ -35,6 +35,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'role' => $user->role->name, // Nom du rôle de l'utilisateur
+                'entreprise_id' => $user->entreprise_id,
                 'permissions' => [
                     'canDelete' => $user->role->canDelete,
                     'canCreate' => $user->role->canCreate,

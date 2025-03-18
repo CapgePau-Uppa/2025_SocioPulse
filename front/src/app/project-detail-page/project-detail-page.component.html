@@ -1,14 +1,10 @@
 <div class="container">
-
-  @if (project) {
+  @if(project) {
     <mat-card class="project-card">
-
       <mat-card-header>
-
         <mat-card-title>
           <a><strong>{{ project.name }}</strong></a>
         </mat-card-title>
-
         <mat-card-actions class="company_actions">
           <a mat-raised-button class="update">Modifier</a>
           <a mat-raised-button class="close">Cloturer</a>
@@ -38,24 +34,32 @@
         <mat-card-content class="status">
           <p><strong>Utilisateur :</strong> {{ project.user_id }}</p>
           <p><strong>Entreprise :</strong> {{ project.company_id }}</p>
-
           <p><strong>Status :</strong> {{ project.status }}</p>
           <p><strong>Date de creation :</strong> {{ project.created_at }}</p>
           <p><strong>Date de modification :</strong> {{ project.updated_at }}</p>
 
-          <button mat-raised-button color="primary" (click)="goToProjectReport()">Consulter les documents</button>
-
-          @if (requestStatus === 'none') {
-            <button mat-raised-button color="access" (click)="requestAccess()">Demander l'accès</button>
+          <!-- Bouton pour consulter les documents si accès autorisé -->
+          @if(canAccess) {
+            <button mat-raised-button color="primary" (click)="goToProjectReport()">Consulter les documents</button>
           }
-          @if (requestStatus === 'pending') {
+
+          <!-- Affichage en fonction du statut de la demande -->
+          @if(!canAccess && requestStatus === 'none') {
+            <button mat-raised-button color="primary" (click)="requestAccess()">Demander l'accès</button>
+          }
+
+          @if(requestStatus === 'pending') {
             <p>Demande en attente...</p>
           }
-          @if (requestStatus === 'approved') {
-            <p>Accès accordé ! <a href="{{ project.pdf_url }}">Voir le PDF</a></p>
+
+          @if(requestStatus === 'rejected') {
+            <p>Accès refusé !</p>
+          }
+
+          @if(requestStatus === 'approved') {
+            <p>Accès accordé !</p>
           }
         </mat-card-content>
-
       </mat-card-content>
     </mat-card>
   }

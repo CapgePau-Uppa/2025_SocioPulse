@@ -43,5 +43,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class); // Un utilisateur a un seul rôle
     }
-
+    
+    public function entreprise()
+    {
+        return $this->belongsTo(Entreprise::class);
+    }
 }

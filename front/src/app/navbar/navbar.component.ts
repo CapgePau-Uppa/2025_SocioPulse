@@ -85,6 +85,7 @@ export class NavbarComponent {
                     sessionStorage.setItem('username', response.user.name);
                     sessionStorage.setItem('email', response.user.email);
                     sessionStorage.setItem('role', response.user.role);
+                    sessionStorage.setItem('entreprise_id', response.user.entreprise_id);
                     sessionStorage.setItem('canCreate', response.user.permissions.canCreate.toString());
                     console.log('Session storage:', sessionStorage); // Debugging
                     this.isLoggedIn = true;

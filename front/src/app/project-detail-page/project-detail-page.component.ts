@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectsService } from '../services/projects.service';
 import { MatButton, MatButtonModule } from '@angular/material/button';
@@ -22,23 +22,24 @@ import 'leaflet/dist/leaflet.css';
 export class ProjectDetailPageComponent implements AfterViewInit {
   project: any;
   requestStatus: string = 'none';
+  canAccess: boolean = false; // Stocke le résultat du test d'accès
   private map!: L.Map;
 
   private initMap(): void {
     this.map = L.map('map', {
-      center: [ this.project.latitude, this.project.longitude],
+      center: [this.project.latitude, this.project.longitude],
       zoom: 6
-    }); // Set initial coordinates and zoom
+    });
 
-    const tile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
       minZoom: 3,
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
 
-      L.marker([this.project.latitude, this.project.longitude]).addTo(this.map)
-        .bindPopup(this.project.name)
-        .openPopup();
+    L.marker([this.project.latitude, this.project.longitude]).addTo(this.map)
+      .bindPopup(this.project.name)
+      .openPopup();
   }
 
   constructor(
@@ -49,24 +50,43 @@ export class ProjectDetailPageComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-
     const projectId = +(this.route.snapshot.paramMap.get('id') ?? 0);
-    console.log('ID du projet :', projectId);
+    
     this.projectsService.getProjects().subscribe(data => {
       this.project = data.find(project => project.id === projectId);
+      
       if (this.project) {
-        this.checkAccessRequest();
+        this.checkUserAccess();  // Vérifier si l'utilisateur peut accéder aux documents
+        this.checkAccessRequest(); // Vérifier s'il y a une demande en attente
+        
         setTimeout(() => {
           this.initMap();
         }, 0);
+      } else {
+        console.error('Projet non trouvé pour l\'ID :', projectId);
       }
+    }, error => {
+      console.error('Erreur lors de la récupération des projets', error);
     });
+  }
 
+  /** Vérifie si l'utilisateur peut accéder aux documents */
+  public checkUserAccess(): void {
+    const userId = sessionStorage.getItem('user_id');
+    const userEntreprise_id = Number(sessionStorage.getItem('entreprise_id'));
+    const userRole = sessionStorage.getItem('user_role');
+
+    this.canAccess = (userId !== null && this.project.entreprise_id === userEntreprise_id) || userRole === 'administrator';
+
+    console.log('project.company_id ?:', this.project.entreprise_id);
+    console.log('entreprise_id:', userEntreprise_id);
+    console.log('Puis-je ?:', this.canAccess);
   }
 
   deleteProject(): void {
     const projectId = this.project?.id;
     const token = sessionStorage.getItem('auth_token');
+    
     if (projectId && token) {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       this.http.delete(`http://localhost:8000/api/projects/${projectId}`, { headers })
@@ -86,18 +106,24 @@ export class ProjectDetailPageComponent implements AfterViewInit {
   checkAccessRequest(): void {
     const token = sessionStorage.getItem('auth_token');
     const userId = sessionStorage.getItem('user_id');
-    if (!token || !userId) return;
-    console.log('projet : ', this.project);
+    const projectId = this.project?.id;
+
+    if (!token || !userId || !this.project) return;
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.get<any[]>(`http://localhost:8000/api/projects/access-requests`, { headers })
+    this.http.get<any[]>(`http://localhost:8000/api/projects/${projectId}/access-requests`, { headers })
       .subscribe(requests => {
-        const existingRequest = requests.find(req => req.project_id === this.project.id && req.user_id == userId);
+        const existingRequest = requests.find(req => req.user_id == userId);
 
         if (existingRequest) {
-          this.requestStatus = existingRequest.status;
+          this.requestStatus = existingRequest.status; // "approved", "pending", "rejected"
+        } else {
+          this.requestStatus = 'none'; // Aucune demande trouvée
         }
+      }, error => {
+        console.error('Erreur lors de la récupération des demandes', error);
+        this.requestStatus = 'none';
       });
   }
 
@@ -115,7 +141,7 @@ export class ProjectDetailPageComponent implements AfterViewInit {
     this.http.post(`http://localhost:8000/api/projects/${projectId}/access-requests`, {}, { headers })
       .subscribe(() => {
         console.log('Demande envoyée');
-        this.requestStatus = 'pending'; // Mise à jour locale pour éviter un rechargement inutile
+        this.requestStatus = 'pending';
         alert('Votre demande a été envoyée.');
       }, error => {
         console.error('Erreur lors de la demande', error);

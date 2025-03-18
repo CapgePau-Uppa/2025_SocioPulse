@@ -105,4 +105,5 @@ class ProjectController extends Controller
         // Return a success message
         return response()->json(['message' => 'Projet supprimé avec succès'], 200);
     }
+   
 }
