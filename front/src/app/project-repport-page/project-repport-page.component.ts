@@ -65,6 +65,12 @@ export class ProjectRepportPageComponent implements OnInit {
 
 
   uploadFile(name: string, file: File): void {
+    const token = sessionStorage.getItem('auth_token');
+    console.log('Token:', token);
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,  // Ajouter le token dans l'en-tête
+      'Content-Type': 'application/json'
+    });
     const formData = new FormData();
     formData.append('file', file);
     formData.append('name', name);

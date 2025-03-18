@@ -14,14 +14,14 @@
       <a routerLink="/admin-dashboard" mat-button><b>Gestion des rôles</b></a>
     }
 
+    @if (userRole === 'administrator' || userRole === 'entreprise') {
+      <a routerLink="/access-requests" mat-button><b>Demandes d'accès</b></a>
+    }
+
     <a routerLink="/projects-list-page" mat-button><b>Liste des Projets</b></a>
 
     @if (userRole === 'administrator' || canCreate) {
       <a routerLink="/project-maker-page" mat-button><b>Créer un Projet</b></a>
-    }
-
-    @if (userRole === 'administrator' || userRole === 'entreprise') {
-      <a routerLink="/access-requests" mat-button><b>Demandes d'accès</b></a>
     }
 
     <a>||</a>

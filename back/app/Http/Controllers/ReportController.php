@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
-use App\Models\Report;  // Assurez-vous d'importer le modèle Report
+use App\Models\Report; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
@@ -27,7 +27,7 @@ class ReportController extends Controller
         // Validation des données reçues (nom, fichier et ID du projet)
         $request->validate([
             'name' => 'required|string|max:255',
-            'file' => 'required|mimes:pdf|max:2048000000',  // Limite à 2MB pour un PDF
+            'file' => 'required|mimes:pdf|max:2048',            
             'project_id' => 'required|integer|exists:projects,id',  // Vérifie l'ID du projet
         ]);
 

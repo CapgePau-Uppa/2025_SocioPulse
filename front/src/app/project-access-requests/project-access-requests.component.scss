@@ -1,59 +1,86 @@
 .container {
-    display: flex;
-    min-height: 95vh;
-    width: 75%;
-    margin: 80px auto;
+  display: flex;
+  justify-content: center;
+  font-family: "Candara", sans-serif;
+  font-size: 1.2rem;
+  width: 100%;
+}
+
+.request-card {
+  width: 80%;
+  border-radius: 15px;
+  background-color: whitesmoke;
+  padding: 20px;
+}
+
+mat-card-header {
+  display: flex;
+  justify-content: center;
+  background-color: #1a237e;
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+mat-card-title {
+  font-size: 2rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.request-item {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 10px 0;
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-3px);
   }
+}
 
-  .project-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: whitesmoke;
-    padding: 40px;
-    border-radius: 16px;
-    width: 100%;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
   }
+}
 
+.no-requests {
+  text-align: center;
+  color: #777;
+  font-size: 1.2rem;
+  margin-top: 20px;
+}
 
-  button {
-    padding: 12px 24px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
+.approved {
+  color: green;
+  font-weight: bold;
+}
 
-    &[color="primary"] {
-      background-color: #1a237e;
-      color: white;
-    }
-    &[color="warn"] {
-      background-color: red ;
-      color: white;
-    }
+.pending {
+  color: orange;
+  font-weight: bold;
+}
 
-  }
-  mat-card-content {
-    margin: 24px 0;
-    color: #4a4a4a;
-
-    p {
-      margin: 16px 0;
-      font-size: 1.1rem;
-      line-height: 1.8;
-
-      strong {
-        color: #2c2c2c;
-        font-weight: 600;
-        margin-right: 8px;
-      }
-    }
-  }
-
-  mat-card-title h2 {
-    font-family: "Candara", sans-serif;
-    font-size: 8rem;
-    margin-bottom: 24px;
-    font-weight: 600;
-    color: #1a1a1a;
-    letter-spacing: -0.5px;
-  }
+.rejected {
+  color: red;
+  font-weight: bold;
+}

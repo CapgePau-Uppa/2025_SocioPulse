@@ -1,16 +1,38 @@
 <div class="container">
-  <h2>Demandes d'accès aux fichiers</h2>
+  <mat-card class="request-card">
+    <mat-card-header>
+      <mat-card-title>
+        <strong>Demandes d'accès aux fichiers</strong>
+      </mat-card-title>
+    </mat-card-header>
 
-  <div *ngFor="let request of requests">
-    <p>Utilisateur {{ request.user_id }} demande l'accès au fichier PDF</p>
+    <mat-card-content class="content">
+      <div *ngIf="requests.length > 0; else noRequests">
+        <div *ngFor="let request of requests" class="request-item">
+          <p>
+            <strong>Utilisateur :</strong> {{ request.user_id }}<br>
+            <strong>Statut :</strong>
+            <span [ngClass]="{
+              'approved': request.status === 'approved',
+              'pending': request.status === 'pending',
+              'rejected': request.status === 'rejected'
+            }">
+              {{ request.status }}
+            </span>
+          </p>
 
-    @if(isAuthorizedToManageRequests(request)) {
-      <button mat-raised-button color="primary" (click)="approveRequest(request)">Accepter</button>
-      <button mat-raised-button color="warn" (click)="rejectRequest(request)">Refuser</button>
-    }
-  </div>
+          @if(isAuthorizedToManageRequests(request)) {
+            <div class="actions">
+              <button mat-raised-button color="primary" (click)="approveRequest(request)">Accepter</button>
+              <button mat-raised-button color="warn" (click)="rejectRequest(request)">Refuser</button>
+            </div>
+          }
+        </div>
+      </div>
 
-  @if(requests.length === 0) {
-    <p>Aucune demande en attente.</p>
-  }
+      <ng-template #noRequests>
+        <p class="no-requests">Aucune demande en attente.</p>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
 </div>

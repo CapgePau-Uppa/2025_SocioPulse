@@ -70,40 +70,57 @@ export class ProjectDetailPageComponent implements AfterViewInit {
     });
   }
 
-  /** Vérifie si l'utilisateur peut accéder aux documents */
-  public checkUserAccess(): void {
-    const userId = sessionStorage.getItem('user_id');
-    const userEntreprise_id = Number(sessionStorage.getItem('entreprise_id'));
-    const userRole = sessionStorage.getItem('role');
+/** Vérifie si l'utilisateur peut accéder aux documents */
+public checkUserAccess(): void {
+  const userId = sessionStorage.getItem('user_id');
+  const userEntreprise_id = Number(sessionStorage.getItem('entreprise_id'));
+  const userRole = sessionStorage.getItem('role');
+  const projectId = this.project?.id;
+
+  if (!userId || !projectId) {
+    return;
+  }
+
+  // Vérification si l'utilisateur est admin ou de la même entreprise
+  this.canAccess = (this.project.entreprise_id === userEntreprise_id) || (userRole === 'administrator');
+
+  if (this.canAccess) {
+    return; // Si déjà autorisé, inutile de vérifier les demandes d'accès
+  }
+
+  const token = sessionStorage.getItem('auth_token');
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  // Vérification dans la table pdf_access_requests
+  this.http.get<any[]>(`http://localhost:8000/api/projects/${projectId}/access-requests`, { headers })
+    .subscribe(requests => {
+      const userRequest = requests.find(req => req.user_id == userId && req.status === 'approved');
+
+      if (userRequest) {
+        this.canAccess = true;
+      }
+
+      console.log('canAccess après vérification des demandes:', this.canAccess);
+    }, error => {
+      console.error('Erreur lors de la vérification des demandes d\'accès', error);
+    });
+}
+
+
+  deleteProject(): void {
     const projectId = this.project?.id;
-
-    if (!userId || !projectId) {
-      return;
-    }
-
-    // Vérification si l'utilisateur est admin ou de la même entreprise
-    this.canAccess = (this.project.entreprise_id === userEntreprise_id) || (userRole === 'administrator');
-
-    if (this.canAccess) {
-      return; // Si déjà autorisé, inutile de vérifier les demandes d'accès
-    }
-
     const token = sessionStorage.getItem('auth_token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    // Vérification dans la table pdf_access_requests
-    this.http.get<any[]>(`http://localhost:8000/api/projects/${projectId}/access-requests`, { headers })
-      .subscribe(requests => {
-        const userRequest = requests.find(req => req.user_id == userId && req.status === 'approved');
-
-        if (userRequest) {
-          this.canAccess = true;
-        }
-
-        console.log('canAccess après vérification des demandes:', this.canAccess);
-      }, error => {
-        console.error('Erreur lors de la vérification des demandes d\'accès', error);
-      });
+    if (projectId && token) {
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      this.http.delete(`http://localhost:8000/api/projects/${projectId}`, { headers })
+        .subscribe(() => {
+          console.log('Projet supprimé avec succès');
+          this.router.navigate(['/']);
+        }, error => {
+          console.error('Erreur lors de la suppression du projet', error);
+        });
+    }
   }
 
   goToProjectReport(): void {
