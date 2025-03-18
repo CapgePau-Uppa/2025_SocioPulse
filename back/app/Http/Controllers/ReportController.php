@@ -6,15 +6,28 @@ use App\Models\Project;
 use App\Models\Report;  // Assurez-vous d'importer le modèle Report
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 
 class ReportController extends Controller
 {
+    public function getReportFile($filename)
+    {
+        $path = storage_path("../../ressource/$filename"); // Chemin du fichier
+    
+        if (!File::exists($path)) {
+            return response()->json(['error' => 'Fichier non trouvé'], 404);
+        }
+    
+        return Response::file($path);
+    }
+
     public function upload(Request $request)
     {
         // Validation des données reçues (nom, fichier et ID du projet)
         $request->validate([
             'name' => 'required|string|max:255',
-            'file' => 'required|mimes:pdf|max:2048',  // Limite à 2MB pour un PDF
+            'file' => 'required|mimes:pdf|max:2048000000',  // Limite à 2MB pour un PDF
             'project_id' => 'required|integer|exists:projects,id',  // Vérifie l'ID du projet
         ]);
 
@@ -56,4 +69,12 @@ class ReportController extends Controller
         // Retourner le chemin pour l’enregistrement en base de données
         return response()->json(['path' => "../../ressource/$fileName"], 200);
     }
+
+    public function getReports()
+    {
+        $reports = Report::with('project')->get();
+
+        return response()->json($reports, 200);
+    }
+
 }

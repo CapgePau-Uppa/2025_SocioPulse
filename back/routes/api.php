@@ -9,6 +9,9 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EntrepriseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\PdfAccessRequestController;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
+
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
@@ -61,14 +64,18 @@ Route::middleware(['auth:sanctum', 'checkPermission:canCreate'])->post('/project
 Route::middleware(['auth:sanctum', 'checkAdminRole', 'checkPermission:canUpdate'])->put('/projects/{id}', [ProjectController::class, 'update']); // Update a project
 Route::middleware(['auth:sanctum', 'checkAdminRole', 'checkPermission:canDelete'])->delete('/projects/{id}', [ProjectController::class, 'destroy']); // Delete a project
 
+Route::get('/reports/file/{filename}', [ReportController::class, 'getReportFile']);
 
 //Path for the project access requests
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/projects/access-requests', [PdfAccessRequestController::class, 'getRequests']);
     Route::get('/projects/{id}/access-requests', [PdfAccessRequestController::class, 'index']);
+    Route::get('/projects/{id}/reports', [ReportController::class, 'getReports'])->middleware('auth:sanctum');
+
     Route::post('/projects/{id}/access-requests', [PdfAccessRequestController::class, 'createRequest']);
     Route::post('/projects/{id}/access-requests/{requestId}/approve', [PdfAccessRequestController::class, 'approveRequest']);
     Route::post('/projects/{id}/access-requests/{requestId}/reject', [PdfAccessRequestController::class, 'rejectRequest']);
+    Route::post('/upload', [ReportController::class, 'upload'])->middleware('auth:sanctum');
 });
 
 /*

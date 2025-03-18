@@ -4,7 +4,7 @@ import { MatListModule } from '@angular/material/list';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http'; // Ajout pour gérer l'upload
+import { HttpClient, HttpHeaders } from '@angular/common/http'; // Ajout pour gérer l'upload
 import { AddReportModalComponent } from '../add-report-modal/add-report-modal.component';
 import { ProjectsService } from '../services/projects.service';
 import {ToastrService} from 'ngx-toastr';
@@ -22,7 +22,7 @@ import {ToastrService} from 'ngx-toastr';
 })
 export class ProjectRepportPageComponent implements OnInit {
   project: any;
-  reports = ['Rapport 1', 'Rapport 2', 'Rapport 3'];
+  reports: any[] = [];
   name: string = '';
 
   constructor(private toastr: ToastrService,private route: ActivatedRoute, private projectsService: ProjectsService, private dialog: MatDialog, private router: Router, private http: HttpClient) {}
@@ -31,6 +31,11 @@ export class ProjectRepportPageComponent implements OnInit {
     const projectId = +(this.route.snapshot.paramMap.get('id') ?? 0);
     this.projectsService.getProjects().subscribe(data => {
       this.project = data.find(project => project.id === projectId);
+      if (this.project) {
+        this.loadReports(this.project.id);
+      } else {
+        console.error('Projet non trouvé');
+      }
     });
   }
 
@@ -52,6 +57,13 @@ export class ProjectRepportPageComponent implements OnInit {
     });
   }
 
+  openPdf(filePath: string): void {
+    const fileName = filePath.split('/').pop(); // Récupère uniquement le nom du fichier
+    const fullPath = `http://127.0.0.1:8000/api/reports/file/${encodeURIComponent(fileName!)}`;
+    window.open(fullPath, '_blank');
+  }
+
+
   uploadFile(name: string, file: File): void {
     const formData = new FormData();
     formData.append('file', file);
@@ -68,5 +80,24 @@ export class ProjectRepportPageComponent implements OnInit {
         console.error("Erreur lors de l'upload :", error);
       }
     );
+  }
+  loadReports(projectId: number): void {
+    const token = sessionStorage.getItem('auth_token');
+
+    if (!token) {
+      console.error('Utilisateur non authentifié');
+      return;
+    }
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.get<any[]>(`http://127.0.0.1:8000/api/projects/${projectId}/reports`, { headers })
+      .subscribe(reports => {
+        this.reports = reports;
+        console.log('Rapports récupérés:', this.reports);
+      }, error => {
+        console.error('Erreur lors de la récupération des rapports', error);
+        this.reports = [];
+      });
   }
 }

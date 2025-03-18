@@ -5,7 +5,8 @@
   </button>
   <mat-list>
     <mat-list-item *ngFor="let report of reports">
-      {{ report }}
+      <span>{{ report.name }}</span>
+      <button mat-button (click)="openPdf(report.path)">📄 Voir le PDF</button>
     </mat-list-item>
   </mat-list>
 </div>
