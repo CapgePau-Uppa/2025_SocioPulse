@@ -21,17 +21,23 @@
 
   @if (selectedType === 'enterprise') {
     <div>
-      <mat-form-field>
-        <mat-label>Entreprise</mat-label>
-        <mat-select [(ngModel)]="selectedCompany">
-          @for (company of companies; track company) {
-            <mat-option [value]="company">{{ company }}</mat-option>
-          }
-          <mat-option value="Autre">Autre</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <mat-radio-group [(ngModel)]="enterpriseSelection">
+        <mat-radio-button value="existing">Entreprise existante</mat-radio-button>
+        <mat-radio-button value="new">Nouvelle entreprise</mat-radio-button>
+      </mat-radio-group>
 
-      @if (selectedCompany === 'Autre') {
+      @if (enterpriseSelection === 'existing') {
+        <mat-form-field>
+          <mat-label>Entreprise</mat-label>
+          <mat-select [(ngModel)]="selectedCompany">
+            @for (company of companies; track company) {
+              <mat-option [value]="company">{{ company }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+
+      @if (enterpriseSelection === 'new') {
         <div>
           <mat-form-field>
             <mat-label>Nom de l'entreprise</mat-label>
