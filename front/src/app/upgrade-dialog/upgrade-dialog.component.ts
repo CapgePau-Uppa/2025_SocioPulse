@@ -26,7 +26,13 @@ export class UpgradeDialogComponent {
   selectedCompany: string = '';
   newCompanyName: string = '';
   newCompanySiren: string = '';
+  newCompanyType: string = '';
+
   companies = ['Entreprise A', 'Entreprise B', 'Entreprise C'];
+  companyTypes = [
+    'TPE/PME', 'GE', 'ETI', 'Association', 'Organisme de recherche',
+    'EPIC', 'Etablissement public', 'GIE', 'Organisme de formation', 'Autre'
+  ];
 
   constructor(public dialogRef: MatDialogRef<UpgradeDialogComponent>) {}
 
@@ -37,9 +43,13 @@ export class UpgradeDialogComponent {
       details = { department: this.department, city: this.city };
     } else if (this.selectedType === 'enterprise') {
       if (this.enterpriseSelection === 'new') {
-        details = { companyName: this.newCompanyName, siren: this.newCompanySiren };
+        details = {
+          nom: this.newCompanyName,
+          siren: this.newCompanySiren,
+          type_entreprise: this.newCompanyType
+        };
       } else if (this.enterpriseSelection === 'existing') {
-        details = { companyName: this.selectedCompany };
+        details = { nom: this.selectedCompany };
       }
     }
 

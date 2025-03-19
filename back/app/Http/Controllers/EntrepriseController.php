@@ -7,26 +7,34 @@ use Illuminate\Http\Request;
 
 class EntrepriseController extends Controller
 {
-    public function store(Request $request)
-    {
-        // Validation of received request
-        $request->validate([
-            'siren' => 'required|string|unique:entreprise,siren|max:255',
-            'nom' => 'required|string|max:255',
-            'type_entreprise' => 'required|in:TPE/PME,GE,ETI,Association,Organisme de recherche,EPIC,Etablissement public,GIE,Organisme de formation,Autre',
-            'note_generale' => 'nullable|integer',
-            'note_citoyenne' => 'nullable|integer',
-            'note_commune' => 'nullable|integer',
-        ]);
+public function store(Request $request)
+{
+    // Validation des données envoyées
+    $request->validate([
+        'siren' => 'required|string|unique:entreprise,siren|max:255',
+        'nom' => 'required|string|max:255',
+        'type_entreprise' => 'required|in:TPE/PME,GE,ETI,Association,Organisme de recherche,EPIC,Etablissement public,GIE,Organisme de formation,Autre',
+        'note_generale' => 'nullable|integer',
+        'note_citoyenne' => 'nullable|integer',
+        'note_commune' => 'nullable|integer',
+    ]);
 
-        // Entreprise creation
-        $entreprise = Entreprise::create($request->all());
+    // Création de l'entreprise
+    $entreprise = Entreprise::create([
+        'siren' => $request->siren,
+        'nom' => $request->nom,
+        'type_entreprise' => $request->type_entreprise,
+        'note_generale' => $request->note_generale,
+        'note_citoyenne' => $request->note_citoyenne,
+        'note_commune' => $request->note_commune
+    ]);
 
-        return response()->json([
-            'message' => 'Entreprise créée avec succès',
-            'entreprise' => $entreprise
-        ], 201);
-    }
+    return response()->json([
+        'message' => 'Entreprise créée avec succès',
+        'entreprise' => $entreprise
+    ], 201);
+}
+
 
     public function update(Request $request, $id)
     {

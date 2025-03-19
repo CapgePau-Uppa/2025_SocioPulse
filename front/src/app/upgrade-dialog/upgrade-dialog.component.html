@@ -48,6 +48,15 @@
             <mat-label>SIREN</mat-label>
             <input matInput [(ngModel)]="newCompanySiren">
           </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Type d'entreprise</mat-label>
+            <mat-select [(ngModel)]="newCompanyType">
+              @for (type of companyTypes; track type) {
+                <mat-option [value]="type">{{ type }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
         </div>
       }
     </div>

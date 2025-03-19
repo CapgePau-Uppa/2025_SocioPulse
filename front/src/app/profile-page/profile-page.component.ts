@@ -53,28 +53,44 @@ export class ProfilePageComponent implements OnInit {
     });
   }
 
-  upgradeAccount(data: any): void {
-    const userId = sessionStorage.getItem('user_id');
-    const token = sessionStorage.getItem('auth_token');
+upgradeAccount(data: any): void {
+  const userId = sessionStorage.getItem('user_id');
+  const token = sessionStorage.getItem('auth_token');
 
-    if (userId && token) {
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  if (userId && token) {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-      const payload = {
-        user_id: userId,
-        role_id: '4',
-        type: data.type,
-        details: data.details
-      };
+    // Préparer le payload en fonction des données du modal
+    const payload: any = {
+      user_id: userId,
+      type: data.type,
+      details: data.details
+    };
 
-      this.http.post('http://localhost:8000/api/upgradeRequete', payload, { headers })
-        .subscribe(response => {
-          console.log('Compte amélioré avec succès', response);
-        }, error => {
-          console.error('Erreur lors de l\'amélioration du compte', error);
-        });
+    // Définir role_id en fonction de la sélection du radioButton
+    if (data.type === 'collectivity') {
+      payload.role_id = '3'; // Role pour "Collectivité"
+    } else if (data.type === 'enterprise') {
+      payload.role_id = '4'; // Role pour "Entreprise"
     }
+
+    // Ajouter le champ 'companyType' dans les détails si l'entreprise est nouvelle
+    if (data.type === 'enterprise' && data.details.companyName === 'Autre') {
+      payload.details.companyType = data.details.companyType;
+    }
+
+    // Afficher ce que l'on envoie dans le payload pour débogage
+    console.log('Payload pour la mise à jour du compte:', payload);
+
+    // Envoyer la requête HTTP avec le payload
+    this.http.post('http://localhost:8000/api/upgradeRequete', payload, { headers })
+      .subscribe(response => {
+        console.log('Compte amélioré avec succès', response);
+      }, error => {
+        console.error('Erreur lors de l\'amélioration du compte', error);
+      });
   }
+}
 
   deleteAccount(): void {
     const userId = sessionStorage.getItem('user_id');
