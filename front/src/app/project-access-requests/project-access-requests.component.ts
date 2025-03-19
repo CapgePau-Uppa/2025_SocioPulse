@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-project-access-requests',
@@ -21,7 +22,7 @@ export class ProjectAccessRequestsComponent implements OnInit {
   user_id: string = '';
   entreprise_id: number = 0;
 
-  constructor(private http: HttpClient) {}
+  constructor(private toastr: ToastrService, private http: HttpClient) {}
 
   ngOnInit(): void {
     this.getUserData();
@@ -92,11 +93,12 @@ getUserData(): void {
     this.http.post(`http://localhost:8000/api/projects/${request.project_id}/access-requests/${request.id}/approve`, {}, { headers })
       .subscribe(response => {
         console.log('Demande approuvée', response);
-
+        this.toastr.success("Demande approuvée avec succès");
         // Supprimer ou mettre à jour la demande dans la liste locale
         this.requests = this.requests.filter(r => r.id !== request.id); // Supprimer la demande acceptée
       }, error => {
         console.error('Erreur lors de l\'approbation', error);
+        this.toastr.error("Erreur lors de l'approbation");
       });
   }
 
@@ -109,11 +111,12 @@ getUserData(): void {
     this.http.post(`http://localhost:8000/api/projects/${request.project_id}/access-requests/${request.id}/reject`, {}, { headers })
       .subscribe(response => {
         console.log('Demande rejetée', response);
-
+        this.toastr.info("Demande rejetée");
         // Supprimer ou mettre à jour la demande dans la liste locale
         this.requests = this.requests.filter(r => r.id !== request.id); // Supprimer la demande rejetée
       }, error => {
         console.error('Erreur lors du rejet', error);
+        this.toastr.error("Erreur lors du rejet");
       });
   }
 
