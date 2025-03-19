@@ -1,0 +1,54 @@
+<h2 mat-dialog-title>Améliorer le compte</h2>
+<div mat-dialog-content>
+  <mat-radio-group [(ngModel)]="selectedType">
+    <mat-radio-button value="enterprise">Entreprise</mat-radio-button>
+    <mat-radio-button value="collectivity">Collectivité</mat-radio-button>
+  </mat-radio-group>
+
+  @if (selectedType === 'collectivity') {
+    <div>
+      <mat-form-field>
+        <mat-label>Département</mat-label>
+        <input matInput [(ngModel)]="department">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Ville</mat-label>
+        <input matInput [(ngModel)]="city">
+      </mat-form-field>
+    </div>
+  }
+
+  @if (selectedType === 'enterprise') {
+    <div>
+      <mat-form-field>
+        <mat-label>Entreprise</mat-label>
+        <mat-select [(ngModel)]="selectedCompany">
+          @for (company of companies; track company) {
+            <mat-option [value]="company">{{ company }}</mat-option>
+          }
+          <mat-option value="Autre">Autre</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      @if (selectedCompany === 'Autre') {
+        <div>
+          <mat-form-field>
+            <mat-label>Nom de l'entreprise</mat-label>
+            <input matInput [(ngModel)]="newCompanyName">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>SIREN</mat-label>
+            <input matInput [(ngModel)]="newCompanySiren">
+          </mat-form-field>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="dialogRef.close()">Annuler</button>
+  <button mat-button color="primary" (click)="confirmUpgrade()">Confirmer</button>
+</div>

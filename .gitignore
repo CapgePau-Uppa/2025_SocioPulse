@@ -43,4 +43,4 @@ Thumbs.db
 /back/.phpunit.result.cache
 
 #pdf files
-/ressources/*.pdf
+/ressource/*.pdf

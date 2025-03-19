@@ -1,0 +1,38 @@
+mat-form-field {
+  width: 100%;
+}
+
+mat-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: space-between;
+}
+::ng-deep {
+  /* White background for all options */
+  .mat-mdc-option {
+      background-color: white !important;
+      color: black !important;
+  }
+
+  /* Light gray background on hover */
+  .mat-mdc-option:hover {
+      background-color: #f1f1f1 !important;
+  }
+
+  /* Selected option - dark blue background and white text */
+  .mat-mdc-option.mat-mdc-option-active {
+      background-color: #3f51b5 !important;
+      color: white !important;
+  }
+
+  /* Disabled option - gray background */
+  .mat-mdc-option.mat-mdc-option-disabled {
+      background-color: #e0e0e0 !important;
+      color: #9e9e9e !important;
+  }
+}

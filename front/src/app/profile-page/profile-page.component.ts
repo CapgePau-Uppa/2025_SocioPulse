@@ -1,22 +1,36 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog'; // ✅ Ajout du service MatDialog
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { UpgradeDialogComponent } from '../upgrade-dialog/upgrade-dialog.component';
 
 @Component({
   selector: 'app-profile-page',
+  standalone: true, // ✅ Assurez-vous que le composant est bien autonome
   imports: [
     MatButtonModule,
-    MatCardModule
+    MatCardModule,
+    MatDialogModule, // ✅ Ajout du module MatDialogModule
+    MatRadioModule,
+    MatSelectModule,
+    MatInputModule,
+    FormsModule,
   ],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.scss'
 })
-export class ProfilePageComponent implements OnInit{
+export class ProfilePageComponent implements OnInit {
   username: string | null = null;
   email: string | null = null;
   role: string | null = null;
+
+  private dialog = inject(MatDialog); // ✅ Injecte le service MatDialog correctement
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -26,15 +40,36 @@ export class ProfilePageComponent implements OnInit{
     this.role = sessionStorage.getItem('role');
   }
 
-  upgradeAccount(): void {
+  openUpgradeDialog(): void {
+    const dialogRef = this.dialog.open(UpgradeDialogComponent, {
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('Résultat du modal:', result);
+        this.upgradeAccount(result);
+      }
+    });
+  }
+
+  upgradeAccount(data: any): void {
     const userId = sessionStorage.getItem('user_id');
     const token = sessionStorage.getItem('auth_token');
-    if (userId) {
+
+    if (userId && token) {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      this.http.post('http://localhost:8000/api/upgradeRequete', { user_id: userId, role_id: '4' }, { headers })
+
+      const payload = {
+        user_id: userId,
+        role_id: '4',
+        type: data.type,
+        details: data.details
+      };
+
+      this.http.post('http://localhost:8000/api/upgradeRequete', payload, { headers })
         .subscribe(response => {
           console.log('Compte amélioré avec succès', response);
-          // Ajoutez ici toute logique supplémentaire après l'amélioration du compte
         }, error => {
           console.error('Erreur lors de l\'amélioration du compte', error);
         });
