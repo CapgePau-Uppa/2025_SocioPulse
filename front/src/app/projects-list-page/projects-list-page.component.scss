@@ -11,6 +11,14 @@ h1{
   color: whitesmoke;
   text-shadow: 2px 2px 4px #333333;
 }
+.sort-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: whitesmoke;
+  font-family: Candara, sans-serif;
+}
+
 
 table{
   justify-content: center;
