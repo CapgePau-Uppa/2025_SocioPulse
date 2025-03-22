@@ -7,6 +7,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { MatDialog } from '@angular/material/dialog';
+import { RendezVousModalComponent } from '../rendez-vous-modal/rendez-vous-modal.component';
 
 @Component({
   selector: 'app-project-detail-page',
@@ -46,7 +48,8 @@ export class ProjectDetailPageComponent implements AfterViewInit {
     private route: ActivatedRoute,
     private projectsService: ProjectsService,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   ngAfterViewInit(): void {
@@ -173,6 +176,13 @@ public checkUserAccess(): void {
       });
   }
 
+  openRendezVousModal() {
+    this.dialog.open(RendezVousModalComponent, {
+      width: '500px',
+      data: { projectId: this.project.id }
+    });
+  }
+  
   openDialog(): void {
     alert('Fonctionnalité non implémentée');
   }

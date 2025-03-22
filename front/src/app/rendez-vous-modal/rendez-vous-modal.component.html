@@ -1,0 +1,90 @@
+<h2>Gestion des rendez-vous</h2>
+
+<!-- Condition si la liste de rendez-vous est vide ou non -->
+<div>
+  <mat-card class="appointment-card" *ngFor="let rdv of rendezVousList">
+    <mat-card-header>
+        <mat-card-title>{{ 'Nouveau rendez-vous' }} - {{ rdv.date_heure | date:'short' }} - {{ rdv.status }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <p><strong>Message:</strong> {{ rdv.message || 'Pas de message' }}</p>
+      </mat-card-content>
+    
+      <mat-card-actions>
+        <!-- Boutons pour l'entreprise -->
+        <ng-container *ngIf="userRole === 'entreprise' || userRole === 'administrator'">
+          <!-- Bouton Accepter -->
+          <button mat-raised-button class="accept-button" (click)="acceptRendezVous(rdv.id)">Accepter</button>
+          <!-- Bouton Refuser -->
+          <button mat-raised-button class="reject-button" (click)="rejectRendezVous(rdv.id)">Refuser</button>
+
+        </ng-container>
+    
+        <!-- Boutons pour la collectivité -->
+        <ng-container *ngIf="userRole === 'communaute' || userRole === 'administrator'">
+          <button mat-raised-button color="primary" (click)="updateRendezVous(rdv.project.id)" [disabled]="form.invalid">
+            Modifier le rendez-vous
+          </button>
+          <button mat-button color="warn" (click)="deleteRendezVous(rdv.id)">Supprimer</button>
+        </ng-container>
+      </mat-card-actions> 
+    </mat-card>
+
+<!-- Template à afficher quand il n'y a pas de rendez-vous -->
+<ng-template >
+  <mat-card class="no-appointments-card">
+    <mat-card-content>
+      <p>Pas de rendez-vous.</p>
+    </mat-card-content>
+  </mat-card>
+</ng-template>
+
+<!-- Formulaire pour créer ou modifier un rendez-vous -->
+<div *ngIf="userRole === 'communaute'|| userRole === 'administrator'">
+  <form [formGroup]="form" (ngSubmit)="submitForm()">
+    <mat-card class="appointment-form-card">
+      <mat-card-header>
+        <mat-card-title>{{ isEditing ? 'Modifier un rendez-vous' : 'Prendre un rendez-vous' }}</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Champ pour la date -->
+        <mat-error *ngIf="form.get('date_heure')?.hasError('required')">
+          La date est requise.
+        </mat-error>
+        <mat-form-field appearance="outline" style="width: 100%;">
+          <mat-label>Date</mat-label>
+          <input matInput type="date" formControlName="date_heure" [min]="minDate">
+        </mat-form-field>
+
+        <!-- Champ pour l'heure -->
+        <mat-error *ngIf="form.get('heure')?.hasError('required')">
+          L'heure est requise.
+        </mat-error>
+        <mat-form-field appearance="outline" style="width: 100%;">
+          <mat-label>Heure</mat-label>
+          <mat-select formControlName="heure">
+            <mat-option *ngFor="let hour of hours" [value]="hour">{{ hour }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Champ pour le message -->
+        <mat-form-field appearance="outline" style="width: 100%;">
+          <mat-label>Message</mat-label>
+          <textarea matInput formControlName="message"></textarea>
+          <mat-error *ngIf="form.get('message')?.hasError('maxlength')">
+            Le message ne doit pas dépasser 500 caractères.
+          </mat-error>
+        </mat-form-field>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+          {{ isEditing ? 'Mettre à jour' : 'Prendre' }} rendez-vous
+        </button>
+        <button mat-button type="button" (click)="close()">Fermer</button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>

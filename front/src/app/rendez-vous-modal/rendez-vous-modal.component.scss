@@ -1,0 +1,190 @@
+.admin-dashboard-container {
+    display: flex;
+    min-height: 95vh;
+    width: 100%;
+    margin: 50px auto;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.admin-card, .appointment-form-card, .no-appointments-card {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+mat-form-field, mat-select, mat-input, textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.appointment-card {
+    width: 100%;
+    margin: 10px 0;
+    border-radius: 15px;
+}
+
+.no-appointments-card {
+    width: 100%;
+    margin: 10px 0;
+    border-radius: 15px;
+    background-color: #f5f5f5;
+    text-align: center;
+    padding: 20px;
+}
+
+.appointment-form-card {
+    width: 100%;
+    margin: 20px 0;
+    border-radius: 15px;
+}
+
+mat-card-header {
+    background-color: #1a237e;
+    color: white;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+mat-card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+mat-card-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+mat-card-actions button {
+    margin-left: 10px;
+}
+
+mat-card-actions button[type="submit"] {
+    background-color: #1a237e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+mat-card-actions button[type="submit"]:hover {
+    background-color: #3f51b5;
+}
+
+mat-card-actions button[type="submit"]:disabled {
+    background-color: #b0bec5;
+    cursor: not-allowed;
+}
+
+mat-card-actions button[type="button"] {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+mat-card-actions button[type="button"]:hover {
+    background-color: #f44336;
+}
+
+mat-card-actions button[type="button"]:disabled {
+    background-color: #e57373;
+    cursor: not-allowed;
+}
+
+mat-card-actions button.accept-button {
+    background-color: #1a237e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+mat-card-actions button.accept-button:hover {
+    background-color: #3f51b5;
+}
+
+mat-card-actions button.accept-button:disabled {
+    background-color: #a5d6a7;
+    cursor: not-allowed;
+}
+
+mat-card-actions button.reject-button {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+mat-card-actions button.reject-button:hover {
+    background-color: #e57373;
+}
+
+mat-card-actions button.reject-button:disabled {
+    background-color: #ef9a9a;
+    cursor: not-allowed;
+}
+
+mat-error {
+    margin-bottom: 15px;
+}
+
+mat-select {
+    background-color: white !important;
+    color: black !important;
+    width: 100%;
+    padding: 4px 8px;
+    box-sizing: border-box;
+    border-radius: 4px;
+}
+
+mat-option {
+    background-color: white !important;
+    color: black !important;
+}
+
+mat-option:hover {
+    background-color: #f1f1f1 !important;
+}
+
+mat-option.mat-selected {
+    background-color: #3f51b5 !important;
+    color: white !important;
+}
+
+input[type="date"] {
+    background-color: white;
+    color: black;
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.mat-datepicker-toggle {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+mat-form-field input[type="date"] {
+    padding-right: 40px;
+}

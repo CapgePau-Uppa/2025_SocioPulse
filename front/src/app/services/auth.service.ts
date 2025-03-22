@@ -46,5 +46,9 @@ export class AuthService {
             sessionStorage.removeItem(this.tokenKey);
     }
 
+    getUserRole(): string {
+        return sessionStorage.getItem('role') || '';
+    }
+
 }
 

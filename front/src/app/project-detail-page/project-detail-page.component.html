@@ -59,6 +59,9 @@
           @if(requestStatus === 'approved') {
             <p>Accès accordé !</p>
           }
+          <button mat-raised-button color="primary" (click)="openRendezVousModal()">
+            Gérer les rendez-vous
+          </button>          
         </mat-card-content>
       </mat-card-content>
     </mat-card>

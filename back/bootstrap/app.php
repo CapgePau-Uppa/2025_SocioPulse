@@ -11,6 +11,7 @@ use App\Http\Middleware\CheckAdminRole;
 use App\Http\Middleware\CheckCitoyenRole;
 use App\Http\Middleware\CheckCommunauteRole;
 use App\Http\Middleware\CheckEntrepriseRole;
+use App\Http\Middleware\CheckRole;
 
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -35,6 +36,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'checkCitoyenRole' => CheckCitoyenRole::class,
             'checkCommunauteRole' => CheckCommunauteRole::class,
             'checkEntrepriseRole' => CheckEntrepriseRole::class,
+            'checkRole' => CheckRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
