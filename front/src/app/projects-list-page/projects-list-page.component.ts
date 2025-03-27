@@ -46,7 +46,7 @@ import { MatInputModule } from '@angular/material/input';
   ]
 })
 export class ProjectsListPageComponent implements OnInit {
-  displayedColumns: string[] = ['position', 'name', 'description', 'city', 'created_at'];
+  displayedColumns: string[] = ['name', 'description', 'city', 'created_at'];
   projects: any[] = [];
   sortedByNewest: boolean = false;
   originalProjects: any[] = [];
@@ -128,6 +128,4 @@ export class ProjectsListPageComponent implements OnInit {
   navigateToProjectDetails(projectId: number): void {
     this.router.navigate(['/project-detail-page', projectId]);
   }
-
-
 }
