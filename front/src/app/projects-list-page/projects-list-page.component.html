@@ -1,15 +1,43 @@
 <div class ="container">
 
   <h1>Liste des Projets</h1>
-  <button mat-raised-button color="primary" (click)="toggleSort()" class="sort-button">
-    <mat-icon>{{ sortedByNewest ? 'restore' : 'access_time' }}</mat-icon>
-    {{ sortedByNewest ? 'Ordre original' : 'Plus récents d\'abord' }}
-  </button>
+
+  <div class="filters">
+    <button mat-raised-button color="primary" (click)="toggleSort()" class="sort-button">
+      <mat-icon>{{ sortedByNewest ? 'restore' : 'access_time' }}</mat-icon>
+      {{ sortedByNewest ? 'Ordre original' : 'Plus récents d\'abord' }}
+    </button>
+
+    <div class="date-filters">
+      <mat-form-field appearance="fill">
+        <mat-label>Sélectionner une période</mat-label>
+
+        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+          <input matStartDate formControlName="start" placeholder="Date début">
+          <input matEndDate formControlName="end" placeholder="Date fin">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+
+        @if (range.controls.start.hasError('matStartDateInvalid')) {
+          <mat-error>Date de début invalide</mat-error>
+        }
+        @if (range.controls.end.hasError('matEndDateInvalid')) {
+          <mat-error>Date de fin invalide</mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="applyDateFilter()" [disabled]="!range.valid || !range.value.start || !range.value.end">
+        <mat-icon>filter_list</mat-icon>
+        Filtrer
+      </button>
+      <button mat-raised-button *ngIf="isFiltered" (click)="clearDateFilter()">
+        <mat-icon>clear</mat-icon>
+        Réinitialiser
+      </button>
+    </div>
+  </div>
   <table mat-table [dataSource]="projects" class="mat-elevation-z8">
-
-    <!--- Note that these columns can be defined in any order.
-          The actual rendered columns are set as a property on the row definition" -->
-
     <!-- Position Column -->
     <ng-container matColumnDef="position">
       <th mat-header-cell *matHeaderCellDef> ID </th>
