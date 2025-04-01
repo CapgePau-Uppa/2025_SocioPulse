@@ -1,0 +1,65 @@
+services:
+  app:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    image: socio-pulse/app
+    container_name: app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./back:/var/www
+      - ./back/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - socio-pulse-network
+
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./back:/var/www
+      - ./nginx:/etc/nginx/conf.d
+    networks:
+      - socio-pulse-network
+
+  db:
+    image: mysql:8.0
+    container_name: db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      # Supprimez ou modifiez ces lignes si vous n'avez pas besoin d'un utilisateur non-root
+      # MYSQL_USER: ${DB_USERNAME}
+      # MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3307:3306"  # Assurez-vous que ce port est correct
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - socio-pulse-network
+
+
+  frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    image: socio-pulse/frontend
+    container_name: frontend
+    restart: unless-stopped
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./front:/usr/src/app
+    networks:
+      - socio-pulse-network
+
+volumes:
+  dbdata:
+
+networks:
+  socio-pulse-network:
+    driver: bridge
