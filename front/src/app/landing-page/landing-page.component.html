@@ -6,7 +6,6 @@
       <table class="tableau">
         <thead>
         <tr>
-          <th>ID</th>
           <th>Nom</th>
           <th>Description</th>
           <th>Ville</th>
@@ -16,7 +15,6 @@
         <tbody>
           @for (project of projects; track project.id) {
             <tr (click)="navigateToProjectDetails(project.id)">
-              <td>{{ project.id }}</td>
               <td>{{ project.name }}</td>
               <td>{{ project.description }}</td>
               <td>{{ project.city }}</td>
