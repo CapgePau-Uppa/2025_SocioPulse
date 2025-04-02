@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
@@ -11,40 +11,98 @@ import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { NotificationService, Notification } from '../services/notification.service';
+import { Subscription } from 'rxjs';
+import {MatMenu, MatMenuTrigger} from '@angular/material/menu';
+import {MatBadge} from '@angular/material/badge';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+
 
 @Component({
     selector: 'app-navbar',
-    imports: [
-        RouterLink,
-        MatToolbar,
-        MatAnchor,
-        MatButton,
-        MatIcon,
-        CommonModule
-    ],
+  imports: [
+    RouterLink,
+    MatToolbar,
+    MatAnchor,
+    MatButton,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatBadgeModule,
+    MatIcon,
+    CommonModule,
+    MatIconButton,
+    MatMenu,
+    MatBadge,
+    MatMenuTrigger
+  ],
     templateUrl: './navbar.component.html',
     styleUrl: './navbar.component.scss'
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit, OnDestroy {
+  /// User properties
     isLoggedIn: boolean = false;
     userName: string | null = null;
     userRole: string | null = null;
     canCreate: boolean = false; // Property for checking permissions
 
-    private http: HttpClient = inject(HttpClient);
+  /// Notification properties
+  notifications: Notification[] = [];
+  unreadCount = 0;
+  private subscriptions: Subscription[] = [];
+
+
+  private http: HttpClient = inject(HttpClient);
+
 
     constructor(
         private toastr: ToastrService,
         private dialog: MatDialog,
         private authService: AuthService,
-        private router: Router
-    ) {}
+        private router: Router,
+        private notificationService: NotificationService
+    ) {
 
-    ngOnInit(): void {
-        this.loadUserData();
     }
 
-    goToAccessRequests() {
+    ngOnInit(): void {
+      this.loadUserData();
+      this.loadNotifications();
+    }
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  private loadNotifications() {
+    // Récupérer les notifications
+    this.subscriptions.push(
+      this.notificationService.getNotifications().subscribe(notifications => {
+        this.notifications = notifications;
+      }),
+      this.notificationService.getUnreadCount().subscribe(count => {
+        this.unreadCount = count;
+      })
+    );
+  }
+  markAsRead(id: number): void {
+    this.notificationService.markAsRead(id);
+  }
+
+  markAllAsRead(): void {
+    this.notificationService.markAllAsRead();
+  }
+
+  openNotification(notification: Notification): void {
+    this.notificationService.markAsRead(notification.id);
+    if (notification.link) {
+      this.router.navigateByUrl(notification.link);
+    }
+  }
+
+  goToAccessRequests() {
         this.router.navigate(['/access-requests']);
     }
 

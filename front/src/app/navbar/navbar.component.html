@@ -1,15 +1,47 @@
 <mat-toolbar color="primary" class="mat-toolbar">
-  <p>
-    <button mat-button (click)="toggleSidenav()">
-      <mat-icon>menu</mat-icon>
-    </button>
-  </p>
+    <div class="mobile-only">
+      <p>
+  <button mat-button (click)="toggleSidenav()">
+    <mat-icon>menu</mat-icon>
+  </button>
+      </p>
+</div>
+
 
   <span routerLink="/"><a mat-button>SocioPulse</a></span>
   <span class="spacer"></span>
 
   <div class="pc-layout">
+    @if(isLoggedIn){
+      <div class="notification-container">
+          <button mat-icon-button [matMenuTriggerFor]="notificationMenu" class="notification-button">
+            <mat-icon [matBadge]="unreadCount" [matBadgeHidden]="unreadCount === 0" matBadgeColor="warn">notifications</mat-icon>
+          </button>
 
+        <mat-menu #notificationMenu="matMenu" class="notification-menu">
+          <div class="notification-header">
+            <span>Notifications</span>
+            <button mat-button *ngIf="unreadCount > 0" (click)="markAllAsRead(); $event.stopPropagation()">
+              Tout marquer comme lu
+            </button>
+          </div>
+          <div class="notification-list">
+            <div *ngFor="let notification of notifications" class="notification-item" [ngClass]="{'unread': !notification.read}">
+              <div class="notification-content" (click)="openNotification(notification)">
+                <div class="notification-message">{{ notification.message }}</div>
+                <div class="notification-date">{{ notification.date | date:'short' }}</div>
+              </div>
+              <button mat-icon-button (click)="markAsRead(notification.id); $event.stopPropagation()">
+                <mat-icon>check</mat-icon>
+              </button>
+            </div>
+            <div *ngIf="notifications.length === 0" class="no-notifications">
+              Aucune notification
+            </div>
+          </div>
+        </mat-menu>
+      </div>
+    }
     @if (userRole === 'administrator') {
       <a routerLink="/admin-dashboard" mat-button><b>Gestion des rôles</b></a>
     }
@@ -30,6 +62,7 @@
       <a (click)="openDialog()" mat-button>Connexion</a>
       <a routerLink="/register-page" mat-button>Inscription</a>
     } @else {
+
       <a routerLink="/profile-page" mat-button>{{ userName }}</a>
       <a (click)="logout()" class="logout" mat-button>Déconnexion</a>
     }
