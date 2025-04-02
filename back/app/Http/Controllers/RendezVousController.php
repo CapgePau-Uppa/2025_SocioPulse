@@ -10,28 +10,53 @@ use Illuminate\Support\Facades\Log;
 class RendezVousController extends Controller {
     // Create a new appointment request
     public function store(Request $request, $id) {
+        Log::info('Données reçues pour le rendez-vous :', $request->all());
         $request->validate([
-            'date_heure' => 'required|date|after:now',
+            'project_id' => 'required|integer|exists:projects,id',
+            'date' => 'required|date',       
+            'hour' => 'required|date_format:H:i', 
             'message' => 'nullable|string|max:500',
         ]);
 
+        // Vérifier si un rendez-vous existe déjà pour cette date et heure
+        $existingRendezVous = RendezVous::where('project_id', $id)
+                                        ->where('date', '=', $request->input('date')) 
+                                        ->where('hour', '=', $request->input('hour')) 
+                                        ->exists();
+
+        // Si un rendez-vous existe déjà, retourner une erreur
+        if ($existingRendezVous) {
+            return response()->json(['message' => 'Un rendez-vous existe déjà pour cette date et heure.'], 400);
+        }
+
+        Log::info('Données reçues pour création de rendez-vous:', [
+            'project_id' => $id,
+            'user_id' => Auth::id(),
+            'date' => $request->date,
+            'hour' => $request->hour,
+            'message' => $request->message
+        ]);
         $rendezVous = RendezVous::create([
             'project_id' => $id,
             'user_id' => Auth::id(),
-            'date_heure' => $request->date_heure,
+            'date' => $request->date,
+            'hour' => $request->hour,
             'message' => $request->message,
             'status' => 'pending',
         ]);
-
+        
         return response()->json($rendezVous, 201);
     }
 
     // Retrieve all appointment requests for a project
     public function index($id) {
-        $rendezVous = RendezVous::where('project_id', $id)->get();
+        $rendezVous = RendezVous::where('project_id', $id)
+                                ->with('user:id,name')
+                                ->get();
+    
         return response()->json($rendezVous);
     }
-
+    
     // Update an appointment request (modify date/message or approve/reject)
     public function update(Request $request, $id) {
         $rendezVous = RendezVous::findOrFail($id);
@@ -44,15 +69,35 @@ class RendezVousController extends Controller {
 
         // Validate update fields
         $request->validate([
-            'date_heure' => 'sometimes|date|after:now',
+            'date' => 'sometimes|date|after:now', // Validate the date field
+            'hour' => 'sometimes|date_format:H:i', // Validate the hour field (format HH:MM)
             'message' => 'sometimes|string|max:500',
             'status' => 'sometimes|in:pending,approved,rejected',
         ]);
 
-        $rendezVous->update($request->only(['date_heure', 'message', 'status']));
+        // Update the date and hour fields if present in the request
+        if ($request->has('date') && $request->has('hour')) {
+            $rendezVous->update([
+                'date' => $request->input('date'),
+                'hour' => $request->input('hour'),
+            ]);
+        }
+
+        // Update other fields
+        if ($request->has('message')) {
+            $rendezVous->message = $request->input('message');
+        }
+        
+        if ($request->has('status')) {
+            $rendezVous->status = $request->input('status');
+        }
+
+        // Save the changes
+        $rendezVous->save();
 
         return response()->json($rendezVous);
     }
+
     public function accept($id)
     {
         $rendezVous = RendezVous::findOrFail($id);
@@ -92,6 +137,19 @@ class RendezVousController extends Controller {
     
         return response()->json(['message' => 'Rendez-vous refusé']);
     }
+
+    //Retrieve all rendezvous for a specific project and date.
+    public function getRendezVousForDate($projectId, $date)
+    {
+        $rendezVous = RendezVous::where('project_id', $projectId)
+                                ->where('date', $date)
+                                ->get();
+        
+        Log::info("Rendez-vous récupérés pour le projet $projectId à la date $date : ", $rendezVous->toArray());
+    
+        return response()->json($rendezVous);
+    }
+            
     
     // Cancel (delete) an appointment request
     public function destroy($id) {

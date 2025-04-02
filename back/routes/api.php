@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AvailabilitieController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
@@ -10,7 +11,6 @@ use App\Http\Controllers\EntrepriseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\PdfAccessRequestController;
 use App\Http\Controllers\RendezVousController;
-
 
 /*
 * Middleware:
@@ -95,6 +95,8 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'checkRole:administrator,communaute,entreprise'])
     ->get('/projects/{id}/rendez-vous', [RendezVousController::class, 'index']);
 
+Route::get('/projects/{project}/rendez-vous/{date}', [RendezVousController::class, 'getRendezVousForDate']);
+
 // Une collectivité peut modifier/supprimer ses propres rendez-vous
 Route::middleware(['auth:sanctum', 'checkRole:administrator,communaute'])
     ->put('/projects/{id}/rendez-vous', [RendezVousController::class, 'update']);
@@ -111,6 +113,17 @@ Route::middleware(['auth:sanctum', 'checkRole:administrator,entreprise'])
 
 Route::middleware(['auth:sanctum', 'checkRole:administrator,communaute,entreprise'])
 ->post('/projects/{id}/rendez-vous', [RendezVousController::class, 'store']);
+
+
+
+/**
+ * API Routes for Availabilities management within projects.
+ * This allows an enterprise to manage its availability for a specific project.
+ */
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/availabilities/{projectId}', [AvailabilitieController::class, 'index']);
+    Route::post('/availabilities/{projectId}', [AvailabilitieController::class, 'store']);
+});
 
 
 /*

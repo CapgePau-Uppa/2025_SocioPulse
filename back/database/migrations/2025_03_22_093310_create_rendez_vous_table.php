@@ -10,7 +10,8 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('user_id');
-            $table->dateTime('date_heure');
+            $table->date('date');
+            $table->time('hour');
             $table->text('message')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
