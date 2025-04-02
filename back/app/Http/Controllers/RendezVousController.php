@@ -128,14 +128,14 @@ class RendezVousController extends Controller {
         $rendezVous = RendezVous::findOrFail($id);
         $user = Auth::user();
 
-        if ($user->role->name !== 'entreprise' || $user->role->name !== 'administrator') {
+        if ($user->role->name !== 'administrator' && $user->role->name !== 'entreprise') {
             return response()->json(['message' => 'Non autorisé'], 403);
         }
     
         $rendezVous->status = 'rejected';
         $rendezVous->save();
     
-        return response()->json(['message' => 'Rendez-vous refusé']);
+        return response()->json(['message' => 'Rendez-vous refusé', 'role' => $user->role->name]);
     }
 
     //Retrieve all rendezvous for a specific project and date.
