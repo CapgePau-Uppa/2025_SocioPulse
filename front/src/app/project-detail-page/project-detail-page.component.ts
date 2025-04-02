@@ -24,7 +24,8 @@ import { RendezVousModalComponent } from '../rendez-vous-modal/rendez-vous-modal
 export class ProjectDetailPageComponent implements AfterViewInit {
   project: any;
   requestStatus: string = 'none';
-  canAccess: boolean = false; // Stocke le résultat du test d'accès
+  canAccess: boolean = false;
+  isMapLoaded: boolean = false;
   private map!: L.Map;
 
   private initMap(): void {
@@ -42,7 +43,13 @@ export class ProjectDetailPageComponent implements AfterViewInit {
     L.marker([this.project.latitude, this.project.longitude]).addTo(this.map)
       .bindPopup(this.project.name)
       .openPopup();
+
+    // Attendre que la carte soit complètement chargée
+    this.map.whenReady(() => {
+      this.isMapLoaded = true;
+    });
   }
+
 
   constructor(
     private route: ActivatedRoute,
@@ -182,7 +189,7 @@ public checkUserAccess(): void {
       data: { projectId: this.project.id }
     });
   }
-  
+
   openDialog(): void {
     alert('Fonctionnalité non implémentée');
   }

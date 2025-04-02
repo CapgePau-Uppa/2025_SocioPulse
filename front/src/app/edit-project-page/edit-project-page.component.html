@@ -1,0 +1,78 @@
+<div class="container">
+  @if(project&&isMapLoaded) {
+    <mat-card class="project-card">
+      <mat-card-header>
+        <mat-card-title>
+          <a><strong>{{ project.name }}</strong></a>
+        </mat-card-title>
+        <mat-card-actions class="company_actions">
+          <a mat-raised-button class="update">Modifier</a>
+          <a mat-raised-button class="close">Cloturer</a>
+          <a mat-raised-button class="delete" (click)="deleteProject()">Supprimer</a>
+        </mat-card-actions>
+      </mat-card-header>
+
+      <mat-card-content class="content">
+        <mat-card-content class="details">
+          <p><strong>Filière :</strong> {{ project.filiere }}</p>
+          <p><strong>Mesure :</strong> {{ project.mesure }}</p>
+          <p><strong>Mesure Light :</strong> {{ project.mesure_light }}</p>
+          <p><strong>Volet relance :</strong> {{ project.volet_relance }}</p>
+          <p><strong>Description :</strong><br/> {{ project.description }}</p>
+        </mat-card-content>
+
+        <mat-card-content class="location">
+          <div class="map-container">
+            <div id="map"></div>
+          </div>
+          <mat-card-content class="address">
+            <p><strong>Ville :</strong> {{ project.city }}</p>
+            <p><strong>Département :</strong> {{ project.department }}</p>
+          </mat-card-content>
+        </mat-card-content>
+
+        <mat-card-content class="status">
+          <p><strong>Utilisateur :</strong> {{ project.user_id }}</p>
+          <p><strong>Entreprise :</strong> {{ project.company_id }}</p>
+          <p><strong>Status :</strong> {{ project.status }}</p>
+          <p><strong>Date de creation :</strong> {{ project.created_at }}</p>
+          <p><strong>Date de modification :</strong> {{ project.updated_at }}</p>
+
+          <!-- Bouton pour consulter les documents si accès autorisé -->
+          @if(canAccess) {
+            <button mat-raised-button color="primary" (click)="goToProjectReport()">Consulter les documents</button>
+          }
+
+          <!-- Affichage en fonction du statut de la demande -->
+          @if(!canAccess && requestStatus === 'none') {
+            <button mat-raised-button color="primary" (click)="requestAccess()">Demander l'accès</button>
+          }
+
+          @if(requestStatus === 'pending') {
+            <p>Demande en attente...</p>
+          }
+
+          @if(requestStatus === 'rejected') {
+            <p>Accès refusé !</p>
+          }
+
+          @if(requestStatus === 'approved') {
+            <p>Accès accordé !</p>
+          }
+          <button mat-raised-button color="primary" (click)="openRendezVousModal()">
+            Gérer les rendez-vous
+          </button>
+        </mat-card-content>
+      </mat-card-content>
+    </mat-card>
+  }
+  @else{
+    <mat-card-content class="location">
+      <div class="map-container">
+        <div id="map"></div>
+      </div>
+    </mat-card-content>
+
+  }
+
+</div>
