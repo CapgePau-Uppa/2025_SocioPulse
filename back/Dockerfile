@@ -24,5 +24,5 @@ COPY --chown=www-data:www-data . /var/www
 USER www-data
 
 # Expose port 9000 and start php-fpm server
-EXPOSE 9000
+EXPOSE 8000
 CMD ["php-fpm"]

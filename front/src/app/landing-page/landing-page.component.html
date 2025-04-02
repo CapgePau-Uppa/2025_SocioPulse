@@ -3,26 +3,29 @@
   <div class="maDiv">
     <div>
       <h2>Liste des Projets</h2>
-      <table class="tableau">
-        <thead>
-        <tr>
-          <th>Nom</th>
-          <th>Description</th>
-          <th>Ville</th>
-          <th>Departement</th>
-        </tr>
-        </thead>
-        <tbody>
-          @for (project of projects; track project.id) {
-            <tr (click)="navigateToProjectDetails(project.id)">
-              <td>{{ project.name }}</td>
-              <td>{{ project.description }}</td>
-              <td>{{ project.city }}</td>
-              <td>{{ project.department }}</td>
+      <div class="tableau-container">
+        <table class="tableau">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Description</th>
+              <th>Ville</th>
+              <th>Departement</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @for (project of projects; track project.id) {
+              <tr (click)="navigateToProjectDetails(project.id)">
+                <td>{{ project.name }}</td>
+                <td>{{ project.description }}</td>
+                <td>{{ project.city }}</td>
+                <td>{{ project.department }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
 
     </div>
   </div>
