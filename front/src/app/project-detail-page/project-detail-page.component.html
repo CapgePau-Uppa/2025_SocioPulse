@@ -6,7 +6,7 @@
           <a><strong>{{ project.name }}</strong></a>
         </mat-card-title>
         <mat-card-actions class="company_actions">
-          <a mat-raised-button class="update">Modifier</a>
+          <a mat-raised-button class="update" (click)="editProject()">Modifier</a>
           <a mat-raised-button class="close">Cloturer</a>
           <a mat-raised-button class="delete" (click)="deleteProject()">Supprimer</a>
         </mat-card-actions>

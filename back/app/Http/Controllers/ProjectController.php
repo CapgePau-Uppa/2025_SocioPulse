@@ -40,45 +40,44 @@ class ProjectController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        // Validation of received request
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'department' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'user_id' => 'required|exists:users,id',
-            'entreprise_id' => 'required|exists:entreprise,id',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'volet_relance' => 'nullable|string',
-            'mesure' => 'nullable|string',
-            'mesure_light' => 'nullable|string',
-            'mise_a_jour' => 'nullable|date',
-            'filiere' => 'nullable|string',
-            'notation_general' => 'nullable|integer',
-            'notation_commune' => 'nullable|integer',
-            'notation_citoyen' => 'nullable|integer',
-            'status' => 'required|in:En cours,Terminé,En préparation,En contestation',
-        ]);
+{
+    // Validation de la requête
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'department' => 'required|string|max:255',
+        'city' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'user_id' => 'required|exists:users,id',
+        'entreprise_id' => 'required|exists:entreprise,id',
+        'latitude' => 'required|numeric',
+        'longitude' => 'required|numeric',
+        'volet_relance' => 'nullable|string',
+        'mesure' => 'nullable|string',
+        'mesure_light' => 'nullable|string',
+        'mise_a_jour' => 'nullable|date',
+        'filiere' => 'nullable|string',
+        'notation_general' => 'nullable|integer',
+        'notation_commune' => 'nullable|integer',
+        'notation_citoyen' => 'nullable|integer',
+        'status' => 'required|in:En cours,Terminé,En préparation,En contestation',
+    ]);
 
-        // Find the project
-        $project = Project::find($id);
+    // Recherche du projet
+    $project = Project::find($id);
 
-        // Project not found
-        if (!$project) {
-            return response()->json(['message' => 'Projet non trouvé'], 404);
-        }
-
-        // Data update
-        $project->update($request->all());
-
-        // Return the updated project
-        return response()->json([
-            'message' => 'Projet mis à jour avec succès',
-            'data' => $project
-        ], 200);
+    if (!$project) {
+        return response()->json(['message' => 'Projet non trouvé'], 404);
     }
+
+    // Mise à jour des données du projet
+    $project->update($request->all());
+
+    return response()->json([
+        'message' => 'Projet mis à jour avec succès',
+        'data' => $project
+    ], 200);
+}
+
 
     public function index()
     {

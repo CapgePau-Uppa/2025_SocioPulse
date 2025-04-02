@@ -186,4 +186,14 @@ public checkUserAccess(): void {
   openDialog(): void {
     alert('Fonctionnalité non implémentée');
   }
+
+  editProject(): void {
+    const projectId = this.project?.id;
+    console.log('ID du projet à éditer:', projectId); // Debugging line
+    if (projectId) {
+      this.router.navigate(['/edit-project-page', projectId]);
+    } else {
+      console.error('ID du projet introuvable');
+    }
+  }
 }

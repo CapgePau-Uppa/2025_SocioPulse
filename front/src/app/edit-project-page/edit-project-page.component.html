@@ -1,78 +1,45 @@
 <div class="container">
-  @if(project) {
-    <mat-card class="project-card">
-      <mat-card-header>
-        <mat-card-title>
-          <a><strong>{{ project.name }}</strong></a>
-        </mat-card-title>
-        <mat-card-actions class="company_actions">
-          <a mat-raised-button class="update">Modifier</a>
-          <a mat-raised-button class="close">Cloturer</a>
-          <a mat-raised-button class="delete" (click)="deleteProject()">Supprimer</a>
-        </mat-card-actions>
-      </mat-card-header>
+  <mat-card class="edit-project-card">
+    <mat-card-header>
+      <mat-card-title>Modifier le projet</mat-card-title>
+    </mat-card-header>
 
-      <mat-card-content class="content">
-        <mat-card-content class="details">
-          <p><strong>Filière :</strong> {{ project.filiere }}</p>
-          <p><strong>Mesure :</strong> {{ project.mesure }}</p>
-          <p><strong>Mesure Light :</strong> {{ project.mesure_light }}</p>
-          <p><strong>Volet relance :</strong> {{ project.volet_relance }}</p>
-          <p><strong>Description :</strong><br/> {{ project.description }}</p>
-        </mat-card-content>
+    <mat-card-content>
+      <form (ngSubmit)="saveProject()">
+        <mat-form-field class="full-width">
+          <mat-label>Nom du projet</mat-label>
+          <input matInput [(ngModel)]="project.name" name="name" required />
+        </mat-form-field>
 
-        <mat-card-content class="location">
-          <div class="map-container">
-            <div id="map"></div>
-          </div>
-          <mat-card-content class="address">
-            <p><strong>Ville :</strong> {{ project.city }}</p>
-            <p><strong>Département :</strong> {{ project.department }}</p>
-          </mat-card-content>
-        </mat-card-content>
+        <mat-form-field class="full-width">
+          <mat-label>Filière</mat-label>
+          <input matInput [(ngModel)]="project.filiere" name="filiere" />
+        </mat-form-field>
 
-        <mat-card-content class="status">
-          <p><strong>Utilisateur :</strong> {{ project.user_id }}</p>
-          <p><strong>Entreprise :</strong> {{ project.company_id }}</p>
-          <p><strong>Status :</strong> {{ project.status }}</p>
-          <p><strong>Date de creation :</strong> {{ project.created_at }}</p>
-          <p><strong>Date de modification :</strong> {{ project.updated_at }}</p>
+        <mat-form-field class="full-width">
+          <mat-label>Mesure</mat-label>
+          <input matInput [(ngModel)]="project.mesure" name="mesure" />
+        </mat-form-field>
 
-          <!-- Bouton pour consulter les documents si accès autorisé -->
-          @if(canAccess) {
-            <button mat-raised-button color="primary" (click)="goToProjectReport()">Consulter les documents</button>
-          }
+        <mat-form-field class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput [(ngModel)]="project.description" name="description"></textarea>
+        </mat-form-field>
 
-          <!-- Affichage en fonction du statut de la demande -->
-          @if(!canAccess && requestStatus === 'none') {
-            <button mat-raised-button color="primary" (click)="requestAccess()">Demander l'accès</button>
-          }
+        <mat-form-field class="full-width">
+          <mat-label>Status</mat-label>
+          <mat-select [(ngModel)]="project.status" name="status">
+            <mat-option value="active">Actif</mat-option>
+            <mat-option value="pending">En attente</mat-option>
+            <mat-option value="closed">Clôturé</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-          @if(requestStatus === 'pending') {
-            <p>Demande en attente...</p>
-          }
-
-          @if(requestStatus === 'rejected') {
-            <p>Accès refusé !</p>
-          }
-
-          @if(requestStatus === 'approved') {
-            <p>Accès accordé !</p>
-          }
-          <button mat-raised-button color="primary" (click)="openRendezVousModal()">
-            Gérer les rendez-vous
-          </button>
-        </mat-card-content>
-      </mat-card-content>
-    </mat-card>
-  }
-  @else{
-    <mat-card-content class="location">
-      <div class="map-container">
-        <div id="map"></div>
-      </div>
+        <div class="buttons">
+          <button mat-raised-button color="primary" type="submit">Enregistrer</button>
+          <button mat-raised-button color="warn" (click)="cancelEdit()">Annuler</button>
+        </div>
+      </form>
     </mat-card-content>
-
-  }
-
+  </mat-card>
 </div>

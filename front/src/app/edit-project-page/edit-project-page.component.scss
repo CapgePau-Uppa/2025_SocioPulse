@@ -1,0 +1,121 @@
+.container {
+  display: flex;
+  font-family: "Candara", sans-serif;
+  font-size: 1.2rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  border-radius: 15px;
+  background-color: whitesmoke;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+mat-card-header {
+  width: 100%;
+  min-height: 12vh;
+  background-color: rgba(13, 17, 56, 0.9);
+  border-radius: 15px 15px 0 0;
+  padding: 20px;
+}
+
+mat-card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+mat-card-title a {
+  color: white;
+  text-decoration: none;
+}
+
+mat-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+mat-card-actions a {
+  color: white;
+  background-color: #1a237e;
+  border-radius: 25px;
+  padding: 10px 20px;
+  margin-left: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+mat-card-actions a:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+  transform: translateY(-2px);
+}
+
+mat-card-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  background-color: #fafafa;
+  border-radius: 0 0 15px 15px;
+}
+
+.form-field {
+  margin-bottom: 15px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-input-element {
+  font-size: 1.1rem;
+}
+
+textarea {
+  width: 100%;
+  height: 120px;
+  border-radius: 8px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
+
+button {
+  padding: 12px 24px;
+  letter-spacing: 0.5px;
+  border-radius: 25px;
+  margin: 20px 10px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+button[color="primary"] {
+  color: white;
+  background-color: #1a237e;
+}
+
+button[color="secondary"] {
+  background-color: green;
+  color: white;
+}
+
+button[color="cancel"] {
+  background-color: red;
+  color: white;
+  border-radius: 25px;
+}

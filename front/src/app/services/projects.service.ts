@@ -13,4 +13,8 @@ export class ProjectsService {
   getProjects(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }
+  getProjectById(id: string) {
+    return this.http.get<any>(`http://localhost:8000/api/projects/${id}`);
+  }
+
 }

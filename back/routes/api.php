@@ -85,6 +85,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/projects/{id}/access-requests', [PdfAccessRequestController::class, 'createRequest']);
     Route::post('/projects/{id}/access-requests/{requestId}/approve', [PdfAccessRequestController::class, 'approveRequest']);
     Route::post('/projects/{id}/access-requests/{requestId}/reject', [PdfAccessRequestController::class, 'rejectRequest']);
+    Route::put('/projects/{id}', [ProjectController::class, 'update']);
 });
 
 
