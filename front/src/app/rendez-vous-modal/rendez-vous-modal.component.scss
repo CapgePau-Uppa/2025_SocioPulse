@@ -188,3 +188,106 @@ input[type="date"] {
 mat-form-field input[type="date"] {
     padding-right: 40px;
 }
+
+.appointment-form-card {
+    width: 100%;
+    margin: 20px 0;
+    border-radius: 15px;
+}
+
+mat-card-header {
+    background-color: #1a237e;
+    color: white;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+mat-card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+mat-card-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+mat-card-actions button {
+    margin-left: 10px;
+}
+
+mat-card-actions button[type="submit"] {
+    background-color: #1a237e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+mat-card-actions button[type="submit"]:hover {
+    background-color: #3f51b5;
+}
+
+mat-card-actions button[type="button"] {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+mat-card-actions button[type="button"]:hover {
+    background-color: #f44336;
+}
+
+
+button.mat-raised-button[color="primary"] {
+    font-size: 1.1rem;
+    font-weight: bold;
+  }
+  
+
+  button.mat-button[color="warn"] {
+    font-size: 1.1rem;
+    font-weight: bold;
+  }
+
+  mat-card-actions {
+    display: flex;
+    justify-content: flex-end;  /* Pour aligner à droite tous les boutons */
+    gap: 10px;
+  }
+  
+  /* Ajustement pour garder le bouton Supprimer à droite */
+  mat-card-actions button {
+    margin-left: 10px;  /* Pour un petit espace entre les boutons */
+  }
+  
+  mat-card-content p {
+    word-wrap: break-word;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .appointment-card {
+    transition: all 0.3s ease; /* Transition fluide lors de l'agrandissement ou réduction */
+    overflow: hidden; /* Empêche l'extension de la carte au-delà de sa taille initiale */
+  }
+  
+  mat-card-content {
+    padding: 16px; /* Espacement interne */
+  }
+  
+  mat-card-header button {
+    padding: 0;
+    margin-left: auto; /* Place le bouton de réduction/expansion à droite */
+  }
+  
+  

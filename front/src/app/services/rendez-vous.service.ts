@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class RendezVousService {
 
-  private apiUrl = 'http://localhost:8000/api/projects';  // Replace with your actual API URL
+  private apiUrl = 'http://localhost:8000/api/projects';
 
   constructor(private http: HttpClient) {}
 
@@ -23,37 +23,65 @@ export class RendezVousService {
   // Get appointments for a specific project
   getRendezVous(projectId: number): Observable<any> {
     const headers = this.getAuthHeaders();
-    console.log('En-têtes utilisés pour la requête:', headers);  // Ajoutez ce log pour vérifier les en-têtes
+    console.log('En-têtes utilisés pour la requête:', headers);
   
     return this.http.get<any>(`${this.apiUrl}/${projectId}/rendez-vous`, { headers });
+  }
+
+  // Get appointments for a specific project and date
+  getRendezVousForDate(projectId: number, date: string): Observable<any> {
+    const headers = this.getAuthHeaders();
+    console.log(`Fetching appointments for project ${projectId} on ${date}`);
+    return this.http.get<any>(`${this.apiUrl}/${projectId}/rendez-vous/${date}`, { headers });
   }
   
   // Create a new appointment for a project
   createRendezVous(projectId: number, data: any): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.post<any>(`${this.apiUrl}/${projectId}/rendez-vous`, data, { headers });
+    const formattedData = {
+      project_id: projectId,
+      date: data.date_hour,
+      hour: data.hour,
+      message: data.message
+    };
+    
+    console.log("Données envoyées au backend :", formattedData);
+    return this.http.post<any>(`${this.apiUrl}/${projectId}/rendez-vous`, formattedData, { headers });
   }
 
   // Update an existing appointment
-  updateRendezVous(id: number, data: any): Observable<any> {
+  updateRendezVous(projectId: number, data: any): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.put(`${this.apiUrl}/rendez-vous/${id}`, data, { headers });
+    return this.http.put(`${this.apiUrl}/rendez-vous/${projectId}`, data, { headers });
   }
 
   // Delete an appointment
-  deleteRendezVous(id: number): Observable<any> {
+  deleteRendezVous(projectId: number): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.delete(`${this.apiUrl}/${id}/rendez-vous`, { headers });
+    return this.http.delete(`${this.apiUrl}/${projectId}/rendez-vous`, { headers });
   }
 
-  acceptRendezVous(id: number): Observable<any> {
+  acceptRendezVous(projectId: number): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.post(`${this.apiUrl}/rendez-vous/${id}/accept`, {}, { headers });
+    return this.http.post(`${this.apiUrl}/rendez-vous/${projectId}/accept`, {}, { headers });
   }
   
-  rejectRendezVous(id: number): Observable<any> {
+  rejectRendezVous(projectId: number): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.post(`${this.apiUrl}/rendez-vous/${id}/reject`, {}, { headers });
+    return this.http.post(`${this.apiUrl}/rendez-vous/${projectId}/reject`, {}, { headers });
   }
+
+  getAvailabilities(projectId: number) {
+    const headers = this.getAuthHeaders();
+    console.log("Headers envoyés :", headers);
+    return this.http.get<any[]>(`http://localhost:8000/api/availabilities/${projectId}`, { headers });
+  }
+  
+  
+  setAvailabilities(projectId: number, availabilities: any[]) {
+    const headers = this.getAuthHeaders();
+    return this.http.post(`http://localhost:8000/api/availabilities/${projectId}`, { availabilities }, { headers });
+  }
+  
    
 }
