@@ -38,7 +38,7 @@ interface Role {
     ]
 })
 export class AdminDashboardComponent implements OnInit {
-    roles: any[] = [];
+    roles: Role[] = [];
     users: any[] = [];
     permissions: any[] = [];
 	displayedColumns: string[] = ['name', 'role', 'actions'];

@@ -182,7 +182,7 @@ public checkUserAccess(): void {
       data: { projectId: this.project.id }
     });
   }
-  
+
   openDialog(): void {
     alert('Fonctionnalité non implémentée');
   }
