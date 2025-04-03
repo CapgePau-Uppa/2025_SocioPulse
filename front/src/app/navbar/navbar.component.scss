@@ -12,10 +12,6 @@
   top: 0;
   left: 0;
   z-index: 1000;
-  flex-wrap: nowrap; // Empêche le retour à la ligne
-  padding: 0 16px; // Ajoute un peu de marge sur les côtés
-  height: auto; // Permet à la barre de s'adapter si nécessaire
-  min-height: 64px; // Maintient une hauteur minimale
 }
 
 
@@ -38,35 +34,10 @@ a {
 .spacer{
   flex: 1 1 auto;
 }
-.pc-layout {
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-}
-
-.notification-container {
-  display: inline-flex;
-  align-items: center;
-  margin: 0 4px;
-}
-
-.notification-button {
-  height: 40px;
-  width: 40px;
-  line-height: 40px;
-  padding: 0;
-}
-
-/* Pour tous les éléments à l'intérieur de pc-layout */
-.pc-layout > a,
-.pc-layout > div {
-  display: inline-flex;
-  white-space: nowrap;
-}
 //responsive
 @media (min-width: 768px) {
-  .mobile-only {
-    display: none;
+  button{
+    display:none;
   }
 }
 @media(max-width: 768px){

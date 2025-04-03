@@ -5,14 +5,33 @@
   padding: 30px;
   margin: 30px;
 }
-
+// Améliorer le style des filtres
 .filters {
   display: flex;
-  flex-direction: row-reverse;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 15px;
   margin-bottom: 20px;
 }
+// Ajoutez ceci dans projects-list-page.component.scss
+.search-container {
+  margin-bottom: 15px;
+  padding-left: 40px;
+  padding-right: 40px;
+  background-color: whitesmoke;
+  border-radius: 45px;
+}
 
+.search-field {
+  width: 100%;
+}
+
+
+@media (max-width: 768px) {
+  .search-field {
+    max-width: none;
+  }
+}
 .date-filters {
   margin-top: 20px;
   display: flex;
