@@ -4,11 +4,19 @@
       <mat-card-title>
         <a><strong>{{ project.name }}</strong></a>
       </mat-card-title>
+      @if(userRole == 'entreprise' || userRole == 'admin'){
+
       <mat-card-actions class="company_actions">
         <a mat-raised-button class="update" (click)="editProject()">Modifier</a>
         <a mat-raised-button class="close">Clôturer</a>
         <a mat-raised-button class="delete" (click)="deleteProject()">Supprimer</a>
       </mat-card-actions>
+    }
+    @if(userRole == 'citoyen'){
+      <mat-card-actions class="citoyen_actions">
+        <a mat-raised-button class="update" (click)="editProject()">Mettre en favoris</a>
+      </mat-card-actions>
+    }
     </mat-card-header>
 
     <mat-card-content class="content">
@@ -37,19 +45,22 @@
         <p><strong>Date de création :</strong> {{ project.created_at }}</p>
         <p><strong>Date de modification :</strong> {{ project.updated_at }}</p>
 
+        @if(userRole != 'citoyen' && userRole != null){
         <!-- Bouton pour consulter les documents si accès autorisé -->
         <button *ngIf="canAccess" mat-raised-button color="primary" (click)="goToProjectReport()">Consulter les documents</button>
 
         <!-- Affichage en fonction du statut de la demande -->
         <button *ngIf="!canAccess && requestStatus === 'none'" mat-raised-button color="primary" (click)="requestAccess()">Demander l'accès</button>
+          <p *ngIf="requestStatus === 'pending'">Demande en attente...</p>
+          <p *ngIf="requestStatus === 'rejected'">Accès refusé !</p>
+          <p *ngIf="requestStatus === 'approved'">Accès accordé !</p>
 
-        <p *ngIf="requestStatus === 'pending'">Demande en attente...</p>
-        <p *ngIf="requestStatus === 'rejected'">Accès refusé !</p>
-        <p *ngIf="requestStatus === 'approved'">Accès accordé !</p>
+
 
         <button mat-raised-button color="primary" (click)="openRendezVousModal()">
           Gérer les rendez-vous
         </button>
+      }
       </mat-card-content>
     </mat-card-content>
   </mat-card>

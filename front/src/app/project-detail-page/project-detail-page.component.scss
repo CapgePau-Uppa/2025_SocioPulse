@@ -37,6 +37,12 @@ mat-card-title a {
   justify-content: flex-end;
 }
 
+.citoyen_actions{
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+
 mat-card-actions a {
   color: white;
   border-radius: 25px;

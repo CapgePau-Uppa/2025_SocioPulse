@@ -58,6 +58,7 @@ export class ProjectDetailPageComponent implements AfterViewInit {
 
     if (userId) {
         this.userRole = sessionStorage.getItem('role');
+        console.log('userRole:', this.userRole); // Debugging line
     }
 
     const projectId = +(this.route.snapshot.paramMap.get('id') ?? 0);
