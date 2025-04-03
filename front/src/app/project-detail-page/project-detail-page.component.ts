@@ -24,6 +24,7 @@ import { RendezVousModalComponent } from '../rendez-vous-modal/rendez-vous-modal
 export class ProjectDetailPageComponent implements AfterViewInit {
   project: any;
   requestStatus: string = 'none';
+  userRole: string | null = null;
   canAccess: boolean = false; // Stocke le résultat du test d'accès
   private map!: L.Map;
 
@@ -53,6 +54,12 @@ export class ProjectDetailPageComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
+    const userId = sessionStorage.getItem('user_id');
+
+    if (userId) {
+        this.userRole = sessionStorage.getItem('role');
+    }
+
     const projectId = +(this.route.snapshot.paramMap.get('id') ?? 0);
 
     this.projectsService.getProjects().subscribe(data => {
