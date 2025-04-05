@@ -151,7 +151,7 @@ class DatabaseSeeder extends Seeder
                 'notation_commune' => null,
                 'notation_citoyen' => null,
                 'status' => 'En cours',
-                'created_at' => now(),
+                'created_at' => '2024-05-06 00:00:00',
                 'updated_at' => now(),
             ],
             [
@@ -171,7 +171,7 @@ class DatabaseSeeder extends Seeder
                 'notation_commune' => null,
                 'notation_citoyen' => null,
                 'status' => 'En préparation',
-                'created_at' => now(),
+                'created_at' => '2024-02-25 00:00:00',
                 'updated_at' => now(),
             ],
             [
@@ -191,7 +191,7 @@ class DatabaseSeeder extends Seeder
                 'notation_commune' => null,
                 'notation_citoyen' => null,
                 'status' => 'En préparation',
-                'created_at' => now(),
+                'created_at' => '2024-03-27 00:00:00',
                 'updated_at' => now(),
             ],
             
@@ -212,7 +212,7 @@ class DatabaseSeeder extends Seeder
                 'notation_commune' => null,
                 'notation_citoyen' => null,
                 'status' => 'En contestation',
-                'created_at' => now(),
+                'created_at' => '2024-09-25 00:00:00',
                 'updated_at' => now(),
             ],
             [
@@ -232,7 +232,7 @@ class DatabaseSeeder extends Seeder
                 'notation_commune' => null,
                 'notation_citoyen' => null,
                 'status' => 'Terminé',
-                'created_at' => now(),
+                'created_at' => '2024-05-14 00:00:00',
                 'updated_at' => now(),
             ],
             [
@@ -252,7 +252,7 @@ class DatabaseSeeder extends Seeder
                 'notation_commune' => null,
                 'notation_citoyen' => null,
                 'status' => 'En cours',
-                'created_at' => now(),
+                'created_at' => '2024-01-04 00:00:00',
                 'updated_at' => now(),
             ],
             [
@@ -272,7 +272,7 @@ class DatabaseSeeder extends Seeder
                 'notation_commune' => null,
                 'notation_citoyen' => null,
                 'status' => 'En cours',
-                'created_at' => now(),
+                'created_at' => '2024-10-07 00:00:00',
                 'updated_at' => now(),
             ],
             [
@@ -292,7 +292,7 @@ class DatabaseSeeder extends Seeder
                 'notation_commune' => null,
                 'notation_citoyen' => null,
                 'status' => 'En préparation',
-                'created_at' => now(),
+                'created_at' => '2024-10-01 00:00:00',
                 'updated_at' => now(),
             ],
             [
@@ -312,7 +312,7 @@ class DatabaseSeeder extends Seeder
                 'notation_commune' => null,
                 'notation_citoyen' => null,
                 'status' => 'En préparation',
-                'created_at' => now(),
+                'created_at' => '2024-01-28 00:00:00',
                 'updated_at' => now(),
             ],
             [
@@ -332,7 +332,7 @@ class DatabaseSeeder extends Seeder
                 'notation_commune' => null,
                 'notation_citoyen' => null,
                 'status' => 'En cours',
-                'created_at' => now(),
+                'created_at' => '2024-01-18 00:00:00',
                 'updated_at' => now(),
             ]
         ];
