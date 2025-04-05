@@ -11,6 +11,7 @@ use App\Http\Controllers\EntrepriseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\PdfAccessRequestController;
 use App\Http\Controllers\RendezVousController;
+use App\Http\Controllers\FavoriteController;
 
 /*
 * Middleware:
@@ -123,6 +124,18 @@ Route::middleware(['auth:sanctum', 'checkRole:administrator,communaute,entrepris
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/availabilities/{projectId}', [AvailabilitieController::class, 'index']);
     Route::post('/availabilities/{projectId}', [AvailabilitieController::class, 'store']);
+});
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    // Route pour lister les favoris de l'utilisateur authentifié
+    Route::get('/favorites', [FavoriteController::class, 'index']);
+
+    // Route pour ajouter un projet aux favoris
+    Route::post('/favorites', [FavoriteController::class, 'store']);
+
+    // Route pour supprimer un favori
+    Route::delete('/favorites/{favorite}', [FavoriteController::class, 'destroy']);
 });
 
 

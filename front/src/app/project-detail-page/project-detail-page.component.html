@@ -14,7 +14,8 @@
     }
     @if(userRole == 'citoyen'){
       <mat-card-actions class="citoyen_actions">
-        <a mat-raised-button class="update" (click)="editProject()">Mettre en favoris</a>
+        <a *ngIf="!isFavorite" mat-raised-button class="update" (click)="addToFavorites()">Mettre en favoris</a>
+        <a *ngIf="isFavorite" mat-raised-button class="update" (click)="removeFromFavorites(project.id)">Supprimer des favoris</a>
       </mat-card-actions>
     }
     </mat-card-header>

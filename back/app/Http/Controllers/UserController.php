@@ -48,5 +48,6 @@ class UserController extends Controller
     
         return response()->json(['message' => "Rôle '{$role->name}' retiré de '{$user->name}'"]);
     }
-    
+
+
 }

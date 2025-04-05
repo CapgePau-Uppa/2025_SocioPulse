@@ -48,4 +48,11 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Entreprise::class);
     }
+
+    // Dans le modèle User (App\Models\User.php)
+public function favorites()
+{
+    return $this->hasMany(Favorite::class);
+}
+
 }
