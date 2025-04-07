@@ -5,29 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PdfAccessRequest extends Model
+class CategoryReport extends Model
 {
     use HasFactory;
 
+    protected $table = 'table_category_report';
+
     protected $fillable = [
-        'user_id',
         'project_id',
-        'category_id',
-        'status',
+        'name',
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
+    // Relation avec le modèle Project
     public function project()
     {
         return $this->belongsTo(Project::class);
-    }
-
-    public function category()
-    {
-        return $this->belongsTo(CategoryReport::class, 'category_id');
     }
 }

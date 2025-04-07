@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PdfAccessRequest;
 use App\Models\Project;
+use App\Models\CategoryReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,7 +13,7 @@ class PdfAccessRequestController extends Controller
     /**
      * Créer une demande d'accès au PDF pour un projet
      */
-    public function createRequest($id)
+    public function createRequest(Request $request, $id)
     {
         $user = Auth::user();
 
@@ -29,10 +30,14 @@ class PdfAccessRequestController extends Controller
             return response()->json(['message' => 'Une demande est déjà en attente'], 400);
         }
 
+        // Vérifier si la catégorie existe
+        $category = CategoryReport::findOrFail($request->category_id);
+
         // Créer une nouvelle demande
         PdfAccessRequest::create([
             'user_id' => $user->id,
             'project_id' => $id,
+            'category_id' => $category->id,
             'status' => 'pending',
         ]);
 
@@ -45,63 +50,67 @@ class PdfAccessRequestController extends Controller
     public function getRequests()
     {
         $user = Auth::user();
-        
+
         // Si l'utilisateur est administrateur, il voit toutes les demandes en attente
         if ($user->role->name === 'administrator') {
-            $requests = PdfAccessRequest::with('project') // Charger les projets associés
+            $requests = PdfAccessRequest::with('project', 'category') // Charger les projets et catégories associés
                 ->where('status', 'pending')
                 ->get();
             return response()->json($requests);
         }
-    
+
         // Si l'utilisateur est d'une entreprise, il ne voit que les demandes des projets de son entreprise
         if ($user->entreprise_id) {
             $projectsOwned = Project::where('entreprise_id', $user->entreprise_id)->pluck('id');
-            $requests = PdfAccessRequest::with('project') // Charger les projets associés
+            $requests = PdfAccessRequest::with('project', 'category') // Charger les projets et catégories associés
                 ->whereIn('project_id', $projectsOwned)
                 ->where('status', 'pending')
                 ->get();
             return response()->json($requests);
         }
-    
+
         // Par défaut, retourner un tableau vide si l'utilisateur n'est pas autorisé
         return response()->json([]);
     }
 
     /**
      * Récupérer une demande spécifique à un projet
-     */    
+     */
     public function index($projectId)
     {
-        $requests = PdfAccessRequest::where('project_id', $projectId)->get();
+        $requests = PdfAccessRequest::with('category')
+            ->where('project_id', $projectId)
+            ->get();
         return response()->json($requests);
     }
-        
 
-    public function requestAccess($projectId)
+    public function requestAccess(Request $request, $projectId)
     {
         $user = Auth::user();
-    
+
         // Vérifie si une demande existe déjà pour cet utilisateur et projet
         $existingRequest = PdfAccessRequest::where('user_id', $user->id)
             ->where('project_id', $projectId)
             ->whereIn('status', ['pending', 'approved'])
             ->first();
-    
+
         if ($existingRequest) {
             return response()->json(['message' => 'Vous avez déjà une demande en attente ou approuvée pour ce projet.'], 400);
         }
-    
+
+        // Vérifier si la catégorie existe
+        $category = CategoryReport::findOrFail($request->category_id);
+
         // Créer une nouvelle demande
         $request = new PdfAccessRequest();
         $request->user_id = $user->id;
         $request->project_id = $projectId;
+        $request->category_id = $category->id;
         $request->status = 'pending';
         $request->save();
-    
+
         return response()->json(['message' => 'Demande envoyée avec succès.'], 201);
     }
-    
 
     /**
      * Approuver une demande d'accès
@@ -109,29 +118,28 @@ class PdfAccessRequestController extends Controller
     public function approveRequest($id, $requestId)
     {
         $user = Auth::user();
-    
+
         // Vérifier si l'utilisateur est administrateur
-        if ($user->role->name === 'administrator') { 
+        if ($user->role->name === 'administrator') {
             $request = PdfAccessRequest::findOrFail($requestId);
             $request->status = 'approved';
             $request->save();
             return response()->json(['message' => 'Demande approuvée avec succès.']);
         }
-    
+
         // Vérifier si l'utilisateur est propriétaire du projet
         $project = Project::findOrFail($id);
         if ($project->entreprise_id != $user->entreprise_id) {
             return response()->json(['message' => 'Accès refusé : Vous ne pouvez approuver que les demandes pour vos projets'], 403);
         }
-    
+
         // Approuver la demande
         $request = PdfAccessRequest::findOrFail($requestId);
         $request->status = 'approved';
         $request->save();
-    
+
         return response()->json(['message' => 'Demande approuvée avec succès.']);
     }
-    
 
     /**
      * Rejeter une demande d'accès
@@ -161,5 +169,4 @@ class PdfAccessRequestController extends Controller
 
         return response()->json(['message' => 'Demande rejetée avec succès.']);
     }
-
 }
