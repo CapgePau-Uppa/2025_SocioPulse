@@ -24,13 +24,13 @@ class RendezVous extends Model
         'date' => 'date',
     ];
 
-    // Accessor pour l'heure
+    // Accessor for the hour
     public function getHourAttribute($value)
     {
         return \Carbon\Carbon::parse($value)->format('H:i:s');
     }
 
-    // Mutator pour l'heure
+    // Mutator for the hour
     public function setHourAttribute($value)
     {
         $this->attributes['hour'] = \Carbon\Carbon::parse($value)->format('H:i:s');

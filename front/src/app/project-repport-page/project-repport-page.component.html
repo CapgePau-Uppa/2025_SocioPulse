@@ -3,10 +3,20 @@
   <button mat-raised-button class="add-report-button" (click)="openDialog()">
     Ajouter un rapport (PDF)
   </button>
+    <button mat-raised-button class="add-report-button" (click)="openDialog()">
+    Ajouter une catégorie
+  </button>
   <mat-list>
-    <mat-list-item *ngFor="let report of reports">
-      <span>{{ report.name }}</span>
-      <button mat-button (click)="openPdf(report.path)">📄 Voir le PDF</button>
+    <mat-list-item *ngFor="let category of categories" class="category">
+      <span>{{ category }}</span>
+      <mat-list>
+        <mat-list-item *ngFor="let report of reports">
+          <span>{{ report.name }}</span>
+          <button mat-button (click)="openPdf(report.path)">Voir le PDF</button>
+        </mat-list-item>
+      </mat-list>
+      <button mat-button (click)="deleteCategory(category.id)"> Supprimer</button>
     </mat-list-item>
-  </mat-list>
+</mat-list>
 </div>
+S

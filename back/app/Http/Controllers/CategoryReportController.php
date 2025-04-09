@@ -20,15 +20,23 @@ class CategoryReportController extends Controller
 
     public function store(Request $request)
     {
+        \Log::info('Données reçues: ', $request->all());
+    
         $request->validate([
             'project_id' => 'required|exists:projects,id',
             'name' => 'required|string|max:255',
         ]);
-
-        CategoryReport::create($request->all());
-
-        return redirect()->route('category_reports.index')->with('success', 'Category created successfully.');
+    
+        try {
+            CategoryReport::create($request->all());
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors de la création de la catégorie: ' . $e->getMessage());
+            return response()->json(['error' => 'Erreur interne du serveur'], 500);
+        }
+    
+        return response()->json(['message' => 'Catégorie créée avec succès.']);
     }
+    
 
     public function show(CategoryReport $categoryReport)
     {

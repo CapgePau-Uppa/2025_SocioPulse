@@ -9,7 +9,7 @@ class EntrepriseController extends Controller
 {
 public function store(Request $request)
 {
-    // Validation des données envoyées
+    // Validate data sendt
     $request->validate([
         'siren' => 'required|string|unique:entreprise,siren|max:255',
         'nom' => 'required|string|max:255',
@@ -19,7 +19,7 @@ public function store(Request $request)
         'note_commune' => 'nullable|integer',
     ]);
 
-    // Création de l'entreprise
+    // entreprise creation
     $entreprise = Entreprise::create([
         'siren' => $request->siren,
         'nom' => $request->nom,

@@ -12,7 +12,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\PdfAccessRequestController;
 use App\Http\Controllers\RendezVousController;
 use App\Http\Controllers\FavoriteController;
-
+use App\Http\Controllers\CategoryReportController;
 /*
 * Middleware:
 * - 'auth:sanctum': Ensures the user is authenticated via Sanctum.
@@ -138,6 +138,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/favorites/{favorite}', [FavoriteController::class, 'destroy']);
 });
 
+Route::middleware('auth:sanctum')->post('category_reports', [CategoryReportController::class, 'store']);
 
 /*
 // Route protégée par Sanctum  et permissions administrator

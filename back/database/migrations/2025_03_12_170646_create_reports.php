@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->string('path'); // Chemin d'accès au rapport
-            $table->string('name'); // Nom du rapport
-            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade'); // Clé étrangère vers la table projects
+            $table->string('path');
+            $table->string('name'); 
+            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
+            $table->foreignId('category_id')->constrained('table_category_report')->onDelete('cascade');
             $table->timestamps();
         });
     }
