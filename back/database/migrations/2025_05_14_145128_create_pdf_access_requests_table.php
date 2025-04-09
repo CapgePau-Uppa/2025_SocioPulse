@@ -11,7 +11,6 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
-            $table->foreignId('category_id')->constrained('table_category_report')->onDelete('cascade');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
             //Un utilisateur ne peut avoir qu'une seule demande par projet

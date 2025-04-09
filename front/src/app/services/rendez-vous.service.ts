@@ -40,7 +40,7 @@ export class RendezVousService {
     const headers = this.getAuthHeaders();
     const formattedData = {
       project_id: projectId,
-      date: data.date_hour,
+      date: data.date,
       hour: data.hour,
       message: data.message
     };
@@ -80,6 +80,7 @@ export class RendezVousService {
   
   setAvailabilities(projectId: number, availabilities: any[]) {
     const headers = this.getAuthHeaders();
+    console.log("SetAvailabilitie :", availabilities);
     return this.http.post(`http://localhost:8000/api/availabilities/${projectId}`, { availabilities }, { headers });
   }
   

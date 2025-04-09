@@ -119,7 +119,7 @@ class RendezVousController extends Controller {
     
         return response()->json([
             'message' => 'Rendez-vous accepté',
-            'role' => $user->role->name // Ajout du rôle dans la réponse JSON
+            'role' => $user->role->name
         ]);
     }
     

@@ -1,125 +1,135 @@
-<h2>Gestion des rendez-vous</h2>
+<h2 class="appointments-title">Gestion des rendez-vous</h2>
 
-<!-- Condition si la liste de rendez-vous est vide ou non -->
-<div>
-  
+<div class="appointments-container">
+
+  <!-- Liste des rendez-vous -->
   <mat-card class="appointment-card" *ngFor="let rdv of rendezVousList">
-    <mat-card-header>
-      <mat-card-title>
-        {{ 'Nouveau rendez-vous' }} - 
-        {{ rdv.date | date:'dd/MM/yyyy' }} à {{ rdv.hour }} avec -
-        {{ rdv.user?.name || 'Nom inconnu' }} 
-        {{ rdv.status | uppercase }} - 
-      </mat-card-title>    
+    <mat-card-header class="appointment-header">
+      <mat-card-title class="appointment-title">
+        Nouveau rendez-vous -
+        {{ rdv.date | date:'dd/MM/yyyy' }} à {{ rdv.hour?.slice(0, 5) }} avec -
+        {{ rdv.user?.name || 'Nom inconnu' }}
+        {{ rdv.status | uppercase }} -
+      </mat-card-title>
     </mat-card-header>
 
-    <mat-card-content>
-        <p><strong>Message:</strong> {{ rdv.message || 'Pas de message' }}</p>
+    <mat-card-content class="appointment-content">
+      <p class="appointment-message">
+        <strong>Message:</strong> {{ rdv.message || 'Pas de message' }}
+      </p>
     </mat-card-content>
-    
-    <mat-card-actions>
-      <!-- Boutons pour l'entreprise -->
+
+    <mat-card-actions class="appointment-actions">
+      <!-- Entreprise : Accepter / Refuser -->
       <ng-container *ngIf="(userRole === 'entreprise' || userRole === 'administrator') && rdv.status !== 'approved' && rdv.status !== 'rejected'">
-        <button mat-raised-button class="accept-button" (click)="acceptRendezVous(rdv.id)">Accepter</button>
-        <button mat-raised-button class="reject-button" (click)="rejectRendezVous(rdv.id)">Refuser</button>
+        <button mat-button class="appointment-button accept-button" (click)="acceptRendezVous(rdv.id)">Accepter</button>
+        <button mat-button class="appointment-button reject-button" (click)="rejectRendezVous(rdv.id)">Refuser</button>
       </ng-container>
 
-      <!-- Boutons pour la collectivité -->
+      <!-- Collectivité : Modifier / Supprimer -->
       <ng-container *ngIf="userRole === 'communaute' || userRole === 'administrator'">
-        <!-- Bouton Modifier uniquement visible si le statut n'est pas 'approved' ou 'rejected' -->
-        <button *ngIf="rdv.status !== 'approved' && rdv.status !== 'rejected'" 
-                mat-raised-button color="primary" type="submit" 
+        <button *ngIf="rdv.status !== 'approved' && rdv.status !== 'rejected'"
+                mat-button
+                type="submit"
+                class="appointment-button edit-button"
                 (click)="updateRendezVous(rdv.project.id)">
           Modifier le rendez-vous
-        </button>   
-        <!-- Bouton Supprimer toujours visible -->
-        <button mat-button type="button" (click)="deleteRendezVous(rdv.id)">
+        </button>
+        <button mat-button type="button" class="appointment-button delete-button" (click)="deleteRendezVous(rdv.id)">
           Supprimer
         </button>
       </ng-container>
-
-    </mat-card-actions> 
+    </mat-card-actions>
   </mat-card>
 
-  <!-- Template à afficher quand il n'y a pas de rendez-vous -->
+  <!-- Template si pas de rendez-vous -->
   <ng-template>
     <mat-card class="no-appointments-card">
       <mat-card-content>
-        <p>Pas de rendez-vous.</p>
+        <p>Aucun rendez-vous.</p>
       </mat-card-content>
     </mat-card>
   </ng-template>
 
-  <!-- Formulaire pour définir les disponibilités -->
-  <div *ngIf="(userRole === 'entreprise' || userRole === 'administrator')">
+  <!-- Formulaire entreprise : définir disponibilités -->
+  <div class="availability-form-container" *ngIf="userRole === 'entreprise' || userRole === 'administrator'">
     <form (ngSubmit)="saveAvailabilities()">
-      <mat-card class="appointment-form-card">
+      <mat-card class="availability-card">
         <mat-card-header>
           <mat-card-title>Définir les disponibilités</mat-card-title>
         </mat-card-header>
-  
-        <mat-card-content>
-          <!-- Champ pour la date -->
-          <mat-form-field appearance="outline" style="width: 100%;">
-            <mat-label>Date</mat-label>
-            <input matInput type="date" [(ngModel)]="selectedDate" name="selectedDate" [ngModelOptions]="{standalone: true}">
-          </mat-form-field>
-  
-          <!-- Champ pour l'heure de début -->
-          <mat-form-field appearance="outline" style="width: 100%;">
+
+        <mat-card-content class="availability-content">
+          <!-- Date -->
+          <form [formGroup]="form" (ngSubmit)="submitForm()">
+            <mat-form-field class="form-field date-field" appearance="outline">
+              <mat-label>Date</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="date_hour" [min]="minDate" />
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker [dateClass]="highlightDates"></mat-datepicker>
+            </mat-form-field>
+          </form>
+
+          <!-- Heure début -->
+          <mat-form-field class="form-field time-field" appearance="outline">
             <mat-label>Heure de début</mat-label>
             <input matInput type="time" [(ngModel)]="start_time" name="start_time" [ngModelOptions]="{standalone: true}">
           </mat-form-field>
-  
-          <!-- Champ pour l'heure de fin -->
-          <mat-form-field appearance="outline" style="width: 100%;">
+
+          <!-- Heure fin -->
+          <mat-form-field class="form-field time-field" appearance="outline">
             <mat-label>Heure de fin</mat-label>
             <input matInput type="time" [(ngModel)]="end_time" name="end_time" [ngModelOptions]="{standalone: true}">
           </mat-form-field>
         </mat-card-content>
-  
+
         <mat-card-actions>
-          <button mat-raised-button color="primary" type="submit">Sauvegarder</button>
+          <button mat-button type="submit" class="save-availability-button" color="primary">Sauvegarder</button>
         </mat-card-actions>
       </mat-card>
     </form>
   </div>
-  
-  
-  <!-- Formulaire pour créer ou modifier un rendez-vous -->
-  <div *ngIf="userRole === 'communaute' || userRole === 'administrator'">
+
+  <!-- Formulaire communauté : prise de rendez-vous -->
+  <div class="appointment-form-container" *ngIf="userRole === 'communaute' || userRole === 'administrator'">
     <form [formGroup]="form" (ngSubmit)="submitForm()">
       <mat-card class="appointment-form-card">
         <mat-card-header>
-          <mat-card-title>{{ isEditing ? 'Modifier un rendez-vous' : 'Prendre un rendez-vous' }}</mat-card-title>
+          <mat-card-title>
+            {{ isEditing ? 'Modifier un rendez-vous' : 'Prendre un rendez-vous' }}
+          </mat-card-title>
         </mat-card-header>
 
         <mat-card-content>
-          <!-- Champ pour la date -->
-          <mat-error *ngIf="form.get('date_hour')?.hasError('required')">
-            La date est requise.
-          </mat-error>
-          <mat-form-field appearance="outline" style="width: 100%;">
-            <mat-label>Date</mat-label>
-            <input matInput type="date" formControlName="date_hour" [min]="minDate">
-          </mat-form-field>
+          <div class="date-time-group">
+            <!-- Date -->
+            <mat-form-field class="form-field date-field" appearance="outline">
+              <mat-label>Date</mat-label>
+              <input
+                matInput
+                [matDatepicker]="pickerCommunaute"
+                formControlName="date_hour"
+                [min]="minDate"
+              />
+              <mat-datepicker-toggle matSuffix [for]="pickerCommunaute"></mat-datepicker-toggle>
+              <mat-datepicker #pickerCommunaute [dateClass]="highlightDates"></mat-datepicker>
+            </mat-form-field>
 
-          <!-- Champ pour l'heure -->
-          <mat-form-field appearance="outline" style="width: 100%;">
-            <mat-label>Heure</mat-label>
-            <mat-select formControlName="hour" required>
-              <mat-option *ngFor="let hour of hours" [value]="hour">{{ hour }}</mat-option>
-              <mat-option *ngIf="hours.length === 0" disabled>
-                Aucune heure disponible pour cette date.
-              </mat-option>
-            </mat-select>
-            <mat-error *ngIf="form.get('hour')?.hasError('required')">
-              L'heure est requise.
-            </mat-error>
-          </mat-form-field>
+            <!-- Time -->
+            <mat-form-field class="form-field hour-field" appearance="outline">
+              <mat-label>Heure</mat-label>
+              <mat-select formControlName="hour" required>
+                <mat-option *ngFor="let hour of hours" [value]="hour">{{ hour }}</mat-option>
+                <mat-option *ngIf="hours.length === 0" disabled>Aucune heure disponible pour cette date.</mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.get('hour')?.hasError('required')">
+                L'heure est requise.
+              </mat-error>
+            </mat-form-field>
+          </div>
 
-          <!-- Champ pour le message -->
-          <mat-form-field appearance="outline" style="width: 100%;">
+          <!-- Message -->
+          <mat-form-field class="form-field message-field" appearance="outline">
             <mat-label>Message</mat-label>
             <textarea matInput formControlName="message"></textarea>
             <mat-error *ngIf="form.get('message')?.hasError('maxlength')">
@@ -128,13 +138,14 @@
           </mat-form-field>
         </mat-card-content>
 
-        <mat-card-actions>
-          <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+        <mat-card-actions class="appointment-form-actions">
+          <button mat-button type="submit" [disabled]="form.invalid" class="submit-appointment-button" color="primary">
             {{ isEditing ? 'Mettre à jour' : 'Prendre' }} rendez-vous
           </button>
-          <button mat-button type="button" (click)="close()">Fermer</button>
+          <button mat-button type="button" class="close-form-button" (click)="close()">Fermer</button>
         </mat-card-actions>
       </mat-card>
     </form>
   </div>
+
 </div>
