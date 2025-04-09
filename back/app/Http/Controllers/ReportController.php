@@ -11,70 +11,76 @@ use Illuminate\Support\Facades\Response;
 
 class ReportController extends Controller
 {
+    // Retrieve a report file based on its filename
     public function getReportFile($filename)
     {
-        $path = storage_path("../../ressource/$filename"); // Chemin du fichier
-    
+        $path = storage_path("../../ressource/$filename"); // Define the file path
+
+        // Check if the file exists
         if (!File::exists($path)) {
-            return response()->json(['error' => 'Fichier non trouvé'], 404);
+            return response()->json(['error' => 'File not found'], 404);
         }
-    
+
+        // Return the file as a response
         return Response::file($path);
     }
 
+    // Upload a new report file
     public function upload(Request $request)
     {
-        // Validation des données reçues (nom, fichier et ID du projet)
+        // Validate the input data (report name, file, project ID, and category ID)
         $request->validate([
             'name' => 'required|string|max:255',
-            'file' => 'required|mimes:pdf|max:2048',            
-            'project_id' => 'required|integer|exists:projects,id',  // Vérifie l'ID du projet
+            'file' => 'required|mimes:pdf|max:2048', // Only PDF files allowed (max 2MB)
+            'project_id' => 'required|integer|exists:projects,id', // Project must exist
+            'category_id' => 'required|integer|exists:table_category_report,id', // Category must exist
         ]);
 
-        // Vérifie si un fichier a été envoyé
+        // Ensure a file has been sent
         if (!$request->hasFile('file')) {
-            return response()->json(['error' => 'Aucun fichier reçu'], 400);
+            return response()->json(['error' => 'No file received'], 400);
         }
 
         $file = $request->file('file');
-        $name = $request->input('name'); // Nom du rapport
-        $projectId = $request->input('project_id');  // Récupère l'ID du projet
+        $name = $request->input('name');
+        $projectId = $request->input('project_id');
+        $categoryId = $request->input('category_id');
 
-        // Vérification du type de fichier (uniquement PDF)
+        // Ensure file is a PDF (extra check beyond validation)
         if ($file->getClientOriginalExtension() !== 'pdf') {
-            return response()->json(['error' => 'Seuls les fichiers PDF sont autorisés'], 400);
+            return response()->json(['error' => 'Only PDF files are allowed'], 400);
         }
 
-        // Vérifie si le projet existe
+        // Verify that the project exists
         $project = Project::find($projectId);
         if (!$project) {
-            return response()->json(['error' => 'Projet non trouvé'], 404);
+            return response()->json(['error' => 'Project not found'], 404);
         }
 
-        // Générer un nom unique pour éviter les conflits
+        // Generate a unique filename to avoid name collisions
         $fileName = time() . '-' . $file->getClientOriginalName();
 
-        // Déplacer le fichier dans `ressource/`
+        // Move the file to the custom "ressource" directory (relative to base path)
         $path = storage_path('../../ressource/');
         $file->move($path, $fileName);
 
-        // Créer et enregistrer le rapport en utilisant la méthode create()
+        // Save the report to the database
         $report = Report::create([
-            'name' => $name,  // Nom du rapport
-            'path' => "../../ressource/$fileName",  // Le chemin du fichier
- // Chemin complet du fichier
-            'project_id' => $projectId,  // ID du projet
+            'name' => $name,
+            'path' => "../../ressource/$fileName", // File path to store
+            'project_id' => $projectId,
+            'category_id' => $categoryId,
         ]);
 
-        // Retourner le chemin pour l’enregistrement en base de données
+        // Return the file path as confirmation
         return response()->json(['path' => "../../ressource/$fileName"], 200);
     }
 
+    // Retrieve all reports with their related project
     public function getReports()
     {
-        $reports = Report::with('project')->get();
+        $reports = Report::with('project')->get(); // Eager-load the project relation
 
         return response()->json($reports, 200);
     }
-
 }

@@ -9,19 +9,19 @@ use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
-    // Récupérer tous les rôles avec leurs permissions intégrées
+    // Retrieve all roles with their embedded permissions
     public function getRoles() {
         return response()->json(Role::all());
     }
 
     public function getPermissions($roleId) {
-        // Récupérer le rôle avec l'ID spécifié
+        // Retrieve the role with the specified ID
         $role = Role::findOrFail($roleId);
     
-        // Extraire toutes les permissions sous forme de tableau
+        // Extract all permissions as an array
         $permissions = [];
     
-        // Vérifier chaque permission pour savoir si elle est activée
+        // Check each permission to see if it's enabled
         $permissions['canCreate'] = $role->canCreate;
         $permissions['canDelete'] = $role->canDelete;
         $permissions['canComment'] = $role->canComment;
@@ -32,14 +32,13 @@ class AdminController extends Controller
             'permissions' => $permissions
         ]);
     }
-    
 
-    // Récupérer tous les utilisateurs avec leur rôle associé
+    // Retrieve all users with their associated roles
     public function getUsers() {
         return response()->json(User::with('role')->get());
     }
 
-    // Mettre à jour le rôle d'un utilisateur
+    // Update a user's role
     public function updateUserRole(Request $request, $id) {
         $user = User::findOrFail($id);
         $role = Role::findOrFail($request->role_id);
@@ -47,18 +46,18 @@ class AdminController extends Controller
         $user->role_id = $role->id;
         $user->save();
 
-        return response()->json(['message' => 'Rôle mis à jour avec succès']);
+        return response()->json(['message' => 'Role updated successfully']);
     }
 
-    // Mettre à jour les permissions d'un rôle
+    // Update the permissions of a role
     public function updateRolePermissions(Request $request, $roleId)
     {
         $role = Role::findOrFail($roleId);
 
-        // Vérification de ce que Laravel reçoit
-        Log::info('Permissions reçues:', $request->all());
+        // Check what Laravel receives
+        Log::info('Received permissions:', $request->all());
 
-        // Extraction des permissions depuis le tableau
+        // Extract permissions from the array
         $permissions = $request->input('permissions', []);
         $validatedData = [
             'canCreate' => $permissions[0] ?? false,
@@ -67,14 +66,14 @@ class AdminController extends Controller
             'canGrade' => $permissions[3] ?? false,
         ];
 
-        // Vérification après extraction
-        Log::info('Données validées avant update:', $validatedData);
+        // Check after extraction
+        Log::info('Validated data before update:', $validatedData);
 
-        // Mise à jour du rôle
+        // Update the role
         $role->update($validatedData);
 
         return response()->json([
-            'message' => "Permissions mises à jour pour le rôle '{$role->name}'",
+            'message' => "Permissions updated for role '{$role->name}'",
             'role' => $role
         ]);
     }

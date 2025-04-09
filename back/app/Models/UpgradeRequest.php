@@ -13,6 +13,6 @@ class UpgradeRequest extends Model
     ];
     public function user()
     {
-        return $this->belongsTo(User::class); // A project belongs to a user
+        return $this->belongsTo(User::class); 
     }
 }

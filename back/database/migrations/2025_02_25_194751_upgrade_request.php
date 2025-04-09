@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('upgrade_request', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users'); // Relation between table projects and users 
-            $table->foreignId('role_id'); // Restrict role to specific values
+            $table->foreignId('user_id')->constrained('users'); 
+            $table->foreignId('role_id');
             $table->timestamps();
         });
     }

@@ -41,7 +41,7 @@ class ProjectController extends Controller
 
     public function update(Request $request, $id)
 {
-    // Validation de la requête
+        // Validation of received request
     $request->validate([
         'name' => 'required|string|max:255',
         'department' => 'required|string|max:255',
@@ -62,14 +62,14 @@ class ProjectController extends Controller
         'status' => 'required|in:En cours,Terminé,En préparation,En contestation',
     ]);
 
-    // Recherche du projet
+    // Find the project
     $project = Project::find($id);
 
     if (!$project) {
         return response()->json(['message' => 'Projet non trouvé'], 404);
     }
 
-    // Mise à jour des données du projet
+    // Update the project
     $project->update($request->all());
 
     return response()->json([

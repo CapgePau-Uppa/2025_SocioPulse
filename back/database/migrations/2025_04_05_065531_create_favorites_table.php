@@ -14,12 +14,11 @@ class CreateFavoritesTable extends Migration
     public function up()
     {
         Schema::create('favorites', function (Blueprint $table) {
-            $table->id(); // Colonne d'identifiant auto-incrémentée
-            $table->unsignedBigInteger('user_id'); // Identifiant de l'utilisateur
-            $table->unsignedBigInteger('project_id'); // Identifiant du projet
-            $table->timestamps(); // Colonnes created_at et updated_at
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('project_id'); 
+            $table->timestamps(); 
 
-            // Ajouter des clés étrangères si nécessaire
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
         });
