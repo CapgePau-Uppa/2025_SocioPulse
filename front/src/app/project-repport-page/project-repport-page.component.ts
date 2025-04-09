@@ -76,10 +76,21 @@ export class ProjectRepportPageComponent implements OnInit {
   }
 
   openPdf(filePath: string): void {
-    const fileName = filePath.split('/').pop(); // Récupère uniquement le nom du fichier
-    const fullPath = `http://127.0.0.1:8000/api/reports/file/${encodeURIComponent(fileName!)}`;
+    if (!filePath) {
+      console.error('filePath is undefined or empty');
+      return;
+    }
+
+    const fileName = filePath.split('/').pop();
+    if (!fileName) {
+      console.error('Unable to extract file name from filePath:', filePath);
+      return;
+    }
+
+    const fullPath = `http://127.0.0.1:8000/api/reports/file/${encodeURIComponent(fileName)}`;
     window.open(fullPath, '_blank');
   }
+
 
 
   uploadFile(name: string, file: File): void {
@@ -94,7 +105,7 @@ export class ProjectRepportPageComponent implements OnInit {
     formData.append('name', name);
     console.log(this.project.id);
     formData.append('project_id', this.project.id);
-    formData.append('category', 'Documentation'); // Remplacez par la catégorie souhaitée
+    formData.append('category_id', '1'); // Remplacez par la catégorie souhaitée
     this.http.post<{ path: string }>('http://127.0.0.1:8000/api/upload', formData).subscribe(
       (response) => {
         console.log("Upload réussi :", response);
