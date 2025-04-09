@@ -25,6 +25,7 @@ export class ProjectRepportPageComponent implements OnInit {
   project: any;
   reports: any[] = [];
   name: string = '';
+  categories: any[] = ["Documentation", "Rapport", "Autre"];
 
   constructor(private toastr: ToastrService,private route: ActivatedRoute, private projectsService: ProjectsService, private dialog: MatDialog, private router: Router, private http: HttpClient) {}
 
@@ -38,6 +39,7 @@ export class ProjectRepportPageComponent implements OnInit {
         console.error('Projet non trouvé');
       }
     });
+    console.log(this.categories);
   }
 
   openDialog(): void {
@@ -91,7 +93,8 @@ export class ProjectRepportPageComponent implements OnInit {
     formData.append('file', file);
     formData.append('name', name);
     console.log(this.project.id);
-    formData.append('project_id', this.project.id);  // Ajoute l'ID du projet
+    formData.append('project_id', this.project.id);
+    formData.append('category', 'Documentation'); // Remplacez par la catégorie souhaitée
     this.http.post<{ path: string }>('http://127.0.0.1:8000/api/upload', formData).subscribe(
       (response) => {
         console.log("Upload réussi :", response);
@@ -146,6 +149,7 @@ export class ProjectRepportPageComponent implements OnInit {
           this.toastr.error('Erreur lors de l\'ajout de la catégorie.');
         }
       );
-}
+  }
 
+  deleteCategory(categoryId: number): void {}
 }

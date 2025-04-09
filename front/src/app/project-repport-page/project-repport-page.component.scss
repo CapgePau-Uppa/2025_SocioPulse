@@ -23,3 +23,46 @@
   background-color: green;
   margin-bottom: 16px;
 }
+.category {
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  width: 70vw;
+  height: auto;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.category span {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #000000;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.category mat-list {
+  padding-left: 16px;
+}
+
+.category mat-list-item {
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.category button {
+  background-color: #f44336;
+  color: white;
+  border-radius: 4px;
+  padding: 8px 16px;
+  margin-top: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.category button:hover {
+  background-color: #e53935;
+}
+
+.category mat-list-item:last-child {
+  border-bottom: none;
+}
