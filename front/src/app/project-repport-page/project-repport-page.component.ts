@@ -8,6 +8,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'; // Ajout pour g�
 import { AddReportModalComponent } from '../add-report-modal/add-report-modal.component';
 import { ProjectsService } from '../services/projects.service';
 import {ToastrService} from 'ngx-toastr';
+import { CategoryAddDialogComponent } from '../category-add-dialog/category-add-dialog.component';
 
 @Component({
   selector: 'app-project-repport-page',
@@ -51,6 +52,21 @@ export class ProjectRepportPageComponent implements OnInit {
 
         this.name = result.name;
         this.uploadFile(result.name, result.file);
+      } else {
+        console.log('La dialog a été fermée sans soumission.');
+      }
+    });
+  }
+
+  openDialog2(): void {
+    const dialogRef = this.dialog.open(CategoryAddDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.name) {
+        console.log('Données du formulaire:', result);
+
+        this.name = result.name;
+        this.createCategory(result.name);
       } else {
         console.log('La dialog a été fermée sans soumission.');
       }
@@ -106,4 +122,30 @@ export class ProjectRepportPageComponent implements OnInit {
         this.reports = [];
       });
   }
+
+  createCategory(name: string): void {
+    const token = sessionStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+
+    const data = {
+      name: name,
+      project_id: this.project.id
+    };
+
+    this.http.post<{ path: string }>('http://127.0.0.1:8000/api/category_reports', data, { headers })
+      .subscribe(
+        (response) => {
+          console.log('Catégorie créée avec succès:', response);
+          this.toastr.success('Catégorie ajoutée avec succès !');
+        },
+        (error) => {
+          console.error('Erreur lors de la création de la catégorie:', error);
+          this.toastr.error('Erreur lors de l\'ajout de la catégorie.');
+        }
+      );
+}
+
 }

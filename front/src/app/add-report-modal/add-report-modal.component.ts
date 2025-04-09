@@ -5,8 +5,7 @@ import {FormsModule} from '@angular/forms';
 import {MatInput} from '@angular/material/input';
 import {MatButton} from '@angular/material/button';
 import {MatLabel} from '@angular/material/form-field';
-import {Router} from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-add-report-modal',

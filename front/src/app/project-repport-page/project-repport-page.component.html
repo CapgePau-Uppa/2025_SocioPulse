@@ -3,6 +3,9 @@
   <button mat-raised-button class="add-report-button" (click)="openDialog()">
     Ajouter un rapport (PDF)
   </button>
+    <button mat-raised-button class="add-report-button" (click)="openDialog2()">
+    Ajouter une catégorie
+  </button>
   <mat-list>
     <mat-list-item *ngFor="let report of reports">
       <span>{{ report.name }}</span>
