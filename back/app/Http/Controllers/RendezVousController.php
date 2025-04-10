@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Log;
 class RendezVousController extends Controller {
     // Create a new appointment request
     public function store(Request $request, $id) {
-        Log::info('Données reçues pour le rendez-vous :', $request->all());
+        Log::info('Data received for appointment:', $request->all());
+
         $request->validate([
             'project_id' => 'required|integer|exists:projects,id',
             'date' => 'required|date',       
@@ -18,24 +19,25 @@ class RendezVousController extends Controller {
             'message' => 'nullable|string|max:500',
         ]);
 
-        // Vérifier si un rendez-vous existe déjà pour cette date et heure
+        // Check if an appointment already exists for this date and time
         $existingRendezVous = RendezVous::where('project_id', $id)
                                         ->where('date', '=', $request->input('date')) 
                                         ->where('hour', '=', $request->input('hour')) 
                                         ->exists();
 
-        // Si un rendez-vous existe déjà, retourner une erreur
+        // If an appointment already exists, return an error
         if ($existingRendezVous) {
-            return response()->json(['message' => 'Un rendez-vous existe déjà pour cette date et heure.'], 400);
+            return response()->json(['message' => 'An appointment already exists for this date and time.'], 400);
         }
 
-        Log::info('Données reçues pour création de rendez-vous:', [
+        Log::info('Data received for appointment creation:', [
             'project_id' => $id,
             'user_id' => Auth::id(),
             'date' => $request->date,
             'hour' => $request->hour,
             'message' => $request->message
         ]);
+
         $rendezVous = RendezVous::create([
             'project_id' => $id,
             'user_id' => Auth::id(),
@@ -69,13 +71,13 @@ class RendezVousController extends Controller {
 
         // Validate update fields
         $request->validate([
-            'date' => 'sometimes|date|after:now', // Validate the date field
-            'hour' => 'sometimes|date_format:H:i', // Validate the hour field (format HH:MM)
+            'date' => 'sometimes|date|after:now',
+            'hour' => 'sometimes|date_format:H:i',
             'message' => 'sometimes|string|max:500',
             'status' => 'sometimes|in:pending,approved,rejected',
         ]);
 
-        // Update the date and hour fields if present in the request
+        // Update the date and hour fields if present
         if ($request->has('date') && $request->has('hour')) {
             $rendezVous->update([
                 'date' => $request->input('date'),
@@ -92,25 +94,25 @@ class RendezVousController extends Controller {
             $rendezVous->status = $request->input('status');
         }
 
-        // Save the changes
         $rendezVous->save();
 
         return response()->json($rendezVous);
     }
 
+    // Accept an appointment request
     public function accept($id)
     {
         $rendezVous = RendezVous::findOrFail($id);
         $user = Auth::user();
     
-        // Affichage du rôle dans les logs Laravel
-        Log::info('Utilisateur avec le rôle : ' . $user->role->name);
+        // Log the user's role
+        Log::info('User role: ' . $user->role->name);
     
-        // Correction de la condition (&& au lieu de ||)
+        // Only administrator or enterprise can approve
         if ($user->role->name !== 'administrator' && $user->role->name !== 'entreprise') {
             return response()->json([
-                'message' => 'Non autorisé',
-                'role' => $user->role->name // Ajout du rôle dans la réponse JSON
+                'message' => 'Unauthorized',
+                'role' => $user->role->name
             ], 403);
         }
     
@@ -118,39 +120,39 @@ class RendezVousController extends Controller {
         $rendezVous->save();
     
         return response()->json([
-            'message' => 'Rendez-vous accepté',
+            'message' => 'Appointment accepted',
             'role' => $user->role->name
         ]);
     }
-    
+
+    // Reject an appointment request
     public function reject($id)
     {
         $rendezVous = RendezVous::findOrFail($id);
         $user = Auth::user();
 
         if ($user->role->name !== 'administrator' && $user->role->name !== 'entreprise') {
-            return response()->json(['message' => 'Non autorisé'], 403);
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
     
         $rendezVous->status = 'rejected';
         $rendezVous->save();
     
-        return response()->json(['message' => 'Rendez-vous refusé', 'role' => $user->role->name]);
+        return response()->json(['message' => 'Appointment rejected', 'role' => $user->role->name]);
     }
 
-    //Retrieve all rendezvous for a specific project and date.
+    // Retrieve all appointments for a specific project and date
     public function getRendezVousForDate($projectId, $date)
     {
         $rendezVous = RendezVous::where('project_id', $projectId)
                                 ->where('date', $date)
                                 ->get();
         
-        Log::info("Rendez-vous récupérés pour le projet $projectId à la date $date : ", $rendezVous->toArray());
+        Log::info("Appointments retrieved for project $projectId on date $date:", $rendezVous->toArray());
     
         return response()->json($rendezVous);
     }
-            
-    
+
     // Cancel (delete) an appointment request
     public function destroy($id) {
         $rendezVous = RendezVous::findOrFail($id);

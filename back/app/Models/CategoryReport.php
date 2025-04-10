@@ -16,7 +16,7 @@ class CategoryReport extends Model
         'name',
     ];
 
-    // Relation avec le modèle Project
+    // Relation with Project
     public function project()
     {
         return $this->belongsTo(Project::class);

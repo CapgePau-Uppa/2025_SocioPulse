@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model {
     use HasFactory;
 
-    // Autoriser l'assignation en masse pour ces champs
+    // Allow mass assignment for the following fields
     protected $fillable = [
         'name',
         'department',
@@ -30,7 +30,7 @@ class Project extends Model {
     ];
 
     /**
-     * Un projet appartient à un utilisateur.
+     * A project belongs to a user.
      */
     public function user()
     {
@@ -38,13 +38,16 @@ class Project extends Model {
     }
 
     /**
-     * Un projet appartient à une entreprise.
+     * A project belongs to a company.
      */
     public function entreprise()
     {
         return $this->belongsTo(Entreprise::class);
     }
 
+    /**
+     * A project has many reports.
+     */
     public function reports()
     {
         return $this->hasMany(Report::class);

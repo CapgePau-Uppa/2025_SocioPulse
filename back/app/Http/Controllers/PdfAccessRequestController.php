@@ -10,66 +10,66 @@ use Illuminate\Support\Facades\Auth;
 class PdfAccessRequestController extends Controller
 {
     /**
-     * Créer une demande d'accès au PDF pour un projet
+     * Create a PDF access request for a project
      */
     public function createRequest($id)
     {
         $user = Auth::user();
 
-        // Vérifier si le projet existe
+        // Check if the project exists
         $project = Project::findOrFail($id);
 
-        // Vérifier si une demande est déjà en attente
+        // Check if a request is already pending
         $existingRequest = PdfAccessRequest::where('user_id', $user->id)
             ->where('project_id', $id)
             ->where('status', 'pending')
             ->first();
 
         if ($existingRequest) {
-            return response()->json(['message' => 'Une demande est déjà en attente'], 400);
+            return response()->json(['message' => 'A request is already pending'], 400);
         }
 
-        // Créer une nouvelle demande
+        // Create a new request
         PdfAccessRequest::create([
             'user_id' => $user->id,
             'project_id' => $id,
             'status' => 'pending',
         ]);
 
-        return response()->json(['message' => 'Demande envoyée avec succès'], 201);
+        return response()->json(['message' => 'Request successfully submitted'], 201);
     }
 
     /**
-     * Récupérer toutes les demandes en attente pour un administrateur ou un propriétaire du projet
+     * Get all pending requests for an admin or project owner
      */
     public function getRequests()
     {
         $user = Auth::user();
         
-        // Si l'utilisateur est administrateur, il voit toutes les demandes en attente
+        // If user is an administrator, return all pending requests
         if ($user->role->name === 'administrator') {
-            $requests = PdfAccessRequest::with('project') // Charger les projets associés
+            $requests = PdfAccessRequest::with('project') // Load related projects
                 ->where('status', 'pending')
                 ->get();
             return response()->json($requests);
         }
     
-        // Si l'utilisateur est d'une entreprise, il ne voit que les demandes des projets de son entreprise
+        // If user is part of a company, return only requests for their company's projects
         if ($user->entreprise_id) {
             $projectsOwned = Project::where('entreprise_id', $user->entreprise_id)->pluck('id');
-            $requests = PdfAccessRequest::with('project') // Charger les projets associés
+            $requests = PdfAccessRequest::with('project') // Load related projects
                 ->whereIn('project_id', $projectsOwned)
                 ->where('status', 'pending')
                 ->get();
             return response()->json($requests);
         }
     
-        // Par défaut, retourner un tableau vide si l'utilisateur n'est pas autorisé
+        // By default, return an empty array if user is not authorized
         return response()->json([]);
     }
 
     /**
-     * Récupérer une demande spécifique à un projet
+     * Get all requests for a specific project
      */    
     public function index($projectId)
     {
@@ -77,89 +77,88 @@ class PdfAccessRequestController extends Controller
         return response()->json($requests);
     }
         
-
+    /**
+     * Make a request for access to a project's PDF
+     */
     public function requestAccess($projectId)
     {
         $user = Auth::user();
     
-        // Vérifie si une demande existe déjà pour cet utilisateur et projet
+        // Check if a request already exists for this user and project
         $existingRequest = PdfAccessRequest::where('user_id', $user->id)
             ->where('project_id', $projectId)
             ->whereIn('status', ['pending', 'approved'])
             ->first();
     
         if ($existingRequest) {
-            return response()->json(['message' => 'Vous avez déjà une demande en attente ou approuvée pour ce projet.'], 400);
+            return response()->json(['message' => 'You already have a pending or approved request for this project.'], 400);
         }
     
-        // Créer une nouvelle demande
+        // Create a new request
         $request = new PdfAccessRequest();
         $request->user_id = $user->id;
         $request->project_id = $projectId;
         $request->status = 'pending';
         $request->save();
     
-        return response()->json(['message' => 'Demande envoyée avec succès.'], 201);
+        return response()->json(['message' => 'Request successfully submitted.'], 201);
     }
-    
 
     /**
-     * Approuver une demande d'accès
+     * Approve an access request
      */
     public function approveRequest($id, $requestId)
     {
         $user = Auth::user();
     
-        // Vérifier si l'utilisateur est administrateur
+        // Check if the user is an administrator
         if ($user->role->name === 'administrator') { 
             $request = PdfAccessRequest::findOrFail($requestId);
             $request->status = 'approved';
             $request->save();
-            return response()->json(['message' => 'Demande approuvée avec succès.']);
+            return response()->json(['message' => 'Request successfully approved.']);
         }
     
-        // Vérifier si l'utilisateur est propriétaire du projet
+        // Check if the user is the owner of the project
         $project = Project::findOrFail($id);
         if ($project->entreprise_id != $user->entreprise_id) {
-            return response()->json(['message' => 'Accès refusé : Vous ne pouvez approuver que les demandes pour vos projets'], 403);
+            return response()->json(['message' => 'Access denied: You can only approve requests for your own projects'], 403);
         }
     
-        // Approuver la demande
+        // Approve the request
         $request = PdfAccessRequest::findOrFail($requestId);
         $request->status = 'approved';
         $request->save();
     
-        return response()->json(['message' => 'Demande approuvée avec succès.']);
+        return response()->json(['message' => 'Request successfully approved.']);
     }
-    
 
     /**
-     * Rejeter une demande d'accès
+     * Reject an access request
      */
     public function rejectRequest($id, $requestId)
     {
         $user = Auth::user();
 
-        // Vérifier si l'utilisateur est administrateur
+        // Check if the user is an administrator
         if ($user->role->name === 'administrator') {
             $request = PdfAccessRequest::findOrFail($requestId);
             $request->status = 'rejected';
             $request->save();
-            return response()->json(['message' => 'Demande rejetée avec succès.']);
+            return response()->json(['message' => 'Request successfully rejected.']);
         }
 
-        // Vérifier si l'utilisateur est propriétaire du projet
+        // Check if the user is the owner of the project
         $project = Project::findOrFail($id);
         if ($project->entreprise_id != $user->entreprise_id) {
-            return response()->json(['message' => 'Accès refusé : Vous ne pouvez rejeter que les demandes pour vos projets'], 403);
+            return response()->json(['message' => 'Access denied: You can only reject requests for your own projects'], 403);
         }
 
-        // Rejeter la demande
+        // Reject the request
         $request = PdfAccessRequest::findOrFail($requestId);
         $request->status = 'rejected';
         $request->save();
 
-        return response()->json(['message' => 'Demande rejetée avec succès.']);
+        return response()->json(['message' => 'Request successfully rejected.']);
     }
-
 }

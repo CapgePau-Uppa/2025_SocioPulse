@@ -30,29 +30,39 @@ class User extends Authenticatable
         ];
     }
 
-    // Relation avec les projets
+    /**
+     * Relationship with projects.
+     * A user can have many projects.
+     */
     public function projects()
     {
-        return $this->hasMany(Project::class); // Un utilisateur peut avoir plusieurs projets
+        return $this->hasMany(Project::class);
     }
 
     /**
-     * Récupérer le rôle associé à l'utilisateur
+     * Retrieve the role associated with the user.
+     * A user has one role.
      */
     public function role()
     {
-        return $this->belongsTo(Role::class); // Un utilisateur a un seul rôle
+        return $this->belongsTo(Role::class);
     }
     
+    /**
+     * Relationship with the company (Entreprise).
+     * A user belongs to one company.
+     */
     public function entreprise()
     {
         return $this->belongsTo(Entreprise::class);
     }
 
-    // Dans le modèle User (App\Models\User.php)
-public function favorites()
-{
-    return $this->hasMany(Favorite::class);
-}
-
+    /**
+     * Relationship with favorites.
+     * A user can have many favorite items.
+     */
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
 }

@@ -130,12 +130,12 @@ export class RendezVousModalComponent {
       start_time: this.start_time, 
       end_time: this.end_time
     };
-    
-  
+     
     this.rendezVousService.setAvailabilities(this.data.projectId, [newAvailabilities]).subscribe(() => {
       console.log("Disponibilité ajoutée !");
       this.generateHours();
     });
+    if (!confirm('Disponibilité ajoutée !')) return;
   }
 
 // Récupérer les dispos de l'entreprise

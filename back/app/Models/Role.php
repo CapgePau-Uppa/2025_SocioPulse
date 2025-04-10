@@ -11,10 +11,9 @@ class Role extends Model
 
     protected $fillable = ['name', 'canCreate', 'canDelete', 'canComment', 'canGrade'];
 
-    // Relation avec les utilisateurs
     public function users()
     {
-        return $this->hasMany(User::class); // Un rôle a plusieurs utilisateurs
+        return $this->hasMany(User::class);
     }
 
 }

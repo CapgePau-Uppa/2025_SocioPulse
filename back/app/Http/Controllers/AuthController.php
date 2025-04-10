@@ -11,7 +11,7 @@ use App\Models\Role;
 
 class AuthController extends Controller
 {
-    // Login : Vérifie les identifiants et génère un token
+    // Login: Check credentials and generate a token
     public function login(Request $request)
     {
         $request->validate([
@@ -23,11 +23,11 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['Les identifiants sont incorrects.']
+                'email' => ['Invalid credentials.']
             ]);
         }
 
-        // Génère un token Bearer avec un nom
+        // Generate a Bearer token with a name
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -36,7 +36,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'email' => $user->email,
                 'name' => $user->name,
-                'role' => $user->role->name, // Nom du rôle de l'utilisateur
+                'role' => $user->role->name,
                 'entreprise_id' => $user->entreprise_id,
                 'permissions' => [
                     'canDelete' => $user->role->canDelete,
@@ -46,23 +46,22 @@ class AuthController extends Controller
                 ]
             ]
         ]);
-        
     }
 
-    // Vérifie l'utilisateur actuel
+    // Check the current authenticated user
     public function user(Request $request)
     {
         return response()->json($request->user());
     }
 
-    // Déconnexion : Supprime le token
+    // Logout: Delete the token
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete(); // Supprime tous les tokens de l'utilisateur
-        return response()->json(['message' => 'Déconnexion réussie']);
+        $request->user()->tokens()->delete(); // Delete all tokens for the user
+        return response()->json(['message' => 'Successfully logged out']);
     }
 
-    // Inscription : Crée un nouvel utilisateur
+    // Register: Create a new user
     public function register(Request $request)
     {
         $request->validate([
@@ -70,22 +69,23 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed'
         ]);
-    
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
-    
-        // Génère un token directement après l'inscription
+
+        // Generate a token immediately after registration
         $token = $user->createToken('auth_token')->plainTextToken;
-    
+
         return response()->json([
             'user' => $user,
             'token' => $token
         ], 201);
     }
-    // Supprime le compte de l'utilisateur
+
+    // Delete the user's account
     public function deleteAccount(Request $request)
     {
         $request->validate([
@@ -94,18 +94,18 @@ class AuthController extends Controller
 
         $user = User::find($request->user_id);
 
-        // Supprime tous les tokens de l'utilisateur
+        // Delete all tokens for the user
         $user->tokens()->delete();
 
-        // Supprime l'utilisateur
+        // Delete the user
         $user->delete();
 
-        return response()->json(['message' => 'Compte supprimé avec succès'], 200);
+        return response()->json(['message' => 'Account successfully deleted'], 200);
     }
 
     public function upgradeAccount(Request $request)
     {
-        // Valider les données envoyées
+        // Validate incoming data
         $request->validate([
             'type' => 'required|in:collectivity,enterprise',
             'details' => 'required|array',
@@ -115,68 +115,65 @@ class AuthController extends Controller
             'details.department' => 'required_if:type,collectivity|string',
             'details.city' => 'required_if:type,collectivity|string',
         ]);
-    
-        // Trouver l'utilisateur par ID
+
+        // Find the user by ID
         $user = User::find($request->user_id);
         if (!$user) {
-            return response()->json(['message' => 'Utilisateur non trouvé'], 404);
+            return response()->json(['message' => 'User not found'], 404);
         }
-    
-        // Modifier le rôle de l'utilisateur
-        $roleId = ($request->type === 'collectivity') ? 3 : 4; // 3 pour collectivité, 4 pour entreprise
+
+        // Change the user's role
+        $roleId = ($request->type === 'collectivity') ? 3 : 4; // 3 for collectivity, 4 for enterprise
         $user->role_id = $roleId;
-    
-        // Gérer les informations liées à l'entreprise
+
+        // Handle enterprise-related data
         if ($request->type === 'enterprise') {
-            // Si l'entreprise est nouvelle, créer une nouvelle entreprise
+            // If the company is new, create a new one
             if ($request->details['companyName'] === 'Autre') {
                 try {
-                    // Créer une nouvelle entreprise avec le nom, le siren et le type
+                    // Create a new enterprise with name, siren and type
                     $entreprise = Entreprise::create([
                         'siren' => $request->details['siren'],
                         'nom' => $request->details['companyName'],
                         'type_entreprise' => $request->details['companyType']
                     ]);
-                    
-                    // Log pour voir si l'entreprise a bien été créée
-                    \Log::info('Nouvelle entreprise créée: ', $entreprise->toArray());
-    
-                    // Assigner l'entreprise à l'utilisateur
+
+                    // Log to confirm the enterprise was created
+                    \Log::info('New enterprise created: ', $entreprise->toArray());
+
+                    // Assign the enterprise to the user
                     $user->entreprise_id = $entreprise->id;
                 } catch (\Exception $e) {
-                    // En cas d'erreur, logguer l'exception
-                    \Log::error('Erreur lors de la création de l\'entreprise: ', ['error' => $e->getMessage()]);
-                    return response()->json(['message' => 'Erreur lors de la création de l\'entreprise'], 500);
+                    // In case of error, log the exception
+                    \Log::error('Error while creating the enterprise: ', ['error' => $e->getMessage()]);
+                    return response()->json(['message' => 'Error while creating the enterprise'], 500);
                 }
             } else {
-                // Si l'entreprise existe déjà, associer l'ID de l'entreprise à l'utilisateur
+                // If the enterprise already exists, link it to the user
                 $entreprise = Entreprise::where('nom', $request->details['companyName'])->first();
                 if ($entreprise) {
                     $user->entreprise_id = $entreprise->id;
                 } else {
-                    return response()->json(['message' => 'Entreprise non trouvée'], 404);
+                    return response()->json(['message' => 'Enterprise not found'], 404);
                 }
             }
         } else {
-            // Si le type est Collectivité, pas d'entreprise à associer
+            // If type is Collectivity, no enterprise to associate
             $user->entreprise_id = null;
         }
-    
-        // Sauvegarder l'utilisateur avec son nouveau rôle et l'entreprise associée
+
+        // Save the user with updated role and associated enterprise
         try {
             $user->save();
         } catch (\Exception $e) {
-            // En cas d'erreur lors de la sauvegarde de l'utilisateur
-            \Log::error('Erreur lors de la sauvegarde de l\'utilisateur: ', ['error' => $e->getMessage()]);
-            return response()->json(['message' => 'Erreur lors de la mise à jour de l\'utilisateur'], 500);
+            // In case of error while saving the user
+            \Log::error('Error while saving the user: ', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Error while updating the user'], 500);
         }
-    
+
         return response()->json([
-            'message' => 'Compte mis à jour avec succès',
+            'message' => 'Account successfully updated',
             'user' => $user
         ], 200);
     }
-    
-
-
 }

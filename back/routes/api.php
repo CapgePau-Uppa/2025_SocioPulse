@@ -147,6 +147,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/notifications/debug', [NotificationController::class, 'addDebugNotification']);
 });
 
+Route::middleware('auth:sanctum')->post('category_reports', [CategoryReportController::class, 'store']);
+
 /*
 // Route protégée par Sanctum  et permissions administrator
 Route::middleware(['auth:sanctum', 'permission:manage_users'])->get('/test-middleware', function () {

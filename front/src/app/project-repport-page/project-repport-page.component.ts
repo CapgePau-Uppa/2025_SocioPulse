@@ -8,6 +8,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'; // Ajout pour g�
 import { AddReportModalComponent } from '../add-report-modal/add-report-modal.component';
 import { ProjectsService } from '../services/projects.service';
 import {ToastrService} from 'ngx-toastr';
+import { CategoryAddDialogComponent } from '../category-add-dialog/category-add-dialog.component';
 
 @Component({
   selector: 'app-project-repport-page',
@@ -24,6 +25,7 @@ export class ProjectRepportPageComponent implements OnInit {
   project: any;
   reports: any[] = [];
   name: string = '';
+  categories: any[] = ["Documentation", "Rapport", "Autre"];
 
   constructor(private toastr: ToastrService,private route: ActivatedRoute, private projectsService: ProjectsService, private dialog: MatDialog, private router: Router, private http: HttpClient) {}
 
@@ -37,6 +39,7 @@ export class ProjectRepportPageComponent implements OnInit {
         console.error('Projet non trouvé');
       }
     });
+    console.log(this.categories);
   }
 
   openDialog(): void {
@@ -57,11 +60,37 @@ export class ProjectRepportPageComponent implements OnInit {
     });
   }
 
+  openDialog2(): void {
+    const dialogRef = this.dialog.open(CategoryAddDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.name) {
+        console.log('Données du formulaire:', result);
+
+        this.name = result.name;
+        this.createCategory(result.name);
+      } else {
+        console.log('La dialog a été fermée sans soumission.');
+      }
+    });
+  }
+
   openPdf(filePath: string): void {
-    const fileName = filePath.split('/').pop(); // Récupère uniquement le nom du fichier
-    const fullPath = `http://127.0.0.1:8000/api/reports/file/${encodeURIComponent(fileName!)}`;
+    if (!filePath) {
+      console.error('filePath is undefined or empty');
+      return;
+    }
+
+    const fileName = filePath.split('/').pop();
+    if (!fileName) {
+      console.error('Unable to extract file name from filePath:', filePath);
+      return;
+    }
+
+    const fullPath = `http://127.0.0.1:8000/api/reports/file/${encodeURIComponent(fileName)}`;
     window.open(fullPath, '_blank');
   }
+
 
 
   uploadFile(name: string, file: File): void {
@@ -75,7 +104,8 @@ export class ProjectRepportPageComponent implements OnInit {
     formData.append('file', file);
     formData.append('name', name);
     console.log(this.project.id);
-    formData.append('project_id', this.project.id);  // Ajoute l'ID du projet
+    formData.append('project_id', this.project.id);
+    formData.append('category_id', '1'); // Remplacez par la catégorie souhaitée
     this.http.post<{ path: string }>('http://127.0.0.1:8000/api/upload', formData).subscribe(
       (response) => {
         console.log("Upload réussi :", response);
@@ -106,4 +136,31 @@ export class ProjectRepportPageComponent implements OnInit {
         this.reports = [];
       });
   }
+
+  createCategory(name: string): void {
+    const token = sessionStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+
+    const data = {
+      name: name,
+      project_id: this.project.id
+    };
+
+    this.http.post<{ path: string }>('http://127.0.0.1:8000/api/category_reports', data, { headers })
+      .subscribe(
+        (response) => {
+          console.log('Catégorie créée avec succès:', response);
+          this.toastr.success('Catégorie ajoutée avec succès !');
+        },
+        (error) => {
+          console.error('Erreur lors de la création de la catégorie:', error);
+          this.toastr.error('Erreur lors de l\'ajout de la catégorie.');
+        }
+      );
+  }
+
+  deleteCategory(categoryId: number): void {}
 }
