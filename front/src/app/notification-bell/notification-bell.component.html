@@ -1,0 +1,49 @@
+<!-- src/app/notification-bell/notification-bell.component.html -->
+<div class="notification-container">
+  <div class="notification-controls">
+    <div class="notification-bell" (click)="toggleNotifications()">
+      <mat-icon [matBadge]="(unreadCount$ | async) ?? 0"
+                [matBadgeHidden]="((unreadCount$ | async) ?? 0) === 0"
+                matBadgeColor="warn"
+                matBadgeSize="small"
+                class="bell-icon">
+        notifications
+      </mat-icon>
+    </div>
+
+    <button class="debug-button" (click)="addTestNotification()">
+      <mat-icon>add_alert</mat-icon>
+    </button>
+  </div>
+
+  @if (showNotifications) {
+    <div class="notification-dropdown">
+      <div class="notification-header">
+        <h3>Notifications</h3>
+        <button class="mark-all-read" (click)="markAllAsRead()">Tout marquer comme lu</button>
+      </div>
+
+      <div class="notification-list">
+        @if (((notifications$ | async) ?? []).length === 0) {
+          <div class="no-notifications">
+            Aucune notification
+          </div>
+        }
+
+        @for (notification of (notifications$ | async) ?? []; track notification.id) {
+          <div class="notification-item"
+               [class.unread]="!notification.read"
+               (click)="markAsRead(notification)">
+            <div class="notification-content">
+              <p>{{ notification.message }}</p>
+              <span class="notification-date">{{ notification.created_at | date:'short' }}</span>
+            </div>
+            <button class="delete-notification" (click)="removeNotification(notification, $event)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

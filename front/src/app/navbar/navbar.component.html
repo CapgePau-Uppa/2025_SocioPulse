@@ -10,6 +10,9 @@
 
   <div class="pc-layout">
 
+    @if (isLoggedIn) {
+      <app-notification-bell/>
+    }
     @if (userRole === 'administrator') {
       <a routerLink="/admin-dashboard" mat-button><b>Gestion des rôles</b></a>
     }

@@ -12,7 +12,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\PdfAccessRequestController;
 use App\Http\Controllers\RendezVousController;
 use App\Http\Controllers\FavoriteController;
-
+use App\Http\Controllers\NotificationController;
 /*
 * Middleware:
 * - 'auth:sanctum': Ensures the user is authenticated via Sanctum.
@@ -137,7 +137,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route pour supprimer un favori
     Route::delete('/favorites/{favorite}', [FavoriteController::class, 'destroy']);
 });
-
+Route::middleware('auth:sanctum')->group(function () {
+    // Routes pour les notifications
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications', [NotificationController::class, 'store']);
+    Route::put('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::put('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
+    Route::post('/notifications/debug', [NotificationController::class, 'addDebugNotification']);
+});
 
 /*
 // Route protégée par Sanctum  et permissions administrator
