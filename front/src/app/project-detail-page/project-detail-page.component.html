@@ -5,19 +5,20 @@
         <a><strong>{{ project.name }}</strong></a>
       </mat-card-title>
       @if(userRole == 'entreprise' || userRole == 'admin'){
-
       <mat-card-actions class="company_actions">
         <a mat-raised-button class="update" (click)="editProject()">Modifier</a>
-        <a mat-raised-button class="close">Clôturer</a>
+        <a *ngIf="!isFavorite" mat-raised-button class="fav" (click)="addToFavorites()">Mettre en favoris</a>
+        <a *ngIf="isFavorite" mat-raised-button class="fav" (click)="removeFromFavorites(project.id)">Supprimer des favoris</a>
         <a mat-raised-button class="delete" (click)="deleteProject()">Supprimer</a>
       </mat-card-actions>
     }
-    @if(userRole == 'citoyen'){
+    @if(userRole == 'citoyen' || userRole =='communaute'){
       <mat-card-actions class="citoyen_actions">
-        <a *ngIf="!isFavorite" mat-raised-button class="update" (click)="addToFavorites()">Mettre en favoris</a>
-        <a *ngIf="isFavorite" mat-raised-button class="update" (click)="removeFromFavorites(project.id)">Supprimer des favoris</a>
+        <a *ngIf="!isFavorite" mat-raised-button class="fav" (click)="addToFavorites()">Mettre en favoris</a>
+        <a *ngIf="isFavorite" mat-raised-button class="fav" (click)="removeFromFavorites(project.id)">Supprimer des favoris</a>
       </mat-card-actions>
     }
+
     </mat-card-header>
 
     <mat-card-content class="content">

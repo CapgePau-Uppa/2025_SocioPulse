@@ -56,17 +56,17 @@ export class ProjectDetailPageComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     const userId = sessionStorage.getItem('user_id');
-  
+
     if (userId) {
         this.userRole = sessionStorage.getItem('role');
         console.log('userRole:', this.userRole); // Debugging line
     }
-  
+
     const projectId = +(this.route.snapshot.paramMap.get('id') ?? 0);
-  
+
     this.projectsService.getProjects().subscribe(data => {
       this.project = data.find(project => project.id === projectId);
-  
+
       if (this.project) {
         this.checkUserAccess();  // Vérifier si l'utilisateur peut accéder aux documents
         this.checkAccessRequest(); // Vérifier s'il y a une demande en attente
@@ -82,7 +82,7 @@ export class ProjectDetailPageComponent implements AfterViewInit {
       console.error('Erreur lors de la récupération des projets', error);
     });
   }
-  
+
 
 /** Vérifie si l'utilisateur peut accéder aux documents */
 public checkUserAccess(): void {
@@ -211,35 +211,38 @@ public checkUserAccess(): void {
   addToFavorites(): void {
     const projectId = this.project?.id;
     const token = sessionStorage.getItem('auth_token');
-  
+
     if (!projectId || !token) {
       console.error('Utilisateur non authentifié ou projet inexistant');
       return;
     }
-  
+
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  
+
     this.http.post(`http://localhost:8000/api/favorites`, { project_id: projectId }, { headers })
       .subscribe(() => {
         console.log('Projet ajouté aux favoris');
-        alert('Projet ajouté aux favoris avec succès.');
+
+        //TODO ADD NOTIFICATION
       }, error => {
         console.error('Erreur lors de l\'ajout aux favoris', error);
-        alert('Erreur lors de l\'ajout aux favoris.');
+        //TODO ADD NOTIFICATION
+
       });
+    this.isFavorite= true;
   }
 
   checkIfFavorite(): void {
     const projectId = this.project?.id;
     const token = sessionStorage.getItem('auth_token');
-  
+
     if (!projectId || !token) {
       console.error('Utilisateur non authentifié ou projet inexistant');
       return;
     }
-  
+
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  
+
     this.http.get<any[]>(`http://localhost:8000/api/favorites`, { headers })
       .subscribe(favorites => {
         // Vérifiez si le project_id est dans la liste des favoris
@@ -248,7 +251,7 @@ public checkUserAccess(): void {
         console.error('Erreur lors de la vérification des favoris', error);
       });
   }
-  
+
 removeFromFavorites(favoriteId: number): void {
   const token = sessionStorage.getItem('auth_token');
 
@@ -263,11 +266,13 @@ removeFromFavorites(favoriteId: number): void {
     .subscribe(() => {
       console.log('Projet supprimé des favoris');
       this.isFavorite = false;
-      alert('Projet supprimé des favoris avec succès.');
-    }, error => {
+        //TODO ADD NOTIFICATION
+      }, error => {
       console.error('Erreur lors de la suppression des favoris', error);
-      alert('Erreur lors de la suppression des favoris.');
-    });
+        //TODO ADD NOTIFICATION
+      });
+  this.isFavorite= false;
+
 }
 
 }
