@@ -9,6 +9,7 @@ import { AddReportModalComponent } from '../add-report-modal/add-report-modal.co
 import { ProjectsService } from '../services/projects.service';
 import {ToastrService} from 'ngx-toastr';
 import { CategoryAddDialogComponent } from '../category-add-dialog/category-add-dialog.component';
+import { DeplacerReportDialogComponent } from '../deplacer-report-dialog/deplacer-report-dialog.component'; // adapte le chemin selon ton projet
 
 @Component({
   selector: 'app-project-repport-page',
@@ -200,6 +201,40 @@ export class ProjectRepportPageComponent implements OnInit {
           this.toastr.error('Erreur lors de la suppression de la catégorie.');
         }
       );
+  }
+
+  deleteReport(reportId: number): void {
+    const token = sessionStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    this.http.delete(`http://127.0.0.1:8000/api/reports/${reportId}`, { headers })
+      .subscribe(
+        () => {
+          this.toastr.success('Rapport supprimé avec succès !');
+          //this.loadReports(); // méthode à créer si tu veux rafraîchir
+        },
+        (error) => {
+          console.error('Erreur lors de la suppression du rapport:', error);
+          this.toastr.error('Erreur lors de la suppression du rapport.');
+        }
+      );
+  }
+
+  openDialog3(report: any): void {
+    const dialogRef = this.dialog.open(DeplacerReportDialogComponent, {
+      width: '400px',
+      data: { report: report }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'updated') {
+        this.toastr.success('Rapport déplacé avec succès !');
+        //this.loadReports(); // recharger les rapports si nécessaire
+      }
+    });
   }
 
 }

@@ -16,6 +16,8 @@
           <div class="report" >
           <span *ngIf="report.category_id == category.id">{{ report.name }}</span>
           <button mat-button (click)="openPdf(report.path)" *ngIf="report.category_id == category.id">Voir le PDF</button>
+          <button mat-button (click)="openDialog3(report)" *ngIf="report.category_id == category.id">Deplacer</button>
+          <button mat-button (click)="deleteReport(report.id)" *ngIf="report.category_id == category.id">Supprimer</button>
         </div>
         </mat-list-item>
       </mat-list>
