@@ -76,7 +76,7 @@ Route::middleware(['auth:sanctum', 'checkAdminRole', 'checkPermission:canDelete'
  */
 Route::get('/reports/file/{filename}', [ReportController::class, 'getReportFile']);
 Route::post('/upload', [ReportController::class, 'upload']);
-
+Route::middleware('auth:sanctum')->put('reports/{report}', [ReportController::class, 'moveReport']);
 /**
  * API Routes for the project access requests
  */
