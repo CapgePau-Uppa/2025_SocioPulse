@@ -13,6 +13,7 @@ use App\Http\Controllers\PdfAccessRequestController;
 use App\Http\Controllers\RendezVousController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\CategoryReportController;
 /*
 * Middleware:
 * - 'auth:sanctum': Ensures the user is authenticated via Sanctum.
