@@ -59,20 +59,27 @@ class CategoryReportController extends Controller
         return redirect()->route('category_reports.index')->with('success', 'Category updated successfully.');
     }
 
-    public function destroy(CategoryReport $categoryReport)
+    public function destroy($id)
     {
-        $categoryReport->delete();
+        $category = CategoryReport::find($id);
+    
+        if (!$category) {
+            return response()->json(['message' => 'Catégorie non trouvée.'], 404);
+        }
+    
+        $category->delete();
+    
+        return response()->json(['message' => 'Catégorie supprimée avec succès.'], 200);
+    }
 
-        return redirect()->route('category_reports.index')->with('success', 'Category deleted successfully.');
-    }
     public function getByProject($projectId)
-{
-    try {
-        $categories = CategoryReport::where('project_id', $projectId)->get();
-        return response()->json($categories);
-    } catch (\Exception $e) {
-        \Log::error('Erreur lors de la récupération des catégories: ' . $e->getMessage());
-        return response()->json(['error' => 'Erreur interne du serveur'], 500);
+    {
+        try {
+            $categories = CategoryReport::where('project_id', $projectId)->get();
+            return response()->json($categories);
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors de la récupération des catégories: ' . $e->getMessage());
+            return response()->json(['error' => 'Erreur interne du serveur'], 500);
+        }
     }
-}
 }

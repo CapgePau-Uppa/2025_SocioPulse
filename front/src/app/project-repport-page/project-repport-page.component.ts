@@ -181,5 +181,25 @@ export class ProjectRepportPageComponent implements OnInit {
       );
   }
 
-  deleteCategory(categoryId: number): void {}
+  deleteCategory(categoryId: number): void {
+    const token = sessionStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+
+    this.http.delete(`http://127.0.0.1:8000/api/category_reports/${categoryId}`, { headers })
+      .subscribe(
+        () => {
+          console.log('Catégorie supprimée avec succès');
+          this.toastr.success('Catégorie supprimée avec succès !');
+          // Optionnel : actualiser la liste des catégories ou déclencher une autre action
+        },
+        (error) => {
+          console.error('Erreur lors de la suppression de la catégorie:', error);
+          this.toastr.error('Erreur lors de la suppression de la catégorie.');
+        }
+      );
+  }
+
 }

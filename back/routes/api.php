@@ -93,6 +93,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/projects/{id}/category_reports', [CategoryReportController::class, 'getByProject']);
 
 });
+Route::middleware('auth:sanctum')->delete('/category_reports/{id}', [CategoryReportController::class, 'destroy']);
 
 
 /**
