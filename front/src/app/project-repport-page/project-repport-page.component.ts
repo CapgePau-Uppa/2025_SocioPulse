@@ -25,7 +25,7 @@ export class ProjectRepportPageComponent implements OnInit {
   project: any;
   reports: any[] = [];
   name: string = '';
-  categories: any[] = ["Documentation", "Rapport", "Autre"];
+  categories: any[] = [];
 
   constructor(private toastr: ToastrService,private route: ActivatedRoute, private projectsService: ProjectsService, private dialog: MatDialog, private router: Router, private http: HttpClient) {}
 
@@ -35,6 +35,7 @@ export class ProjectRepportPageComponent implements OnInit {
       this.project = data.find(project => project.id === projectId);
       if (this.project) {
         this.loadReports(this.project.id);
+        this.loadCategories(this.project.id);
       } else {
         console.error('Projet non trouvé');
       }
@@ -103,7 +104,6 @@ export class ProjectRepportPageComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('name', name);
-    console.log(this.project.id);
     formData.append('project_id', this.project.id);
     formData.append('category_id', '1'); // Remplacez par la catégorie souhaitée
     this.http.post<{ path: string }>('http://127.0.0.1:8000/api/upload', formData).subscribe(
@@ -137,6 +137,25 @@ export class ProjectRepportPageComponent implements OnInit {
       });
   }
 
+  loadCategories(projectId: number): void {
+    const token = sessionStorage.getItem('auth_token');
+    if (!token) {
+      console.error('Utilisateur non authentifié');
+      return;
+    }
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.get<any[]>(`http://127.0.0.1:8000/api/projects/${projectId}/category_reports`, { headers })
+      .subscribe(categories => {
+        this.categories = categories;
+        console.log('Rapports récupérés:', this.categories);
+      }, error => {
+        console.error('Erreur lors de la récupération des rapports', error);
+        this.categories = [];
+      });
+  }
+
   createCategory(name: string): void {
     const token = sessionStorage.getItem('auth_token');
     const headers = new HttpHeaders({
@@ -149,7 +168,7 @@ export class ProjectRepportPageComponent implements OnInit {
       project_id: this.project.id
     };
 
-    this.http.post<{ path: string }>('http://127.0.0.1:8000/api/category_reports', data, { headers })
+    this.http.post<{ path: string }>('http://127.0.0.1:8000/api/projects/${projectId}/category_reports', data, { headers })
       .subscribe(
         (response) => {
           console.log('Catégorie créée avec succès:', response);

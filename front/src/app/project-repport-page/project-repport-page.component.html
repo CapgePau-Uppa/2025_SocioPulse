@@ -1,18 +1,22 @@
 <!-- report-list.component.html -->
 <div class="container">
+  <div class="buttons">
   <button mat-raised-button class="add-report-button" (click)="openDialog()">
     Ajouter un rapport (PDF)
   </button>
     <button mat-raised-button class="add-report-button" (click)="openDialog2()">
     Ajouter une catégorie
   </button>
+</div>
   <mat-list>
     <mat-list-item *ngFor="let category of categories" class="category">
-      <span>{{ category }}</span>
+      <span>{{ category.name }}</span>
       <mat-list>
         <mat-list-item *ngFor="let report of reports">
-          <span>{{ report.name }}</span>
-          <button mat-button (click)="openPdf(report.path)">Voir le PDF</button>
+          <div class="report" >
+          <span *ngIf="report.category_id == category.id">{{ report.name }}</span>
+          <button mat-button (click)="openPdf(report.path)" *ngIf="report.category_id == category.id">Voir le PDF</button>
+        </div>
         </mat-list-item>
       </mat-list>
       <button mat-button (click)="deleteCategory(category.id)"> Supprimer</button>

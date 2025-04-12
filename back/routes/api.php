@@ -88,6 +88,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/projects/{id}/access-requests/{requestId}/approve', [PdfAccessRequestController::class, 'approveRequest']);
     Route::post('/projects/{id}/access-requests/{requestId}/reject', [PdfAccessRequestController::class, 'rejectRequest']);
     Route::put('/projects/{id}', [ProjectController::class, 'update']);
+    
+    Route::post('/projects/{id}/category_reports', [CategoryReportController::class, 'store']);
+    Route::get('/projects/{id}/category_reports', [CategoryReportController::class, 'getByProject']);
+
 });
 
 
@@ -147,8 +151,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
     Route::post('/notifications/debug', [NotificationController::class, 'addDebugNotification']);
 });
-
-Route::middleware('auth:sanctum')->post('category_reports', [CategoryReportController::class, 'store']);
 
 /*
 // Route protégée par Sanctum  et permissions administrator
