@@ -13,6 +13,7 @@ use App\Http\Controllers\PdfAccessRequestController;
 use App\Http\Controllers\RendezVousController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\CategoryReportController;
 /*
 * Middleware:
 * - 'auth:sanctum': Ensures the user is authenticated via Sanctum.
@@ -75,7 +76,7 @@ Route::middleware(['auth:sanctum', 'checkAdminRole', 'checkPermission:canDelete'
  */
 Route::get('/reports/file/{filename}', [ReportController::class, 'getReportFile']);
 Route::post('/upload', [ReportController::class, 'upload']);
-
+Route::middleware('auth:sanctum')->put('reports/{report}', [ReportController::class, 'moveReport']);
 /**
  * API Routes for the project access requests
  */
@@ -87,7 +88,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/projects/{id}/access-requests/{requestId}/approve', [PdfAccessRequestController::class, 'approveRequest']);
     Route::post('/projects/{id}/access-requests/{requestId}/reject', [PdfAccessRequestController::class, 'rejectRequest']);
     Route::put('/projects/{id}', [ProjectController::class, 'update']);
+    
+    Route::post('/projects/{id}/category_reports', [CategoryReportController::class, 'store']);
+    Route::get('/projects/{id}/category_reports', [CategoryReportController::class, 'getByProject']);
+
 });
+Route::middleware('auth:sanctum')->delete('/category_reports/{id}', [CategoryReportController::class, 'destroy']);
 
 
 /**
@@ -146,8 +152,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
     Route::post('/notifications/debug', [NotificationController::class, 'addDebugNotification']);
 });
-
-Route::middleware('auth:sanctum')->post('category_reports', [CategoryReportController::class, 'store']);
 
 /*
 // Route protégée par Sanctum  et permissions administrator

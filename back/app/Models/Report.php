@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Report extends Model
 {
-    protected $fillable = ['name', 'path', 'project_id', 'category_report_id'];
+    protected $fillable = ['name', 'path', 'project_id', 'category_id'];
     public function project()
     {
         return $this->belongsTo(Project::class);

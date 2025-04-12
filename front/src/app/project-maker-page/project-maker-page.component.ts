@@ -14,8 +14,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { HttpHeaders } from '@angular/common/http';
 import 'leaflet/dist/leaflet.css';
-import {ProjectsService} from '../services/projects.service';
 import {ProjectUpdateService} from '../services/project-update-service.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-project-maker-page',
@@ -58,6 +58,7 @@ export class ProjectMakerPageComponent implements OnInit {
     this.loadEntreprises();
     console.log("entreprises", this.entreprises);
   }
+  constructor(private toastr: ToastrService) {}
 
   private async getLocationDetails(lat: number, lng: number): Promise<void> {
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=fr`;
@@ -122,23 +123,44 @@ export class ProjectMakerPageComponent implements OnInit {
 
   onSubmit(form: any): void {
     const token = sessionStorage.getItem('auth_token');
-    console.log('Token:', token);
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,  // Ajouter le token dans l'en-tête
+      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-    console.log("entreprises", this.entreprises);
+
     if (form.valid) {
       this.project.entreprise_id = this.project.entreprise_id.toString();
-      console.log('Project data:', this.project);
 
+      this.http.post<any>('http://localhost:8000/api/projects', this.project, { headers }).subscribe(
+        (response) => {
+          console.log('Projet créé :', response);
 
-      this.http.post('http://localhost:8000/api/projects', this.project, { headers }).subscribe(
-      response => console.log(response),
-      error => console.log(error));
-      this.router.navigate(['/']);
-      //notify the map
-      this.projectUpdateService.notifyProjectUpdate(); // Notify project update
+          // Créer la catégorie après création du projet
+          const data = {
+            name: "Document",
+            project_id: response.project.id
+          };
+
+          this.http.post<{ path: string }>(`http://127.0.0.1:8000/api/projects/${response.id}/category_reports`, data, { headers })
+            .subscribe(
+              (categoryResponse) => {
+                console.log('Catégorie créée avec succès:', categoryResponse);
+                this.toastr.success('Catégorie ajoutée avec succès !');
+              },
+              (categoryError) => {
+                console.error('Erreur lors de la création de la catégorie:', categoryError);
+                this.toastr.error('Erreur lors de l\'ajout de la catégorie.');
+              }
+            );
+
+          this.router.navigate(['/']);
+          this.projectUpdateService.notifyProjectUpdate();
+        },
+        (error) => {
+          console.log('Erreur lors de la création du projet :', error);
+        }
+      );
     }
   }
+
 }
