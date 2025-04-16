@@ -19,6 +19,7 @@ import { MatNativeDateModule, MAT_DATE_LOCALE, MAT_DATE_FORMATS, DateAdapter } f
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatRadioModule } from '@angular/material/radio';
 import localeFr from '@angular/common/locales/fr';
+import {ToastrService} from 'ngx-toastr';
 
 registerLocaleData(localeFr);
 
@@ -106,7 +107,8 @@ export class RendezVousModalComponent {
     private authService: AuthService,
     private snackBar: MatSnackBar,
     private fb: FormBuilder,
-    private dateAdapter: DateAdapter<Date>
+    private dateAdapter: DateAdapter<Date>,
+    private toastr: ToastrService
   ) {
     
     this.dateAdapter.setLocale('fr-FR');
@@ -173,54 +175,53 @@ export class RendezVousModalComponent {
   
         // Send data to API
         this.rendezVousService.setAvailabilities(this.data.projectId, finalAvailabilities).subscribe(() => {
-          this.snackBar.open('Créneau fusionné et sauvegardé avec succès !', 'Fermer', {
-            duration: 8000
-          });
+          this.toastr.success('Créneau sauvegardé avec succès !');
+          this.dialogRef.close();
           this.generateHours(); // Reload visible time slots
         });
       },
       error: () => {
-        this.snackBar.open('Erreur lors de la récupération des disponibilités', 'Fermer', {
-          duration: 8000
-        });
+        this.toastr.error('Erreur lors de la récupération des disponibilités');
       }
     });
   }
 
   
-  mergeAvailabilitiesForDate(date: string, newStart: string, newEnd: string, existingAvailabilities: any[]) {
-    // Add the new time slot
-    const allSlots = [...existingAvailabilities, {
-      availability_date: date,
-      start_time: newStart,
-      end_time: newEnd
-    }];
+  mergeAvailabilitiesForDate(date: string, newStart: string | null, newEnd: string | null, existingAvailabilities: any[]) {
+    const slots = [...existingAvailabilities];
   
-    // Sort time slots by start time
-    allSlots.sort((a, b) => a.start_time.localeCompare(b.start_time));
+    // If a new slot is provided, add it
+    if (newStart && newEnd) {
+      slots.push({
+        availability_date: date,
+        start_time: newStart,
+        end_time: newEnd
+      });
+    }
   
-    // Merge overlapping time slots
+    // Sort all slots by start time
+    slots.sort((a, b) => a.start_time.localeCompare(b.start_time));
+  
     const merged: any[] = [];
-    let current = allSlots[0];
+    let current = slots[0];
   
-    for (let i = 1; i < allSlots.length; i++) {
-      const next = allSlots[i];
+    for (let i = 1; i < slots.length; i++) {
+      const next = slots[i];
   
+      // Merge if slots overlap OR touch exactly
       if (next.start_time <= current.end_time) {
-        // Overlapping slots -> extend the current slot
         current.end_time = next.end_time > current.end_time ? next.end_time : current.end_time;
       } else {
         merged.push(current);
         current = next;
       }
     }
-    merged.push(current);
   
+    merged.push(current);
     return merged;
   }
+
   
-
-
 // Retrieve company availabilities
 generateHours() {
   this.hours = []; // Reset hours
@@ -357,15 +358,31 @@ generateHours() {
       return;
     }
 
+    // Merge slots by day
+    const slotsByDate: { [date: string]: any[] } = {};
+    for (const slot of availabilitiesToSend) {
+      if (!slotsByDate[slot.availability_date]) {
+        slotsByDate[slot.availability_date] = [];
+      }
+      slotsByDate[slot.availability_date].push(slot);
+    }
+
+    let mergedAvailabilities: any[] = [];
+    for (const date in slotsByDate) {
+      const merged = this.mergeAvailabilitiesForDate(date, '', '', slotsByDate[date]);
+      mergedAvailabilities = [...mergedAvailabilities, ...merged];
+    }
+
     // Send time slots to the database
-    this.rendezVousService.setAvailabilities(this.data.projectId, availabilitiesToSend).subscribe({
+    this.rendezVousService.setAvailabilities(this.data.projectId, mergedAvailabilities).subscribe({
       next: () => {
-        console.log("Créneaux récurrents enregistrés !");
-        this.generateHours(); // If necessary
-        this.dialogRef.close(); // Close the modal if desired
+        this.toastr.success('Slot saved successfully!');
+        this.dialogRef.close();
+        this.generateHours(); // Refresh displayed slots
       },
       error: (err) => {
-        console.error("Erreur lors de l'enregistrement des disponibilités :", err);
+        this.toastr.error('Error while saving availability');
+        console.error("Error while saving availability:", err);
       }
     });
   }
