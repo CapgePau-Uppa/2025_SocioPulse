@@ -3,7 +3,7 @@ services:
     image: mysql:8.0
     container_name: mysql_db
     environment:
-      MYSQL_ROOT_PASSWORD: kooky2bidart
+      MYSQL_ROOT_PASSWORD: password123
       MYSQL_DATABASE: laravel
     ports:
       - "3307:3306"
@@ -23,9 +23,10 @@ services:
       DB_PORT: 3306
       DB_DATABASE: laravel
       DB_USERNAME: root
-      DB_PASSWORD: kooky2bidart
+      DB_PASSWORD: password123
     command: >
       sh -c "
+      until nc -z mysql_db 3306; do echo 'Waiting for MySQL...'; sleep 1; done &&
       php artisan migrate:fresh --seed &&
       php-fpm
       "

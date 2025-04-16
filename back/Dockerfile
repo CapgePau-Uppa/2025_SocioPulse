@@ -1,6 +1,7 @@
 # Utiliser l'image officielle de PHP 8.2
 FROM php:8.2-fpm
 
+RUN apt-get update && apt-get install -y netcat-openbsd
 # Installer les extensions nécessaires pour Laravel
 RUN docker-php-ext-install pdo pdo_mysql
 
