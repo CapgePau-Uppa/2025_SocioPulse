@@ -6,15 +6,18 @@ import { MatListModule } from '@angular/material/list';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { CommonModule, registerLocaleData } from '@angular/common'; // Import de CommonModule
-import { MatDialogModule } from '@angular/material/dialog'; // Assurez-vous d'importer aussi MatDialogModule pour les modals
+import { CommonModule, registerLocaleData } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { AuthService } from '../services/auth.service';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
+import { MatNativeDateModule, MAT_DATE_LOCALE, MAT_DATE_FORMATS, DateAdapter } from '@angular/material/core';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatRadioModule } from '@angular/material/radio';
 import localeFr from '@angular/common/locales/fr';
 
 registerLocaleData(localeFr);
@@ -32,7 +35,6 @@ export const MY_DATE_FORMATS = {
 };
 
 @Component({
-  encapsulation: ViewEncapsulation.None,
   selector: 'app-rendez-vous-modal',
   templateUrl: './rendez-vous-modal.component.html',
   imports: [
@@ -48,7 +50,9 @@ export const MY_DATE_FORMATS = {
     MatIconModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatSelectModule
+    MatSelectModule,
+    MatTabsModule,
+    MatRadioModule
   ],
   styleUrls: ['./rendez-vous-modal.component.scss'],
   providers: [
@@ -57,35 +61,62 @@ export const MY_DATE_FORMATS = {
     { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
   ]
 })
+
 export class RendezVousModalComponent {
   rendezVousList: any[] = [];
   form: FormGroup;
   isEditing: boolean = false;
   selectedRendezVous: any | null = null;
-  @Input() rendezVous: any; // Données du rendez-vous
-  userRole: string = ''; // Définit la propriété userRole
-  noAvailabilityMessage: string = ''; // Message d'indisponibilité
-  selectedDate: Date = new Date(); // Initialisation de la variable
-  // Tableau des heures disponibles (par exemple de 9h00 à 18h00)
-  hours: string[] = [];
-  availableDates: string[] = []; // ex: ['2025-04-08', '2025-04-10', ...]
+  @Input() rendezVous: any; // Appointment data
+  userRole: string = ''; // Defines the userRole property
+  noAvailabilityMessage: string = '';
+  selectedDate: Date = new Date(); 
 
-  // Date minimum possible pour la sélection
+  // Array of available hours (from 9:00 AM to 6:00 PM)
+  hours: string[] = [];
+
+  // ['2025-04-08', '2025-04-10']
+  availableDates: string[] = []; 
+
+  // Minimum possible date for selection
   minDate!: string;
+
+  // Selected date in the single appointment feature
+  selectedDay = '';
+
+  weekDays = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+  selectedDays: string[] = [];
+
+  start_time: string = '';
+  end_time: string = '';
+  
+  recurrenceOption: 'currentMonth' | 'currentAndNext' | 'customRange' = 'currentMonth';
+  customStart: Date | null = null;
+  customEnd: Date | null = null;
+  tabIndex: number = 0;
+  selectedRecurringOption: string = 'currentMonth';
+
+  modeEdition = false;
+
 
   constructor(
     private dialogRef: MatDialogRef<RendezVousModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { projectId: number },
     private rendezVousService: RendezVousService,
+    private authService: AuthService,
+    private snackBar: MatSnackBar,
     private fb: FormBuilder,
-    private authService: AuthService
+    private dateAdapter: DateAdapter<Date>
   ) {
+    
+    this.dateAdapter.setLocale('fr-FR');
+  
     this.form = this.fb.group({
       date_hour: ['', [Validators.required]],
-      hour: ['', [Validators.required]],  // Contrôle pour l'heure
+      hour: ['', [Validators.required]],
       message: ['', [Validators.maxLength(500)]]
     });
-
+  
     this.loadRendezVous();
     this.generateHours();
     this.setMinDate();
@@ -93,27 +124,23 @@ export class RendezVousModalComponent {
   
   ngOnInit(): void {
     this.getUserRole();
-    // Écouteur : appeler generateHours() dès que la date change
+    // Listener: call generateHours() whenever the date changes
     this.form.get('date_hour')?.valueChanges.subscribe((newDate) => {
-      console.log("Nouvelle date sélectionnée :", newDate);
+      console.log("New selected date:", newDate);
       this.selectedDate = new Date(newDate);
       this.generateHours();
     });
     this.rendezVousService.getAvailabilities(this.data.projectId).subscribe({
       next: (availabilities) => {
         this.availableDates = availabilities.map((a: any) => a.availability_date);
-        console.log("Dates disponibles ON LOG :", this.availableDates);
+        console.log("Available dates ON LOG:", this.availableDates);
       }
     });
   }
 
   getUserRole(): void {
-    this.userRole = this.authService.getUserRole(); // Récupère le rôle de l'utilisateur
+    this.userRole = this.authService.getUserRole(); // Retrieves the user's role
   }
-
-  selectedDay = '';
-  start_time = '';
-  end_time = '';
   
   formatDate(date: Date): string {
     const year = date.getFullYear();
@@ -122,47 +149,103 @@ export class RendezVousModalComponent {
     return `${year}-${month}-${day}`;
   }
   
-
   saveAvailabilities() {
     const formattedDate = this.formatDate(this.selectedDate);
-    const newAvailabilities = {
-      availability_date: formattedDate,
-      start_time: this.start_time, 
-      end_time: this.end_time
-    };
-     
-    this.rendezVousService.setAvailabilities(this.data.projectId, [newAvailabilities]).subscribe(() => {
-      console.log("Disponibilité ajoutée !");
-      this.generateHours();
+    const newStart = this.start_time;
+    const newEnd = this.end_time;
+  
+    this.rendezVousService.getAvailabilities(this.data.projectId).subscribe({
+      next: (availabilities) => {
+        // Retrieve time slots for the selected day
+        const existingForDate = availabilities.filter(a => a.availability_date === formattedDate);
+  
+        // Merge time slots
+        const mergedSlots = this.mergeAvailabilitiesForDate(
+          formattedDate,
+          newStart,
+          newEnd,
+          existingForDate
+        );
+  
+        // Send merged time slots (replacing only those for this day)
+        const otherDays = availabilities.filter(a => a.availability_date !== formattedDate);
+        const finalAvailabilities = [...otherDays, ...mergedSlots];
+  
+        // Send data to API
+        this.rendezVousService.setAvailabilities(this.data.projectId, finalAvailabilities).subscribe(() => {
+          this.snackBar.open('Créneau fusionné et sauvegardé avec succès !', 'Fermer', {
+            duration: 8000
+          });
+          this.generateHours(); // Reload visible time slots
+        });
+      },
+      error: () => {
+        this.snackBar.open('Erreur lors de la récupération des disponibilités', 'Fermer', {
+          duration: 8000
+        });
+      }
     });
-    if (!confirm('Disponibilité ajoutée !')) return;
   }
 
-// Récupérer les dispos de l'entreprise
-generateHours() {
-  this.hours = []; // Réinitialiser les heures
-  this.noAvailabilityMessage = ''; // Réinitialiser le message d'indisponibilité
+  
+  mergeAvailabilitiesForDate(date: string, newStart: string, newEnd: string, existingAvailabilities: any[]) {
+    // Add the new time slot
+    const allSlots = [...existingAvailabilities, {
+      availability_date: date,
+      start_time: newStart,
+      end_time: newEnd
+    }];
+  
+    // Sort time slots by start time
+    allSlots.sort((a, b) => a.start_time.localeCompare(b.start_time));
+  
+    // Merge overlapping time slots
+    const merged: any[] = [];
+    let current = allSlots[0];
+  
+    for (let i = 1; i < allSlots.length; i++) {
+      const next = allSlots[i];
+  
+      if (next.start_time <= current.end_time) {
+        // Overlapping slots -> extend the current slot
+        current.end_time = next.end_time > current.end_time ? next.end_time : current.end_time;
+      } else {
+        merged.push(current);
+        current = next;
+      }
+    }
+    merged.push(current);
+  
+    return merged;
+  }
+  
 
-  // Vérifier si une date est bien sélectionnée
+
+// Retrieve company availabilities
+generateHours() {
+  this.hours = []; // Reset hours
+  this.noAvailabilityMessage = ''; // Reset unavailability message
+
+  // Check if a date is properly selected
   const selectedDateValue = this.form.get('date_hour')?.value;
   if (!selectedDateValue) {
     this.noAvailabilityMessage = "Veuillez sélectionner une date.";
     return;
   }
 
-  // Formater la date sélectionnée en YYYY-MM-DD
+  // Format the selected date to YYYY-MM-DD
   const selectedDate = new Date(selectedDateValue);
   const formattedDate = this.formatDate(this.selectedDate);
   
   console.log("Date formatée : ", formattedDate);
 
-  // Vérifier si un rendez-vous a déjà été pris ce jour-là
+  // Check if an appointment has already been scheduled for that day
   this.rendezVousService.getRendezVousForDate(this.data.projectId, formattedDate).subscribe({
     next: existingRendezvous => {
       console.log("Rendez-vous existants pour cette date :", existingRendezvous);
       if (existingRendezvous.length > 0) {
         this.noAvailabilityMessage = "Un rendez-vous a déjà été pris ce jour-là. Veuillez choisir une autre date.";
-        this.hours = []; // Supprimer tous les créneaux horaires
+        this.hours = [];
         return;
       }
       const year = selectedDate.getFullYear();
@@ -170,7 +253,7 @@ generateHours() {
       const day = selectedDate.getDate().toString().padStart(2, '0');
       const formattedDate = `${year}-${month}-${day}`;
 
-      // Récupérer les disponibilités de l'entreprise pour ce projet
+      // Retrieve company availability for this project
       this.rendezVousService.getAvailabilities(this.data.projectId).subscribe({
         next: availabilities => {
           if (!availabilities || availabilities.length === 0) {
@@ -189,7 +272,7 @@ generateHours() {
             return;
           }
 
-          // Générer les heures disponibles
+          // Generate available hours
           dayDisponibilites.forEach(available => {
             let startHour = parseInt(available.start_time.split(':')[0], 10);
             let startMinutes = parseInt(available.start_time.split(':')[1], 10);
@@ -227,7 +310,67 @@ generateHours() {
   });
 }
 
-  // Définir la date minimale pour la sélection
+  applyRecurringSlots() {
+    if (this.selectedDays.length === 0) {
+      console.warn("Veuillez sélectionner au moins un jour.");
+      return;
+    }
+
+    const availabilitiesToSend = [];
+    const current = new Date(); // Current date to determine the month
+    const currentMonth = current.getMonth();
+    const currentYear = current.getFullYear();
+
+    // Option: "This month only"
+    let endMonthDate = new Date(currentYear, currentMonth + 1, 0); // Last day of the current month
+
+    // Option: "This month and next" (Adds one month to the current month)
+    if (this.recurrenceOption === 'currentAndNext') {
+      endMonthDate = new Date(currentYear, currentMonth + 2, 0); // Last day of the next month
+    }
+
+    // Format selected days to match .toLocaleDateString(..., { weekday: 'long' })
+    const selectedDaysLower = this.selectedDays.map(day => day.toLowerCase());
+
+    // Loop through all days of the selected month(s)
+    while (current <= endMonthDate) {
+      const dayName = current.toLocaleDateString('fr-FR', { weekday: 'long' });
+
+      // If the day matches one of the selected days
+      if (selectedDaysLower.includes(dayName.toLowerCase())) {
+        const formattedDate = this.formatDate(current); // Format date as "YYYY-MM-DD"
+
+        availabilitiesToSend.push({
+          availability_date: formattedDate,
+          start_time: this.start_time,
+          end_time: this.end_time
+        });
+      }
+
+      // Move to the next day
+      current.setDate(current.getDate() + 1);
+    }
+
+    // If no time slots are generated
+    if (availabilitiesToSend.length === 0) {
+      console.warn("Aucun jour ne correspond aux jours sélectionnés.");
+      return;
+    }
+
+    // Send time slots to the database
+    this.rendezVousService.setAvailabilities(this.data.projectId, availabilitiesToSend).subscribe({
+      next: () => {
+        console.log("Créneaux récurrents enregistrés !");
+        this.generateHours(); // If necessary
+        this.dialogRef.close(); // Close the modal if desired
+      },
+      error: (err) => {
+        console.error("Erreur lors de l'enregistrement des disponibilités :", err);
+      }
+    });
+  }
+
+  // Set the minimum date for selection
   setMinDate() {
     const today = new Date();
     this.minDate = today.toISOString().split('T')[0];  // Format YYYY-MM-DD
@@ -268,11 +411,17 @@ generateHours() {
       project_id: this.data.projectId,
       ...formData
     });
+
+    console.log("Mode édition :", this.isEditing);
+    console.log("Rendez-vous à modifier :", this.selectedRendezVous);
+
   
-    const request = this.isEditing
-      ? this.rendezVousService.updateRendezVous(this.selectedRendezVous.id, formData)
-      : this.rendezVousService.createRendezVous(this.data.projectId, formData);
-  
+    const request = this.isEditing && this.selectedRendezVous?.id
+    ? this.rendezVousService.updateRendezVous(this.selectedRendezVous.id, formData)
+    : this.rendezVousService.createRendezVous(this.data.projectId, formData);
+    this.selectedRendezVous = null;
+    this.isEditing = false;
+    
     request.subscribe({
       next: response => {
         console.log("Réponse serveur :", response);
@@ -319,34 +468,66 @@ generateHours() {
     });
   }
 
-  updateRendezVous(projectId: number) {
-    if (this.form.invalid) {
-      return;
-    }
-  
-    const rendezVousId = this.selectedRendezVous.id;
-    const data = this.form.value;
-  
-    this.rendezVousService.updateRendezVous(rendezVousId, data).subscribe({
-      next: (response) => {
-        console.log('Rendez-vous mis à jour avec succès', response);
-        this.rendezVousService.getRendezVous(projectId); // Rafraîchir la liste des rendez-vous
-        this.close();
-      },
-      error: (err) => {
-        console.error('Erreur lors de la mise à jour du rendez-vous', err);
+  // Switch to edit mode
+  editRendezVous(rdv: any) {
+    this.selectedRendezVous = rdv;
+    this.isEditing = true;
+
+    this.selectedDate = new Date(rdv.date);
+    this.form.patchValue({
+      date_hour: new Date(rdv.date),
+      hour: rdv.heure,
+      message: rdv.message
+    });
+
+    // Optional: scroll to the form
+    setTimeout(() => {
+      const formElement = document.querySelector('.form-buttons');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth' });
       }
+    }, 200);
+  }
+  
+  // Appointment update
+  updateRendezVous(projectId: number) {
+    if (!this.selectedRendezVous || this.form.invalid) return;
+
+    const updatedData = this.form.value;
+
+    // Checks if modifying the same day to temporarily lift the constraint
+    if (this.selectedRendezVous.date === updatedData.date) {
+    }
+
+    this.rendezVousService.updateRendezVous(this.selectedRendezVous.id, updatedData).subscribe({
+      next: (res) => {
+        console.log('Update successful', res);
+        this.modeEdition = false;
+        this.selectedRendezVous = null;
+        this.form.reset();
+        this.rendezVousService.getRendezVous(projectId); // Refresh list
+      },
+      error: (err) => console.error('Update error', err)
     });
   }
-  
+    
   highlightDates = (date: Date): string => {
-    const formatted = this.formatDate(date); // "YYYY-MM-DD"
-    return this.availableDates.includes(formatted) ? 'highlighted-date' : 'unavailable-date';
+    const formatted = this.formatDate(date); // format: "2025-04-14"
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+  
+    const inputDate = new Date(date);
+    inputDate.setHours(0, 0, 0, 0);
+  
+    // If the date is available AND it is in the future or today
+    if (this.availableDates.includes(formatted) && inputDate >= today) {
+      return 'highlighted-date';
+    }
+  
+    return 'unavailable-date';
   };
   
-  
-
   close() {
     this.dialogRef.close();
-  }
+  }  
 }

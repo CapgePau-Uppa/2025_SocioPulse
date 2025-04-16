@@ -89,7 +89,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/projects/{id}', [ProjectController::class, 'update']);
 });
 
-
 /**
  * API Routes for managing "Rendez-Vous" (appointments) within projects.
  */

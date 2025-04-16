@@ -2,7 +2,7 @@
 
 <div class="appointments-container">
 
-  <!-- Liste des rendez-vous -->
+  <!-- Appointment list -->
   <mat-card class="appointment-card" *ngFor="let rdv of rendezVousList">
     <mat-card-header class="appointment-header">
       <mat-card-title class="appointment-title">
@@ -20,77 +20,126 @@
     </mat-card-content>
 
     <mat-card-actions class="appointment-actions">
-      <!-- Entreprise : Accepter / Refuser -->
+      <!-- Company: Accept / Reject -->
       <ng-container *ngIf="(userRole === 'entreprise' || userRole === 'administrator') && rdv.status !== 'approved' && rdv.status !== 'rejected'">
         <button mat-button class="appointment-button accept-button" (click)="acceptRendezVous(rdv.id)">Accepter</button>
         <button mat-button class="appointment-button reject-button" (click)="rejectRendezVous(rdv.id)">Refuser</button>
       </ng-container>
 
-      <!-- Collectivité : Modifier / Supprimer -->
+      <!-- Community: Edit / Delete -->
       <ng-container *ngIf="userRole === 'communaute' || userRole === 'administrator'">
         <button *ngIf="rdv.status !== 'approved' && rdv.status !== 'rejected'"
-                mat-button
-                type="submit"
+                mat-button type="button"
                 class="appointment-button edit-button"
-                (click)="updateRendezVous(rdv.project.id)">
+                (click)="editRendezVous(rdv)">
           Modifier le rendez-vous
         </button>
-        <button mat-button type="button" class="appointment-button delete-button" (click)="deleteRendezVous(rdv.id)">
+      
+        <button mat-button type="button"
+                class="appointment-button delete-button"
+                (click)="deleteRendezVous(rdv.id)">
           Supprimer
         </button>
-      </ng-container>
+      </ng-container>      
     </mat-card-actions>
   </mat-card>
 
-  <!-- Template si pas de rendez-vous -->
-  <ng-template>
-    <mat-card class="no-appointments-card">
-      <mat-card-content>
-        <p>Aucun rendez-vous.</p>
-      </mat-card-content>
-    </mat-card>
-  </ng-template>
-
-  <!-- Formulaire entreprise : définir disponibilités -->
+  <!-- Company form: set availability -->
   <div class="availability-form-container" *ngIf="userRole === 'entreprise' || userRole === 'administrator'">
-    <form (ngSubmit)="saveAvailabilities()">
-      <mat-card class="availability-card">
-        <mat-card-header>
-          <mat-card-title><b>Définir les disponibilités</b></mat-card-title>
-        </mat-card-header>
+    <mat-tab-group [(selectedIndex)]="tabIndex">
+      <!-- PUNCTUAL tab -->
+      <mat-tab label="Ponctuel">
+        <form (ngSubmit)="saveAvailabilities()">
+          <mat-card class="availability-card">
+            <mat-card-header>
+              <mat-card-title><b>Définir les disponibilités</b></mat-card-title>
+            </mat-card-header>
 
-        <mat-card-content class="availability-content">
-          <!-- Date -->
-          <form [formGroup]="form" (ngSubmit)="submitForm()">
-            <mat-form-field class="form-field date-field" appearance="outline">
-              <mat-label>Date</mat-label>
-              <input matInput [matDatepicker]="picker" formControlName="date_hour" [min]="minDate" />
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker [dateClass]="highlightDates"></mat-datepicker>
-            </mat-form-field>
-          </form>
+            <mat-card-content class="availability-content">
 
-          <!-- Heure début -->
-          <mat-form-field class="form-field time-field" appearance="outline">
-            <mat-label>Heure de début</mat-label>
-            <input matInput type="time" [(ngModel)]="start_time" name="start_time" [ngModelOptions]="{standalone: true}">
-          </mat-form-field>
+              <!-- Date -->
+              <form [formGroup]="form" (ngSubmit)="submitForm()">
+                <mat-form-field class="form-field date-field" appearance="outline">
+                  <mat-label>Date</mat-label>
+                  <input matInput [matDatepicker]="picker" formControlName="date_hour" [min]="minDate" />
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker [dateClass]="highlightDates"></mat-datepicker>
+                </mat-form-field>
+              </form>
 
-          <!-- Heure fin -->
-          <mat-form-field class="form-field time-field" appearance="outline">
-            <mat-label>Heure de fin</mat-label>
-            <input matInput type="time" [(ngModel)]="end_time" name="end_time" [ngModelOptions]="{standalone: true}">
-          </mat-form-field>
-        </mat-card-content>
+              <!-- Start time -->
+              <mat-form-field class="form-field time-field" appearance="outline">
+                <mat-label>Heure de début</mat-label>
+                <input matInput type="time" [(ngModel)]="start_time" name="start_time" [ngModelOptions]="{standalone: true}">
+              </mat-form-field>
 
-        <mat-card-content>
-          <button mat-button type="submit" class="save-availability-button" color="primary">Sauvegarder</button>
-        </mat-card-content>
-      </mat-card>
-    </form>
+              <!-- End time -->
+              <mat-form-field class="form-field time-field" appearance="outline">
+                <mat-label>Heure de fin</mat-label>
+                <input matInput type="time" [(ngModel)]="end_time" name="end_time" [ngModelOptions]="{standalone: true}">
+              </mat-form-field>
+            </mat-card-content>
+
+            <mat-card-content class="save-availability-content">
+              <button mat-button type="submit" class="save-availability-button" color="primary">Sauvegarder</button>
+            </mat-card-content>
+          </mat-card>
+        </form>
+      </mat-tab>
+
+      <!-- RECURRENT tab -->
+      <mat-tab label="Récurrent">
+        <mat-card class="rec-availability-card">
+          <mat-card-header>
+            <mat-card-title><b>Ajouter un créneau récurrent</b></mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <!-- Weekdays -->
+            <div class="weekdays-container">
+              <mat-selection-list [(ngModel)]="selectedDays" [ngModelOptions]="{standalone: true}">
+                <mat-list-option *ngFor="let day of weekDays.slice(0, 4)" [value]="day">
+                  {{ day }}
+                </mat-list-option>
+              </mat-selection-list>
+
+              <mat-selection-list [(ngModel)]="selectedDays" [ngModelOptions]="{standalone: true}">
+                <mat-list-option *ngFor="let day of weekDays.slice(4,7)" [value]="day">
+                  {{ day }}
+                </mat-list-option>
+              </mat-selection-list>
+            </div>
+
+            <!-- Time slots -->
+            <div class="time-inputs">
+              <mat-form-field class="form-field time-field" appearance="outline">
+                <mat-label>Heure de début</mat-label>
+                <input matInput type="time" [(ngModel)]="start_time" name="recurring_start" [ngModelOptions]="{standalone: true}">
+              </mat-form-field>
+
+              <mat-form-field class="form-field time-field" appearance="outline">
+                <mat-label>Heure de fin</mat-label>
+                <input matInput type="time" [(ngModel)]="end_time" name="recurring_end" [ngModelOptions]="{standalone: true}">
+              </mat-form-field>
+            </div>
+
+            <!-- Period options -->
+            <mat-label>Application period</mat-label>
+            <mat-radio-group class="recurrence-content" [(ngModel)]="recurrenceOption" [ngModelOptions]="{standalone: true}">
+              <mat-radio-button value="currentMonth">Ce mois uniquement</mat-radio-button>
+              <mat-radio-button value="currentAndNext">Ce mois et le suivant</mat-radio-button>
+            </mat-radio-group>            
+          </mat-card-content>
+
+          <mat-card-actions>
+            <button mat-raised-button color="primary" (click)="applyRecurringSlots()">Appliquer</button>
+          </mat-card-actions>
+        </mat-card>
+      </mat-tab>
+    </mat-tab-group>
   </div>
 
-  <!-- Formulaire communauté : prise de rendez-vous -->
+  <!-- Community form: book an appointment -->
   <div class="appointment-form-container" *ngIf="userRole === 'communaute' || userRole === 'administrator'">
     <form [formGroup]="form" (ngSubmit)="submitForm()">
       <mat-card class="appointment-form-card">

@@ -52,7 +52,7 @@ export class RendezVousService {
   // Update an existing appointment
   updateRendezVous(projectId: number, data: any): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.put(`${this.apiUrl}/rendez-vous/${projectId}`, data, { headers });
+    return this.http.put(`${this.apiUrl}/${projectId}/rendez-vous`, data, { headers });
   }
 
   // Delete an appointment
