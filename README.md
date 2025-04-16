@@ -49,9 +49,11 @@ ANGULAR :
 
 
 /----------Launch----------/
+DOCKER : 
+in the root : docker-compose up --build
 
+MANUAL : 
 WINDOWS :
-
 
 BDD :
 1) mysql -u root -p
