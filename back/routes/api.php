@@ -12,6 +12,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\PdfAccessRequestController;
 use App\Http\Controllers\RendezVousController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CategoryReportController;
 /*
 * Middleware:
@@ -75,7 +76,7 @@ Route::middleware(['auth:sanctum', 'checkAdminRole', 'checkPermission:canDelete'
  */
 Route::get('/reports/file/{filename}', [ReportController::class, 'getReportFile']);
 Route::post('/upload', [ReportController::class, 'upload']);
-
+Route::middleware('auth:sanctum')->put('reports/{report}', [ReportController::class, 'moveReport']);
 /**
  * API Routes for the project access requests
  */
@@ -87,7 +88,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/projects/{id}/access-requests/{requestId}/approve', [PdfAccessRequestController::class, 'approveRequest']);
     Route::post('/projects/{id}/access-requests/{requestId}/reject', [PdfAccessRequestController::class, 'rejectRequest']);
     Route::put('/projects/{id}', [ProjectController::class, 'update']);
+    
+    Route::post('/projects/{id}/category_reports', [CategoryReportController::class, 'store']);
+    Route::get('/projects/{id}/category_reports', [CategoryReportController::class, 'getByProject']);
+
 });
+Route::middleware('auth:sanctum')->delete('/category_reports/{id}', [CategoryReportController::class, 'destroy']);
 
 /**
  * API Routes for managing "Rendez-Vous" (appointments) within projects.
@@ -136,8 +142,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route pour supprimer un favori
     Route::delete('/favorites/{favorite}', [FavoriteController::class, 'destroy']);
 });
-
-Route::middleware('auth:sanctum')->post('category_reports', [CategoryReportController::class, 'store']);
+Route::middleware('auth:sanctum')->group(function () {
+    // Routes pour les notifications
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications', [NotificationController::class, 'store']);
+    Route::put('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::put('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
+    Route::post('/notifications/debug', [NotificationController::class, 'addDebugNotification']);
+});
 
 /*
 // Route protégée par Sanctum  et permissions administrator

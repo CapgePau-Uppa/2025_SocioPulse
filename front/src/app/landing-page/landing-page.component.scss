@@ -105,6 +105,6 @@ tbody tr:nth-child(odd){
   text-align: left;
 }
 .tableau-container {
-  max-height: 90vh; /* Ajuste la hauteur en fonction de la taille des lignes */
+  max-height: 60vh; /* Ajuste la hauteur en fonction de la taille des lignes */
   overflow-y: auto; /* Active le scroll vertical si nécessaire */
 }

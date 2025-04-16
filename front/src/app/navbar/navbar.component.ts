@@ -11,17 +11,19 @@ import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import {NotificationBellComponent} from '../notification-bell/notification-bell.component';
 
 @Component({
     selector: 'app-navbar',
-    imports: [
-        RouterLink,
-        MatToolbar,
-        MatAnchor,
-        MatButton,
-        MatIcon,
-        CommonModule
-    ],
+  imports: [
+    RouterLink,
+    MatToolbar,
+    MatAnchor,
+    MatButton,
+    MatIcon,
+    CommonModule,
+    NotificationBellComponent
+  ],
     templateUrl: './navbar.component.html',
     styleUrl: './navbar.component.scss'
 })

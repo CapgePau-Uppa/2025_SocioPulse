@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Déplacer le rapport</h2>
+
+<mat-dialog-content>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Nouvelle catégorie</mat-label>
+    <mat-select [(value)]="selectedCategoryId">
+      <mat-option *ngFor="let cat of categories" [value]="cat.id">
+        {{ cat.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Annuler</button>
+  <button mat-raised-button color="primary" (click)="onMove()">Déplacer</button>
+</mat-dialog-actions>

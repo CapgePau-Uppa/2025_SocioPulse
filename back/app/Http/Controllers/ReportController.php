@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
-
+use Illuminate\Support\Facades\Log;
 class ReportController extends Controller
 {
     // Retrieve a report file based on its filename
@@ -83,4 +83,26 @@ class ReportController extends Controller
 
         return response()->json($reports, 200);
     }
+
+    public function moveReport(Request $request, Report $report)
+    {
+        // Check if the user is authenticated (using the 'auth:sanctum' middleware)
+    
+        // Validate the data received in the request
+        $request->validate([
+            'category_id' => 'required|integer|exists:table_category_report,id', // Ensure the category exists in the database
+        ]);
+    
+        // Update the report's category
+        $report->category_id = $request->input('category_id');
+        $report->save();  // Save the changes in the database
+    
+        // Return a success response
+        return response()->json([
+            'message' => 'Report moved successfully!',
+            'report' => $report
+        ], 200);
+    }
+    
+
 }

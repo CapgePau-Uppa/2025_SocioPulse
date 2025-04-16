@@ -9,6 +9,7 @@ import { AddReportModalComponent } from '../add-report-modal/add-report-modal.co
 import { ProjectsService } from '../services/projects.service';
 import {ToastrService} from 'ngx-toastr';
 import { CategoryAddDialogComponent } from '../category-add-dialog/category-add-dialog.component';
+import { DeplacerReportDialogComponent } from '../deplacer-report-dialog/deplacer-report-dialog.component'; // adapte le chemin selon ton projet
 
 @Component({
   selector: 'app-project-repport-page',
@@ -25,7 +26,7 @@ export class ProjectRepportPageComponent implements OnInit {
   project: any;
   reports: any[] = [];
   name: string = '';
-  categories: any[] = ["Documentation", "Rapport", "Autre"];
+  categories: any[] = [];
 
   constructor(private toastr: ToastrService,private route: ActivatedRoute, private projectsService: ProjectsService, private dialog: MatDialog, private router: Router, private http: HttpClient) {}
 
@@ -35,6 +36,7 @@ export class ProjectRepportPageComponent implements OnInit {
       this.project = data.find(project => project.id === projectId);
       if (this.project) {
         this.loadReports(this.project.id);
+        this.loadCategories(this.project.id);
       } else {
         console.error('Projet non trouvé');
       }
@@ -103,7 +105,6 @@ export class ProjectRepportPageComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('name', name);
-    console.log(this.project.id);
     formData.append('project_id', this.project.id);
     formData.append('category_id', '1'); // Remplacez par la catégorie souhaitée
     this.http.post<{ path: string }>('http://127.0.0.1:8000/api/upload', formData).subscribe(
@@ -137,6 +138,25 @@ export class ProjectRepportPageComponent implements OnInit {
       });
   }
 
+  loadCategories(projectId: number): void {
+    const token = sessionStorage.getItem('auth_token');
+    if (!token) {
+      console.error('Utilisateur non authentifié');
+      return;
+    }
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.get<any[]>(`http://127.0.0.1:8000/api/projects/${projectId}/category_reports`, { headers })
+      .subscribe(categories => {
+        this.categories = categories;
+        console.log('Rapports récupérés:', this.categories);
+      }, error => {
+        console.error('Erreur lors de la récupération des rapports', error);
+        this.categories = [];
+      });
+  }
+
   createCategory(name: string): void {
     const token = sessionStorage.getItem('auth_token');
     const headers = new HttpHeaders({
@@ -149,7 +169,7 @@ export class ProjectRepportPageComponent implements OnInit {
       project_id: this.project.id
     };
 
-    this.http.post<{ path: string }>('http://127.0.0.1:8000/api/category_reports', data, { headers })
+    this.http.post<{ path: string }>('http://127.0.0.1:8000/api/projects/${projectId}/category_reports', data, { headers })
       .subscribe(
         (response) => {
           console.log('Catégorie créée avec succès:', response);
@@ -162,5 +182,59 @@ export class ProjectRepportPageComponent implements OnInit {
       );
   }
 
-  deleteCategory(categoryId: number): void {}
+  deleteCategory(categoryId: number): void {
+    const token = sessionStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+
+    this.http.delete(`http://127.0.0.1:8000/api/category_reports/${categoryId}`, { headers })
+      .subscribe(
+        () => {
+          console.log('Catégorie supprimée avec succès');
+          this.toastr.success('Catégorie supprimée avec succès !');
+          // Optionnel : actualiser la liste des catégories ou déclencher une autre action
+        },
+        (error) => {
+          console.error('Erreur lors de la suppression de la catégorie:', error);
+          this.toastr.error('Erreur lors de la suppression de la catégorie.');
+        }
+      );
+  }
+
+  deleteReport(reportId: number): void {
+    const token = sessionStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    this.http.delete(`http://127.0.0.1:8000/api/reports/${reportId}`, { headers })
+      .subscribe(
+        () => {
+          this.toastr.success('Rapport supprimé avec succès !');
+          //this.loadReports(); // méthode à créer si tu veux rafraîchir
+        },
+        (error) => {
+          console.error('Erreur lors de la suppression du rapport:', error);
+          this.toastr.error('Erreur lors de la suppression du rapport.');
+        }
+      );
+  }
+
+  openDialog3(report: any): void {
+    const dialogRef = this.dialog.open(DeplacerReportDialogComponent, {
+      width: '400px',
+      data: { report: report }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'updated') {
+        this.toastr.success('Rapport déplacé avec succès !');
+        //this.loadReports(); // recharger les rapports si nécessaire
+      }
+    });
+  }
+
 }
