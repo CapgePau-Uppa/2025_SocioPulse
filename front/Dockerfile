@@ -1,19 +1,29 @@
-FROM node:18
+# Utiliser l'image officielle de Node.js
+FROM node:22
 
-# Définir le répertoire de travail
+# Définir le répertoire de travail dans le conteneur
 WORKDIR /usr/src/app
 
-# Copier package.json et package-lock.json
+# Installer l'Angular CLI globalement
+RUN npm install -g @angular/cli
+
+# Copier les fichiers package.json et package-lock.json
 COPY package*.json ./
 
-# Installer les dépendances en ignorant les dépendances optionnelles
-RUN npm install --ignore-scripts
+# Supprimer le dossier node_modules s'il existe
+RUN rm -rf node_modules
 
-# Copier le reste de l'application
+# Nettoyer le cache de npm
+RUN npm cache clean --force
+
+# Installer les dépendances
+RUN npm install
+
+# Copier le reste des fichiers du projet
 COPY . .
 
-# Exposer le port sur lequel l'application va tourner
+# Exposer le port 4200
 EXPOSE 4200
 
-# Commande pour démarrer l'application
-CMD ["npm", "start"]
+# Démarrer l'application Angular
+CMD ["ng", "serve", "--host", "0.0.0.0"]

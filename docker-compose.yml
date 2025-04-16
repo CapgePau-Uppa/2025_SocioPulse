@@ -1,65 +1,54 @@
 services:
-  app:
-    build:
-      context: ./back
-      dockerfile: Dockerfile
-    image: socio-pulse/app
-    container_name: app
-    restart: unless-stopped
-    working_dir: /var/www
-    volumes:
-      - ./back:/var/www
-      - ./back/php/local.ini:/usr/local/etc/php/conf.d/local.ini
-    networks:
-      - socio-pulse-network
-
-  webserver:
-    image: nginx:alpine
-    container_name: webserver
-    restart: unless-stopped
-    ports:
-      - "8000:80"
-    volumes:
-      - ./back:/var/www
-      - ./nginx:/etc/nginx/conf.d
-    networks:
-      - socio-pulse-network
-
   db:
     image: mysql:8.0
-    container_name: db
-    restart: unless-stopped
+    container_name: mysql_db
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      # Supprimez ou modifiez ces lignes si vous n'avez pas besoin d'un utilisateur non-root
-      # MYSQL_USER: ${DB_USERNAME}
-      # MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: kooky2bidart
+      MYSQL_DATABASE: laravel
     ports:
-      - "3307:3306"  # Assurez-vous que ce port est correct
+      - "3307:3306"
     volumes:
-      - dbdata:/var/lib/mysql
-    networks:
-      - socio-pulse-network
+      - db_data:/var/lib/mysql
 
+  backend:
+    build:
+      context: ./back
+    container_name: laravel_backend
+    depends_on:
+      - db
+    volumes:
+      - ./back:/var/www/html
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: laravel
+      DB_USERNAME: root
+      DB_PASSWORD: kooky2bidart
+    command: >
+      sh -c "
+      php artisan migrate:fresh --seed &&
+      php-fpm
+      "
 
   frontend:
     build:
       context: ./front
-      dockerfile: Dockerfile
-    image: socio-pulse/frontend
-    container_name: frontend
-    restart: unless-stopped
+    container_name: angular_frontend
     ports:
       - "4200:4200"
     volumes:
       - ./front:/usr/src/app
-    networks:
-      - socio-pulse-network
+
+  web:
+    image: nginx:latest
+    container_name: nginx_web
+    ports:
+      - "8000:80"
+    volumes:
+      - ./back:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - backend
 
 volumes:
-  dbdata:
-
-networks:
-  socio-pulse-network:
-    driver: bridge
+  db_data:

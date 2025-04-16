@@ -1,28 +1,29 @@
-# back/Dockerfile
-FROM php:8.1-fpm
+# Utiliser l'image officielle de PHP 8.2
+FROM php:8.2-fpm
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg-dev \
-    && docker-php-ext-install pdo pdo_mysql
+# Installer les extensions nécessaires pour Laravel
+RUN docker-php-ext-install pdo pdo_mysql
 
-# Set working directory
-WORKDIR /var/www
+# Installer Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Définir le répertoire de travail dans le conteneur
+WORKDIR /var/www/html
 
-# Copy existing application directory contents
-COPY . /var/www
+# Copier les fichiers du projet dans le conteneur
+COPY . .
 
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www
+# Installer les dépendances Composer
+RUN composer install
 
-# Change current user to www
-USER www-data
+# Copier le fichier .env.example en .env
+COPY .env.example .env
 
-# Expose port 9000 and start php-fpm server
+# Générer la clé de l'application Laravel
+RUN php artisan key:generate
+
+# Exposer le port 9000
 EXPOSE 8000
+
+# Démarrer PHP-FPM
 CMD ["php-fpm"]
