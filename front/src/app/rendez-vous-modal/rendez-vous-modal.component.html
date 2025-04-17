@@ -97,14 +97,8 @@
           <mat-card-content>
             <!-- Weekdays -->
             <div class="weekdays-container">
-              <mat-selection-list [(ngModel)]="selectedDays" [ngModelOptions]="{standalone: true}">
-                <mat-list-option *ngFor="let day of weekDays.slice(0, 4)" [value]="day">
-                  {{ day }}
-                </mat-list-option>
-              </mat-selection-list>
-
-              <mat-selection-list [(ngModel)]="selectedDays" [ngModelOptions]="{standalone: true}">
-                <mat-list-option *ngFor="let day of weekDays.slice(4,7)" [value]="day">
+              <mat-selection-list [(ngModel)]="selectedDays" [ngModelOptions]="{standalone: true}" class="weekdays-list">
+                <mat-list-option *ngFor="let day of reorderedWeekDays" [value]="day">
                   {{ day }}
                 </mat-list-option>
               </mat-selection-list>

@@ -86,6 +86,9 @@ export class RendezVousModalComponent {
   selectedDay = '';
 
   weekDays = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+
+  reorderedWeekDays = ['Lundi', 'Vendredi', 'Mardi', 'Samedi', 'Mercredi', 'Dimanche', 'Jeudi'];
+
   selectedDays: string[] = [];
 
   start_time: string = '';

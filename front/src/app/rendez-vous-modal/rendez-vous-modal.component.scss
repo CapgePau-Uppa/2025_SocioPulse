@@ -12,6 +12,9 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding-right: 12px;
 }
 
 .appointments-title {
@@ -31,7 +34,6 @@
   align-self: center;
   margin: 10px 0;
   transition: all 0.3s ease;
-  overflow: hidden;
   color: black;
   padding: 15px;
   text-align: center;
@@ -369,7 +371,11 @@ mat-form-field input[type="date"] {
         }
       }
     }
-
+    .weekdays-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;;
+      gap: 8px;
+    }
     .time-inputs {
       display: flex;
       flex-wrap: wrap;
