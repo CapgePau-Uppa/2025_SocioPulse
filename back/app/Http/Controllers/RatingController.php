@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Rating;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Project;
+use App\Models\User;
 
 class RatingController extends Controller
 {

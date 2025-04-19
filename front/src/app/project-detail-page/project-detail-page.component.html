@@ -16,6 +16,7 @@
       <mat-card-actions class="citoyen_actions">
         <a *ngIf="!isFavorite" mat-raised-button class="fav" (click)="addToFavorites()">Mettre en favoris</a>
         <a *ngIf="isFavorite" mat-raised-button class="fav" (click)="removeFromFavorites(project.id)">Supprimer des favoris</a>
+        <a *ngIf="project.status === 'Terminé'" mat-raised-button class="fav" (click)="openDialogRating()">Noter le Projet</a>
       </mat-card-actions>
     }
 
