@@ -155,6 +155,10 @@ export class RendezVousModalComponent {
   }
   
   saveAvailabilities() {
+    if (this.start_time >= this.end_time) {
+      this.toastr.error("L'heure de début doit être antérieure à l'heure de fin.");
+      return;
+    }
     const formattedDate = this.formatDate(this.selectedDate);
     const newStart = this.start_time;
     const newEnd = this.end_time;
@@ -318,6 +322,10 @@ export class RendezVousModalComponent {
   applyRecurringSlots() {
     if (this.selectedDays.length === 0) {
       console.warn("Veuillez sélectionner au moins un jour.");
+      return;
+    }
+    if (this.start_time >= this.end_time) {
+      this.toastr.error("L'heure de début doit être antérieure à l'heure de fin.");
       return;
     }
 
