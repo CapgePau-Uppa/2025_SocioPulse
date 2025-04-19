@@ -101,11 +101,11 @@ export class RendezVousModalComponent {
   selectedRecurringOption: string = 'currentMonth';
 
   modeEdition = false;
-
+  existingRendezVous: any = null;
 
   constructor(
     private dialogRef: MatDialogRef<RendezVousModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { projectId: number },
+    @Inject(MAT_DIALOG_DATA) public data: { projectId: number, rendezVous?: any },
     private rendezVousService: RendezVousService,
     private authService: AuthService,
     private snackBar: MatSnackBar,
@@ -129,6 +129,13 @@ export class RendezVousModalComponent {
   
   ngOnInit(): void {
     this.getUserRole();
+    // Edition detection
+    if (this.data.rendezVous) {
+      this.isEditing = true;
+      this.existingRendezVous = this.data.rendezVous; // On garde l'objet complet
+      this.selectedDate = new Date(this.existingRendezVous.date);
+      this.form.get('date_hour')?.setValue(this.selectedDate);
+    }
     // Listener: call generateHours() whenever the date changes
     this.form.get('date_hour')?.valueChanges.subscribe((newDate) => {
       console.log("New selected date:", newDate);
@@ -252,7 +259,16 @@ export class RendezVousModalComponent {
     this.rendezVousService.getRendezVousForDate(this.data.projectId, formattedDate).subscribe({
       next: existingRendezvous => {
         console.log("Rendez-vous existants pour cette date :", existingRendezvous);
-        if (existingRendezvous.length > 0) {
+    
+        const hasOtherAppointments = existingRendezvous.some((rdv: any) => {
+          // If we are in edit mode, ignore the appointment currently being edited 
+          if (this.isEditing && this.existingRendezVous && rdv.id === this.existingRendezVous.id) {
+            return false; // It's the same, not blocking
+          }
+          return true; // It's a different one, blocking
+        });
+    
+        if (hasOtherAppointments) {
           this.noAvailabilityMessage = "Un rendez-vous a déjà été pris ce jour-là. Veuillez choisir une autre date.";
           this.hours = [];
           return;
@@ -505,6 +521,7 @@ export class RendezVousModalComponent {
   editRendezVous(rdv: any) {
     this.selectedRendezVous = rdv;
     this.isEditing = true;
+    this.existingRendezVous = rdv;
 
     this.selectedDate = new Date(rdv.date);
     this.form.patchValue({
@@ -512,14 +529,6 @@ export class RendezVousModalComponent {
       hour: rdv.heure,
       message: rdv.message
     });
-
-    // Optional: scroll to the form
-    setTimeout(() => {
-      const formElement = document.querySelector('.form-buttons');
-      if (formElement) {
-        formElement.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 200);
   }
   
   // Appointment update
