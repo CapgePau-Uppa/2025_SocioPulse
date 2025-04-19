@@ -20,6 +20,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatRadioModule } from '@angular/material/radio';
 import localeFr from '@angular/common/locales/fr';
 import {ToastrService} from 'ngx-toastr';
+import { StatusTranslationPipe } from './status-translation.pipe';
 
 registerLocaleData(localeFr);
 
@@ -53,7 +54,8 @@ export const MY_DATE_FORMATS = {
     MatNativeDateModule,
     MatSelectModule,
     MatTabsModule,
-    MatRadioModule
+    MatRadioModule,
+    StatusTranslationPipe
   ],
   styleUrls: ['./rendez-vous-modal.component.scss'],
   providers: [
@@ -119,8 +121,8 @@ export class RendezVousModalComponent {
     this.form = this.fb.group({
       date_hour: ['', [Validators.required]],
       hour: ['', [Validators.required]],
-      message: ['', [Validators.maxLength(500)]]
-    });
+      message: ['', [Validators.required, Validators.maxLength(500)]]
+    });    
   
     this.loadRendezVous();
     this.generateHours();
@@ -132,7 +134,7 @@ export class RendezVousModalComponent {
     // Edition detection
     if (this.data.rendezVous) {
       this.isEditing = true;
-      this.existingRendezVous = this.data.rendezVous; // On garde l'objet complet
+      this.existingRendezVous = this.data.rendezVous;
       this.selectedDate = new Date(this.existingRendezVous.date);
       this.form.get('date_hour')?.setValue(this.selectedDate);
     }
