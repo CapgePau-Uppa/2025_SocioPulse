@@ -193,7 +193,6 @@ export class RendezVousModalComponent {
   mergeAvailabilitiesForDate(date: string, newStart: string | null, newEnd: string | null, existingAvailabilities: any[]) {
     const slots = [...existingAvailabilities];
   
-    // If a new slot is provided, add it
     if (newStart && newEnd) {
       slots.push({
         availability_date: date,
@@ -202,17 +201,19 @@ export class RendezVousModalComponent {
       });
     }
   
-    // Sort all slots by start time
-    slots.sort((a, b) => a.start_time.localeCompare(b.start_time));
+    slots.sort((a, b) => {
+      const aStart = new Date(`${a.availability_date}T${a.start_time}`);
+      const bStart = new Date(`${b.availability_date}T${b.start_time}`);
+      return aStart.getTime() - bStart.getTime();
+    });
   
     const merged: any[] = [];
     let current = slots[0];
   
     for (let i = 1; i < slots.length; i++) {
       const next = slots[i];
-  
-      // Merge if slots overlap OR touch exactly
       if (next.start_time <= current.end_time) {
+        // Fusion
         current.end_time = next.end_time > current.end_time ? next.end_time : current.end_time;
       } else {
         merged.push(current);
@@ -331,7 +332,7 @@ export class RendezVousModalComponent {
     let endMonthDate = new Date(currentYear, currentMonth + 1, 0); // Last day of the current month
 
     endMonthDate.setHours(0, 0, 0, 0); // Reset time to midnight
-    
+
     // Option: "This month and next" (Adds one month to the current month)
     if (this.recurrenceOption === 'currentAndNext') {
       endMonthDate = new Date(currentYear, currentMonth + 2, 0); // Last day of the next month
