@@ -225,94 +225,94 @@ export class RendezVousModalComponent {
   }
 
   
-// Retrieve company availabilities
-generateHours() {
-  this.hours = []; // Reset hours
-  this.noAvailabilityMessage = ''; // Reset unavailability message
+  // Retrieve company availabilities
+  generateHours() {
+    this.hours = []; // Reset hours
+    this.noAvailabilityMessage = ''; // Reset unavailability message
 
-  // Check if a date is properly selected
-  const selectedDateValue = this.form.get('date_hour')?.value;
-  if (!selectedDateValue) {
-    this.noAvailabilityMessage = "Veuillez sélectionner une date.";
-    return;
-  }
-
-  // Format the selected date to YYYY-MM-DD
-  const selectedDate = new Date(selectedDateValue);
-  const formattedDate = this.formatDate(this.selectedDate);
-  
-  console.log("Date formatée : ", formattedDate);
-
-  // Check if an appointment has already been scheduled for that day
-  this.rendezVousService.getRendezVousForDate(this.data.projectId, formattedDate).subscribe({
-    next: existingRendezvous => {
-      console.log("Rendez-vous existants pour cette date :", existingRendezvous);
-      if (existingRendezvous.length > 0) {
-        this.noAvailabilityMessage = "Un rendez-vous a déjà été pris ce jour-là. Veuillez choisir une autre date.";
-        this.hours = [];
-        return;
-      }
-      const year = selectedDate.getFullYear();
-      const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
-      const day = selectedDate.getDate().toString().padStart(2, '0');
-      const formattedDate = `${year}-${month}-${day}`;
-
-      // Retrieve company availability for this project
-      this.rendezVousService.getAvailabilities(this.data.projectId).subscribe({
-        next: availabilities => {
-          if (!availabilities || availabilities.length === 0) {
-            this.noAvailabilityMessage = "Aucune disponibilité trouvée pour ce projet.";
-            return;
-          }
-
-          console.log('formattedDate (from selected):', formattedDate);
-          console.log('availability_date (from API):', availabilities.map(a => a.availability_date));
-          const dayDisponibilites = availabilities.filter(available => {
-            return available.availability_date === formattedDate;
-          });
-
-          if (dayDisponibilites.length === 0) {
-            this.noAvailabilityMessage = `Aucune disponibilité pour le ${formattedDate}.`;
-            return;
-          }
-
-          // Generate available hours
-          dayDisponibilites.forEach(available => {
-            let startHour = parseInt(available.start_time.split(':')[0], 10);
-            let startMinutes = parseInt(available.start_time.split(':')[1], 10);
-            let endHour = parseInt(available.end_time.split(':')[0], 10);
-            let endMinutes = parseInt(available.end_time.split(':')[1], 10);
-
-            let startDate = new Date(formattedDate);
-            startDate.setHours(startHour, startMinutes);
-
-            let endDate = new Date(formattedDate);
-            endDate.setHours(endHour, endMinutes);
-
-            while (startDate < endDate) {
-              let hour = startDate.getHours();
-              let minutes = startDate.getMinutes();
-              this.hours.push(`${hour < 10 ? '0' : ''}${hour}:${minutes < 10 ? '0' : ''}${minutes}`);
-              startDate.setMinutes(startDate.getMinutes() + 30);
-            }
-          });
-
-          if (this.hours.length === 0) {
-            this.noAvailabilityMessage = `Aucune heure disponible pour le ${formattedDate}.`;
-          }
-        },
-        error: err => {
-          console.error("Erreur lors de la récupération des disponibilités", err);
-          this.noAvailabilityMessage = "Une erreur s'est produite lors de la récupération des disponibilités.";
-        }
-      });
-    },
-    error: err => {
-      console.error("Erreur lors de la récupération des rendez-vous existants", err);
-      this.noAvailabilityMessage = "Impossible de vérifier les rendez-vous existants.";
+    // Check if a date is properly selected
+    const selectedDateValue = this.form.get('date_hour')?.value;
+    if (!selectedDateValue) {
+      this.noAvailabilityMessage = "Veuillez sélectionner une date.";
+      return;
     }
-  });
-}
+
+    // Format the selected date to YYYY-MM-DD
+    const selectedDate = new Date(selectedDateValue);
+    const formattedDate = this.formatDate(this.selectedDate);
+    
+    console.log("Date formatée : ", formattedDate);
+
+    // Check if an appointment has already been scheduled for that day
+    this.rendezVousService.getRendezVousForDate(this.data.projectId, formattedDate).subscribe({
+      next: existingRendezvous => {
+        console.log("Rendez-vous existants pour cette date :", existingRendezvous);
+        if (existingRendezvous.length > 0) {
+          this.noAvailabilityMessage = "Un rendez-vous a déjà été pris ce jour-là. Veuillez choisir une autre date.";
+          this.hours = [];
+          return;
+        }
+        const year = selectedDate.getFullYear();
+        const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+        const day = selectedDate.getDate().toString().padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+
+        // Retrieve company availability for this project
+        this.rendezVousService.getAvailabilities(this.data.projectId).subscribe({
+          next: availabilities => {
+            if (!availabilities || availabilities.length === 0) {
+              this.noAvailabilityMessage = "Aucune disponibilité trouvée pour ce projet.";
+              return;
+            }
+
+            console.log('formattedDate (from selected):', formattedDate);
+            console.log('availability_date (from API):', availabilities.map(a => a.availability_date));
+            const dayDisponibilites = availabilities.filter(available => {
+              return available.availability_date === formattedDate;
+            });
+
+            if (dayDisponibilites.length === 0) {
+              this.noAvailabilityMessage = `Aucune disponibilité pour le ${formattedDate}.`;
+              return;
+            }
+
+            // Generate available hours
+            dayDisponibilites.forEach(available => {
+              let startHour = parseInt(available.start_time.split(':')[0], 10);
+              let startMinutes = parseInt(available.start_time.split(':')[1], 10);
+              let endHour = parseInt(available.end_time.split(':')[0], 10);
+              let endMinutes = parseInt(available.end_time.split(':')[1], 10);
+
+              let startDate = new Date(formattedDate);
+              startDate.setHours(startHour, startMinutes);
+
+              let endDate = new Date(formattedDate);
+              endDate.setHours(endHour, endMinutes);
+
+              while (startDate < endDate) {
+                let hour = startDate.getHours();
+                let minutes = startDate.getMinutes();
+                this.hours.push(`${hour < 10 ? '0' : ''}${hour}:${minutes < 10 ? '0' : ''}${minutes}`);
+                startDate.setMinutes(startDate.getMinutes() + 30);
+              }
+            });
+
+            if (this.hours.length === 0) {
+              this.noAvailabilityMessage = `Aucune heure disponible pour le ${formattedDate}.`;
+            }
+          },
+          error: err => {
+            console.error("Erreur lors de la récupération des disponibilités", err);
+            this.noAvailabilityMessage = "Une erreur s'est produite lors de la récupération des disponibilités.";
+          }
+        });
+      },
+      error: err => {
+        console.error("Erreur lors de la récupération des rendez-vous existants", err);
+        this.noAvailabilityMessage = "Impossible de vérifier les rendez-vous existants.";
+      }
+    });
+  }
 
   applyRecurringSlots() {
     if (this.selectedDays.length === 0) {
@@ -325,9 +325,13 @@ generateHours() {
     const currentMonth = current.getMonth();
     const currentYear = current.getFullYear();
 
+    current.setHours(0, 0, 0, 0); // Reset time to midnight
+
     // Option: "This month only"
     let endMonthDate = new Date(currentYear, currentMonth + 1, 0); // Last day of the current month
 
+    endMonthDate.setHours(0, 0, 0, 0); // Reset time to midnight
+    
     // Option: "This month and next" (Adds one month to the current month)
     if (this.recurrenceOption === 'currentAndNext') {
       endMonthDate = new Date(currentYear, currentMonth + 2, 0); // Last day of the next month
