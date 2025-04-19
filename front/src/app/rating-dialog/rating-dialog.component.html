@@ -1,0 +1,19 @@
+<h2>Noter le projet</h2>
+
+<div *ngFor="let critere of criteres" style="margin: 16px 0;">
+  <p>{{ critere.label }}</p>
+  <div>
+    <mat-icon
+      *ngFor="let star of [1, 2, 3, 4, 5]"
+      (click)="rate(star, critere.key)"
+      [class.filled]="star <= ratings[critere.key]"
+      style="cursor: pointer;"
+    >
+      {{ star <= ratings[critere.key] ? 'star' : 'star_border' }}
+    </mat-icon>
+  </div>
+</div>
+
+<div style="text-align: right; margin-top: 24px;">
+  <button mat-raised-button color="primary" (click)="submitRating()">Envoyer la note</button>
+</div>

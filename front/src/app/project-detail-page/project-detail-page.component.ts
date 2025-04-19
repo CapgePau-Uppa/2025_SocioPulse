@@ -9,6 +9,7 @@ import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MatDialog } from '@angular/material/dialog';
 import { RendezVousModalComponent } from '../rendez-vous-modal/rendez-vous-modal.component';
+import { RatingDialogComponent } from '../rating-dialog/rating-dialog.component';
 
 @Component({
   selector: 'app-project-detail-page',
@@ -252,27 +253,34 @@ public checkUserAccess(): void {
       });
   }
 
-removeFromFavorites(favoriteId: number): void {
-  const token = sessionStorage.getItem('auth_token');
+  removeFromFavorites(favoriteId: number): void {
+    const token = sessionStorage.getItem('auth_token');
 
-  if (!token) {
-    console.error('Utilisateur non authentifié');
-    return;
+    if (!token) {
+      console.error('Utilisateur non authentifié');
+      return;
+    }
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.delete(`http://localhost:8000/api/favorites/${favoriteId}`, { headers })
+      .subscribe(() => {
+        console.log('Projet supprimé des favoris');
+        this.isFavorite = false;
+          //TODO ADD NOTIFICATION
+        }, error => {
+        console.error('Erreur lors de la suppression des favoris', error);
+          //TODO ADD NOTIFICATION
+        });
+    this.isFavorite= false;
+
   }
 
-  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-  this.http.delete(`http://localhost:8000/api/favorites/${favoriteId}`, { headers })
-    .subscribe(() => {
-      console.log('Projet supprimé des favoris');
-      this.isFavorite = false;
-        //TODO ADD NOTIFICATION
-      }, error => {
-      console.error('Erreur lors de la suppression des favoris', error);
-        //TODO ADD NOTIFICATION
-      });
-  this.isFavorite= false;
-
-}
+  openDialogRating(): void {
+    this.dialog.open(RatingDialogComponent, {
+      width: '500px',
+      data: { projectId: this.project.id }
+    });
+  }
 
 }
