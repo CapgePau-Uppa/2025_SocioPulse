@@ -27,7 +27,55 @@ import { ProjectsService } from '../services/projects.service';
 })
 export class EditProjectPageComponent implements OnInit {
   project: any = {};
+  MesureOption = [
+    "(Re)localisation dans les secteurs critiques",
+    "AMI Capacity, portant sur des capacités de production de produits thérapeutiques liés au COVID-19",
+    "Efficacité énergétique et évolution des procédés dans l’industrie",
+    "Fonds de soutien aux investissements du secteur nucléaire",
+    "Modernisation de la filière automobile",
+    "Modernisation de la filière aéronautique",
+    "Renforcement des compétences",
+    "Soutien à la chaleur bas carbone",
+    "Soutien à l’investissement industriel dans les territoires",
+  ]
 
+  RelanceOption = [
+      "Indépendance / Compétitivité",
+      "Verdissement",
+  ]
+
+  MesureLightOption = [
+      "Automobile",
+      "Aéronautique",
+      "Efficacité énergétique",
+      "Nucléaire",
+      "Nucléaire - Compétences",
+      "Projets territoriaux",
+      "Relocalisation"
+  ]
+
+  FiliereOption = [
+      "Aluminium",
+      "Automobile",
+      "Aéronautique",
+      "Agroalimentaire",
+      "Chimie",
+      "Construction",
+      "Eau",
+      "Electronique",
+      "Industrie automobile",
+      "Intrants essentiels à l'industrie",
+      "Mines et métallurgie",
+      "Mode et Luxe",
+      "Nouveaux systèmes énergétiques",
+      "Nucléaire",
+      "Papier/carton",
+      "Raffinage et Pétrochimie",
+      "Santé",
+      "Sidérurgie",
+      "Transformation et valorisation des déchets",
+      "Télécommunications 5G",
+  ]
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
@@ -41,6 +89,7 @@ export class EditProjectPageComponent implements OnInit {
 
     this.projectsService.getProjects().subscribe(data => {
       this.project = data.find(project => project.id === projectId);
+      console.log(this.project);
     });
   }
 

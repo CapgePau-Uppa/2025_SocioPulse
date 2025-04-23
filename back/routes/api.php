@@ -57,6 +57,7 @@ Route::middleware(['auth:sanctum', 'checkPermission:canDelete'])->delete('/proje
 Route::get('/reports/file/{filename}', [ReportController::class, 'getReportFile']);
 Route::post('/upload', [ReportController::class, 'upload']);
 Route::middleware('auth:sanctum')->put('reports/{report}', [ReportController::class, 'moveReport']);
+Route::middleware('auth:sanctum')->delete('reports/{report}', [ReportController::class, 'destroy']);
 
 // PDF Access Requests & Category Reports
 Route::middleware('auth:sanctum')->group(function () {
