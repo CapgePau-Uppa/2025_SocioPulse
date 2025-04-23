@@ -30,11 +30,11 @@
         <mat-form-field>
           <mat-label>Entreprise</mat-label>
           <mat-select [(ngModel)]="selectedCompany">
-            @for (company of companies; track company) {
-              <mat-option [value]="company">{{ company }}</mat-option>
-            }
+            <mat-option *ngFor="let company of companies" [value]="company">
+              {{ company.nom }}
+            </mat-option>
           </mat-select>
-        </mat-form-field>
+        </mat-form-field>   
       }
 
       @if (enterpriseSelection === 'new') {

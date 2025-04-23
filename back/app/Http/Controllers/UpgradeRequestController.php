@@ -17,16 +17,17 @@ class UpgradeRequestController extends Controller
             'role_id' => 'required|string',
             'user_id' => 'required|exists:users,id',
             'details' => 'required|array',
-            'details.siren' => 'required|string|unique:entreprise,siren|max:255',
-            'details.nom' => 'required|string|max:255',
-            'details.type_entreprise' => 'required|in:TPE/PME,GE,ETI,Association,Organisme de recherche,EPIC,Etablissement public,GIE,Organisme de formation,Autre',
+            'details.siren' => 'required_if:details.entreprise_id,null|string|unique:entreprise,siren|max:255',
+            'details.nom' => 'required_if:details.entreprise_id,null|string|max:255',
+            'details.type_entreprise' => 'required_if:details.entreprise_id,null|in:TPE/PME,GE,ETI,Association,Organisme de recherche,EPIC,Etablissement public,GIE,Organisme de formation,Autre',
+            'details.entreprise_id' => 'required_if:details.siren,null|exists:entreprise,id'
         ]);
 
-        // Check if the company already exists
-        $entreprise = Entreprise::where('siren', $request->details['siren'])->first();
 
-        // If the company doesn't exist, create it
-        if (!$entreprise) {
+        // Check if the company already exists
+        if ($request->details['entreprise_id']) {
+            $entreprise = Entreprise::find($request->details['entreprise_id']);
+        } else { // If the company doesn't exist, create it
             $entreprise = Entreprise::create([
                 'siren' => $request->details['siren'],
                 'nom' => $request->details['nom'],

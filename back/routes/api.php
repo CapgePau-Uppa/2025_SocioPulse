@@ -27,10 +27,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/deleteUser', [AuthController::class, 'deleteAccount']);
     Route::post('/upgradeRequete', [UpgradeRequestController::class, 'store']);
+    // Enterprises
+    Route::get('/entreprises', [EntrepriseController::class, 'index']);
 });
 
-// Enterprises
-Route::get('/entreprises', [EntrepriseController::class, 'index']);
+
 
 // Admin
 Route::middleware(['auth:sanctum', 'checkAdminRole'])->group(function () {
