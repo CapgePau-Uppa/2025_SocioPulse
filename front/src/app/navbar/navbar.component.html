@@ -21,6 +21,10 @@
       <a routerLink="/access-requests" mat-button><b>Demandes d'accès</b></a>
     }
 
+    @if (userRole === 'administrator') {
+      <a routerLink="/admin/upgrade-requests" mat-button><b>Requêtes MAJ comptes</b></a>
+    }
+
     <a routerLink="/projects-list-page" mat-button><b>Liste des Projets</b></a>
 
     @if (userRole === 'administrator' || canCreate) {

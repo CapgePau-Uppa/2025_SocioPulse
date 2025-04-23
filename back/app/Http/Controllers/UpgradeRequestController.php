@@ -12,55 +12,48 @@ class UpgradeRequestController extends Controller
 {
     public function store(Request $request)
     {
-        // Validate incoming data
         $request->validate([
             'role_id' => 'required|string',
             'user_id' => 'required|exists:users,id',
             'details' => 'required|array',
-            'details.siren' => 'required_if:details.entreprise_id,null|string|unique:entreprise,siren|max:255',
-            'details.nom' => 'required_if:details.entreprise_id,null|string|max:255',
-            'details.type_entreprise' => 'required_if:details.entreprise_id,null|in:TPE/PME,GE,ETI,Association,Organisme de recherche,EPIC,Etablissement public,GIE,Organisme de formation,Autre',
-            'details.entreprise_id' => 'required_if:details.siren,null|exists:entreprise,id'
         ]);
-
-
-        // Check if the company already exists
-        if ($request->details['entreprise_id']) {
-            $entreprise = Entreprise::find($request->details['entreprise_id']);
-        } else { // If the company doesn't exist, create it
+    
+        if (!empty($request->details['siren']) && empty($request->details['entreprise_id'])) {
+            $request->validate([
+                'details.siren' => 'required|string|unique:entreprise,siren|max:255',
+                'details.nom' => 'required|string|max:255',
+                'details.type_entreprise' => 'required|in:TPE/PME,GE,ETI,Association,Organisme de recherche,EPIC,Etablissement public,GIE,Organisme de formation,Autre',
+            ]);
+    
             $entreprise = Entreprise::create([
                 'siren' => $request->details['siren'],
                 'nom' => $request->details['nom'],
                 'type_entreprise' => $request->details['type_entreprise'],
             ]);
+        } else {
+            $entreprise = Entreprise::find($request->details['entreprise_id']);
         }
-
-        // Create the upgrade request
+    
         $upgradeRequest = UpgradeRequest::create([
-            'role_id' => $request->role_id,
             'user_id' => $request->user_id,
+            'role_id' => $request->role_id,
+            'entreprise_id' => $entreprise->id ?? null,
+            'status' => 'pending',
         ]);
-
-        // Find the user
-        $user = User::find($request->user_id);
-
-        // Associate the user with the company and update their role
-        $user->entreprise_id = $entreprise->id;
-        $user->role_id = $request->role_id;
-        $user->save();
-
-        // Return a success response
+    
         return response()->json([
-            'message' => 'Upgrade request and company created successfully',
+            'message' => 'Upgrade request submitted for admin review.',
             'upgradeRequest' => $upgradeRequest,
-            'entreprise' => $entreprise,
         ], 201);
     }
+    
 
     public function index()
     {
         // Retrieve all upgrade requests
-        $upgradeRequests = UpgradeRequest::all();
+        $upgradeRequests = UpgradeRequest::with(['user', 'entreprise'])
+                                        ->orderBy('created_at', 'desc')
+                                        ->get();
 
         // Return all requests as JSON
         return response()->json($upgradeRequests);
@@ -82,4 +75,35 @@ class UpgradeRequestController extends Controller
         // Return success message
         return response()->json(['message' => 'Request successfully deleted'], 200);
     }
+
+    public function approve($id)
+    {
+        $request = UpgradeRequest::findOrFail($id);
+    
+        $request->status = 'approved';
+        $request->reviewed_by = auth()->id();
+        $request->reviewed_at = now();
+        $request->save();
+    
+        $user = $request->user;
+        $user->role_id = $request->role_id;
+        $user->entreprise_id = $request->entreprise_id;
+        $user->save();
+    
+        return response()->json(['message' => 'Demande approuvée.']);
+    }
+    
+    public function reject($id)
+    {
+        $request = UpgradeRequest::findOrFail($id);
+    
+        $request->status = 'rejected';
+        $request->reviewed_by = auth()->id();
+        $request->reviewed_at = now();
+        $request->save();
+    
+        return response()->json(['message' => 'Demande refusée.']);
+    }
+    
+    
 }

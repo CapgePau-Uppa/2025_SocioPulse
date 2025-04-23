@@ -21,5 +21,20 @@ export class CompanyService {
     const headers = this.getAuthHeaders();
     return this.http.get<any>(`${this.apiUrl}/entreprises`, { headers });
   }
+
+  getUpgradeRequests() {
+    const headers = this.getAuthHeaders();
+    return this.http.get<any>(`${this.apiUrl}/upgradeRequests`, { headers });
+  }
+  
+  approveUpgradeRequest(id: number) {
+    const headers = this.getAuthHeaders();
+    return this.http.post(`${this.apiUrl}/upgradeRequests/${id}/approve`, {}, { headers });
+  }
+  
+  rejectUpgradeRequest(id: number) {
+    const headers = this.getAuthHeaders();
+    return this.http.post(`${this.apiUrl}/upgradeRequests/${id}/reject`, {}, { headers });
+  }
   
 }

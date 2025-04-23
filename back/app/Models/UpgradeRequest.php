@@ -15,4 +15,8 @@ class UpgradeRequest extends Model
     {
         return $this->belongsTo(User::class); 
     }
+    public function entreprise()
+    {
+        return $this->belongsTo(Entreprise::class);
+    }
 }

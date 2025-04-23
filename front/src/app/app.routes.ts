@@ -10,7 +10,8 @@ export const routes: Routes = [
     { path: 'faq-page', loadComponent: () => import('./faq-page/faq-page.component').then(m => m.FaqPageComponent) },
     { path: 'project-detail-page/:id', loadComponent: () => import('./project-detail-page/project-detail-page.component').then(m => m.ProjectDetailPageComponent) },
     { path: 'admin-dashboard', loadComponent: () => import('./admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent) },
-    {path: 'project-repport-page/:id', loadComponent: () => import('./project-repport-page/project-repport-page.component').then(m => m.ProjectRepportPageComponent)},
+    { path: 'project-repport-page/:id', loadComponent: () => import('./project-repport-page/project-repport-page.component').then(m => m.ProjectRepportPageComponent)},
     { path: 'access-requests', loadComponent: () => import('./project-access-requests/project-access-requests.component').then(m => m.ProjectAccessRequestsComponent) },
-    {path: 'edit-project-page/:id', loadComponent: () => import('./edit-project-page/edit-project-page.component').then(m => m.EditProjectPageComponent) }
+    { path: 'edit-project-page/:id', loadComponent: () => import('./edit-project-page/edit-project-page.component').then(m => m.EditProjectPageComponent) },
+    { path: 'admin/upgrade-requests',loadComponent: () => import('./admin-upgrade-requests/admin-upgrade-requests.component').then(m => m.AdminUpgradeRequestsComponent) }
   ];

@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { UpgradeDialogComponent } from '../upgrade-dialog/upgrade-dialog.component';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-profile-page',
@@ -32,7 +33,7 @@ export class ProfilePageComponent implements OnInit {
 
   private dialog = inject(MatDialog); // ✅ Injecte le service MatDialog correctement
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.username = sessionStorage.getItem('username');
@@ -85,9 +86,11 @@ upgradeAccount(data: any): void {
     // Envoyer la requête HTTP avec le payload
     this.http.post('http://localhost:8000/api/upgradeRequete', payload, { headers })
       .subscribe(response => {
-        console.log('Compte amélioré avec succès', response);
+        console.log('Demande d\'amélioration de compte soumise pour validation', response);
+        this.toastr.success('Demande d\'amélioration de compte soumise pour validation');
       }, error => {
         console.error('Erreur lors de l\'amélioration du compte', error);
+        this.toastr.error('Erreur lors de la demande');
       });
   }
 }

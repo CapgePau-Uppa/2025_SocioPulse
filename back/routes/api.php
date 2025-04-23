@@ -26,7 +26,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/deleteUser', [AuthController::class, 'deleteAccount']);
+    Route::get('/upgradeRequests', [UpgradeRequestController::class, 'index']);
     Route::post('/upgradeRequete', [UpgradeRequestController::class, 'store']);
+    Route::post('/upgradeRequests/{id}/approve', [UpgradeRequestController::class, 'approve']);
+    Route::post('/upgradeRequests/{id}/reject', [UpgradeRequestController::class, 'reject']);
+
     // Enterprises
     Route::get('/entreprises', [EntrepriseController::class, 'index']);
 });

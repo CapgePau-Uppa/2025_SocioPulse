@@ -32,6 +32,7 @@ export class NavbarComponent {
     userName: string | null = null;
     userRole: string | null = null;
     canCreate: boolean = false; // Property for checking permissions
+    isAdmin: boolean = false;
 
     private http: HttpClient = inject(HttpClient);
 
@@ -44,6 +45,8 @@ export class NavbarComponent {
 
     ngOnInit(): void {
         this.loadUserData();
+        const userRole = sessionStorage.getItem('user_role');
+        this.isAdmin = userRole === 'administrator' || userRole === '1'; 
     }
 
     goToAccessRequests() {
