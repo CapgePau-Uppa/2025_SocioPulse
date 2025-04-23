@@ -103,6 +103,33 @@ class ReportController extends Controller
             'report' => $report
         ], 200);
     }
-    
+
+    public function destroy(Report $report)
+    {
+        $filePath = storage_path('../../ressource/' . basename($report->path));
+
+        if (File::exists($filePath)) {
+            try {
+                File::delete($filePath);
+            } catch (\Exception $e) {
+                Log::error("Erreur lors de la suppression du fichier : " . $e->getMessage());
+            }
+        } else {
+            Log::warning("Le fichier à supprimer est introuvable : {$filePath}");
+        }
+
+        try {
+            $report->delete();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error'   => 'Impossible de supprimer le rapport en base de données',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+
+        return response()->json([
+            'message' => 'Rapport et fichier supprimés avec succès'
+        ], 200);
+    }
 
 }
