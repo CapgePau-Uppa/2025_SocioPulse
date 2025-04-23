@@ -21,7 +21,53 @@
       }
     </mat-form-field>
 
+    <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Relance</mat-label>
+    <mat-select name="volet_relance" [(ngModel)]="project.volet_relance" required>
+      <mat-option *ngFor="let opt of RelanceOption" [value]="opt">
+        {{ opt }}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="projectForm.submitted && projectForm.controls['volet_relance']?.errors?.['required']">
+      Sélectionnez une option pour Relance
+    </mat-error>
+  </mat-form-field>
 
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Mesure</mat-label>
+    <mat-select name="mesure" [(ngModel)]="project.mesure" required>
+      <mat-option *ngFor="let opt of MesureOption" [value]="opt">
+        {{ opt }}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="projectForm.submitted && projectForm.controls['mesure']?.errors?.['required']">
+      Sélectionnez une option pour Mesure
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Mesure Light</mat-label>
+    <mat-select name="mesure_light" [(ngModel)]="project.mesure_light" required>
+      <mat-option *ngFor="let opt of MesureLightOption" [value]="opt">
+        {{ opt }}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="projectForm.submitted && projectForm.controls['mesureLight']?.errors?.['required']">
+      Sélectionnez une option pour Mesure Light
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Filière</mat-label>
+    <mat-select name="filiere" [(ngModel)]="project.filiere" required>
+      <mat-option *ngFor="let opt of FiliereOption" [value]="opt">
+        {{ opt }}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="projectForm.submitted && projectForm.controls['filiere']?.errors?.['required']">
+      Sélectionnez une option pour Filière
+    </mat-error>
+  </mat-form-field>
 
     <div class="map-container">
       <div id="map"></div>
