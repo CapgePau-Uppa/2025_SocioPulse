@@ -99,14 +99,17 @@ export class ProjectRepportPageComponent implements OnInit {
     const token = sessionStorage.getItem('auth_token');
     console.log('Token:', token);
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,  // Ajouter le token dans l'en-tête
+      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
     const formData = new FormData();
     formData.append('file', file);
     formData.append('name', name);
     formData.append('project_id', this.project.id);
-    formData.append('category_id', '1'); // Remplacez par la catégorie souhaitée
+    console.log(this.categories);
+    const categoryId = this.categories[0].id;
+    console.log(categoryId);
+    formData.append('category_id', categoryId); // Remplacez par la catégorie souhaitée
     this.http.post<{ path: string }>('http://127.0.0.1:8000/api/upload', formData).subscribe(
       (response) => {
         console.log("Upload réussi :", response);
