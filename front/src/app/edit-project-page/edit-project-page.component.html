@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" >
   <mat-card class="edit-project-card">
     <mat-card-header>
       <mat-card-title>Modifier le projet</mat-card-title>
@@ -12,19 +12,10 @@
         </mat-form-field>
 
         <mat-form-field class="full-width">
-          <mat-label>Filière</mat-label>
-          <input matInput [(ngModel)]="project.filiere" name="filiere" />
-        </mat-form-field>
-
-        <mat-form-field class="full-width">
-          <mat-label>Mesure</mat-label>
-          <input matInput [(ngModel)]="project.mesure" name="mesure" />
-        </mat-form-field>
-
-        <mat-form-field class="full-width">
           <mat-label>Description</mat-label>
           <textarea matInput [(ngModel)]="project.description" name="description"></textarea>
         </mat-form-field>
+
 
         <mat-form-field class="full-width">
           <mat-label>Status</mat-label>
@@ -32,6 +23,34 @@
             <mat-option value="En préparation">En préparation</mat-option>
             <mat-option value="En cours">En cours</mat-option>
             <mat-option value="Terminé">Terminé</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label>Relance</mat-label>
+          <mat-select [(ngModel)]="project.volet_relance" name="volet_relance">
+            <mat-option *ngFor="let opt of RelanceOption" [value]="opt">{{ opt }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label>Mesure</mat-label>
+          <mat-select [(ngModel)]="project.mesure" name="mesure">
+            <mat-option *ngFor="let opt of MesureOption" [value]="opt">{{ opt }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label>Mesure Light</mat-label>
+          <mat-select [(ngModel)]="project.mesure_light" name="mesure_light">
+            <mat-option *ngFor="let opt of MesureLightOption" [value]="opt">{{ opt }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label>Filiere</mat-label>
+          <mat-select [(ngModel)]="project.filiere" name="filiere">
+            <mat-option *ngFor="let opt of FiliereOption" [value]="opt">{{ opt }}</mat-option>
           </mat-select>
         </mat-form-field>
 
