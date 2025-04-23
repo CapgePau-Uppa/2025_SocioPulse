@@ -21,19 +21,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="fill" style="width: 100%;">
-      <mat-label>Entreprise</mat-label>
-      <mat-select name="entreprise_id" [(ngModel)]="project.entreprise_id" required>
-        @for (entreprise of entreprises; track entreprise.id) {
-          <mat-option [value]="entreprise.id">
-            {{ entreprise.nom }}
-          </mat-option>
-        }
-      </mat-select>
-      <mat-error *ngIf="projectForm.submitted && projectForm.controls['entreprise_id']?.errors?.['required']">
-        Veuillez choisir une entreprise
-      </mat-error>
-    </mat-form-field>
+
 
     <div class="map-container">
       <div id="map"></div>

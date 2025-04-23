@@ -129,7 +129,7 @@ export class ProjectMakerPageComponent implements OnInit {
     });
 
     if (form.valid) {
-      this.project.entreprise_id = this.project.entreprise_id.toString();
+      this.project.entreprise_id = sessionStorage.getItem('entreprise_id') || ''; // Assurez-vous que l'ID de l'entreprise est défini ici
 
       this.http.post<any>('http://localhost:8000/api/projects', this.project, { headers }).subscribe(
         (response) => {
