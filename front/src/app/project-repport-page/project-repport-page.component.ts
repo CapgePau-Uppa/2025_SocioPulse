@@ -10,6 +10,7 @@ import { ProjectsService } from '../services/projects.service';
 import {ToastrService} from 'ngx-toastr';
 import { CategoryAddDialogComponent } from '../category-add-dialog/category-add-dialog.component';
 import { DeplacerReportDialogComponent } from '../deplacer-report-dialog/deplacer-report-dialog.component'; // adapte le chemin selon ton projet
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-project-repport-page',
@@ -19,7 +20,8 @@ import { DeplacerReportDialogComponent } from '../deplacer-report-dialog/deplace
     MatButtonModule,
     CommonModule,
     MatListModule,
-    MatDialogModule
+    MatDialogModule,
+    MatIcon
   ]
 })
 export class ProjectRepportPageComponent implements OnInit {
