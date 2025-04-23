@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Entreprise;
 use App\Models\Project;
+use App\Models\CategoryReport;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 
@@ -337,9 +338,15 @@ class DatabaseSeeder extends Seeder
             ]
         ];
         foreach ($projects as $data) {
-            $projects = Project::firstOrCreate($data);
+            $project = Project::firstOrCreate($data);
+            $categories ;
+            $admin = CategoryReport::create([
+                'project_id' => $project->id,
+                'name' => 'Documents',
+            ]);  
         }
         echo "Les projets par défaut ont été créés avec succès !\n";
+
 
     }
 }

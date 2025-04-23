@@ -72,7 +72,7 @@ export class ProjectDetailPageComponent implements AfterViewInit {
         this.checkUserAccess();  // Vérifier si l'utilisateur peut accéder aux documents
         this.checkAccessRequest(); // Vérifier s'il y a une demande en attente
         this.checkIfFavorite(); // Vérifier si le projet est en favori
-        console.log("favorite:", this.isFavorite); // Debugging line
+        console.log('prodsdject', this.project)
         setTimeout(() => {
           this.initMap();
         }, 0);
@@ -82,6 +82,7 @@ export class ProjectDetailPageComponent implements AfterViewInit {
     }, error => {
       console.error('Erreur lors de la récupération des projets', error);
     });
+
   }
 
 
