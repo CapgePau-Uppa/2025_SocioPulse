@@ -122,6 +122,8 @@ export class ProjectRepportPageComponent implements OnInit {
         console.error("Erreur lors de l'upload :", error);
       }
     );
+    this.loadReports(this.project.id);
+
   }
   loadReports(projectId: number): void {
     const token = sessionStorage.getItem('auth_token');
@@ -185,6 +187,7 @@ export class ProjectRepportPageComponent implements OnInit {
           this.toastr.error('Erreur lors de l\'ajout de la catégorie.');
         }
       );
+      this.loadCategories(this.project.id);
   }
 
   deleteCategory(categoryId: number): void {
@@ -206,6 +209,7 @@ export class ProjectRepportPageComponent implements OnInit {
           this.toastr.error('Erreur lors de la suppression de la catégorie.');
         }
       );
+      this.loadCategories(this.project.id);
   }
 
   deleteReport(reportId: number): void {
@@ -226,6 +230,7 @@ export class ProjectRepportPageComponent implements OnInit {
           this.toastr.error('Erreur lors de la suppression du rapport.');
         }
       );
+      this.loadReports(this.project.id);
   }
 
   openDialog3(report: any): void {
@@ -237,7 +242,7 @@ export class ProjectRepportPageComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'updated') {
         this.toastr.success('Rapport déplacé avec succès !');
-        //this.loadReports(); // recharger les rapports si nécessaire
+        this.loadReports(this.project.id);
       }
     });
   }
