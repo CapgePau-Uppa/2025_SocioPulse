@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\RendezVous;
-use App\Models\Project;
-use App\Models\Notification;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -24,9 +21,9 @@ class RendezVousController extends Controller {
 
         // Check if an appointment already exists for this date and time
         $existingRendezVous = RendezVous::where('project_id', $id)
-            ->where('date', '=', $request->input('date'))
-            ->where('hour', '=', $request->input('hour'))
-            ->exists();
+                                        ->where('date', '=', $request->input('date'))
+                                        ->where('hour', '=', $request->input('hour'))
+                                        ->exists();
 
         // If an appointment already exists, return an error
         if ($existingRendezVous) {
@@ -50,23 +47,56 @@ class RendezVousController extends Controller {
             'status' => 'pending',
         ]);
 
-        // Récupérer le projet et l'utilisateur
-        $project = Project::findOrFail($id);
+        return response()->json($rendezVous, 201);
+    }
+
+    // Retrieve all appointment requests for a project
+    public function index($id) {
+        $rendezVous = RendezVous::where('project_id', $id)
+                                ->with('user:id,name')
+                                ->get();
+
+        return response()->json($rendezVous);
+    }
+
+    // Update an appointment request (modify date/message or approve/reject)
+    public function update(Request $request, $id) {
+        $rendezVous = RendezVous::findOrFail($id);
         $user = Auth::user();
 
-        // Créer des notifications pour les propriétaires du projet
-        $projectOwners = User::where('entreprise_id', $project->entreprise_id)->get();
+        // Check if the user is authorized to update
+        if ($user->role !== 'administrator' && $rendezVous->user_id !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
 
-        foreach ($projectOwners as $owner) {
-            Notification::create([
-                'user_id' => $owner->id,
-                'message' => "Nouvelle demande de rendez-vous pour le projet '{$project->name}' par {$user->name} le {$request->date} à {$request->hour}",
-                'read' => false,
-                'link' => "/projects/{$project->id}/rendez-vous"
+        // Validate update fields
+        $request->validate([
+            'date' => 'sometimes|date|after:now',
+            'hour' => 'sometimes|date_format:H:i',
+            'message' => 'sometimes|string|max:500',
+            'status' => 'sometimes|in:pending,approved,rejected',
+        ]);
+
+        // Update the date and hour fields if present
+        if ($request->has('date') && $request->has('hour')) {
+            $rendezVous->update([
+                'date' => $request->input('date'),
+                'hour' => $request->input('hour'),
             ]);
         }
 
-        return response()->json($rendezVous, 201);
+        // Update other fields
+        if ($request->has('message')) {
+            $rendezVous->message = $request->input('message');
+        }
+
+        if ($request->has('status')) {
+            $rendezVous->status = $request->input('status');
+        }
+
+        $rendezVous->save();
+
+        return response()->json($rendezVous);
     }
 
     // Accept an appointment request
@@ -89,17 +119,6 @@ class RendezVousController extends Controller {
         $rendezVous->status = 'approved';
         $rendezVous->save();
 
-        // Récupérer le projet pour les notifications
-        $project = Project::findOrFail($rendezVous->project_id);
-
-        // Créer une notification pour l'utilisateur dont le rendez-vous a été accepté
-        Notification::create([
-            'user_id' => $rendezVous->user_id,
-            'message' => "Votre demande de rendez-vous pour le projet '{$project->name}' le {$rendezVous->date} à {$rendezVous->hour} a été acceptée",
-            'read' => false,
-            'link' => "/projects/{$project->id}/rendez-vous"
-        ]);
-
         return response()->json([
             'message' => 'Appointment accepted',
             'role' => $user->role->name
@@ -119,19 +138,33 @@ class RendezVousController extends Controller {
         $rendezVous->status = 'rejected';
         $rendezVous->save();
 
-        // Récupérer le projet pour les notifications
-        $project = Project::findOrFail($rendezVous->project_id);
-
-        // Créer une notification pour l'utilisateur dont le rendez-vous a été rejeté
-        Notification::create([
-            'user_id' => $rendezVous->user_id,
-            'message' => "Votre demande de rendez-vous pour le projet '{$project->name}' le {$rendezVous->date} à {$rendezVous->hour} a été rejetée",
-            'read' => false,
-            'link' => "/projects/{$project->id}/rendez-vous"
-        ]);
-
         return response()->json(['message' => 'Appointment rejected', 'role' => $user->role->name]);
     }
 
-    // N'oubliez pas d'ajouter le use pour le modèle Notification en haut du fichier
+    // Retrieve all appointments for a specific project and date
+    public function getRendezVousForDate($projectId, $date)
+    {
+        $rendezVous = RendezVous::where('project_id', $projectId)
+                                ->where('date', $date)
+                                ->get();
+
+        Log::info("Appointments retrieved for project $projectId on date $date:", $rendezVous->toArray());
+
+        return response()->json($rendezVous);
+    }
+
+    // Cancel (delete) an appointment request
+    public function destroy($id) {
+        $rendezVous = RendezVous::findOrFail($id);
+        $user = Auth::user();
+
+        // Check if the user is authorized to delete
+        if ($user->role !== 'administrator' && $rendezVous->user_id !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $rendezVous->delete();
+
+        return response()->json(['message' => 'Appointment request deleted']);
+    }
 }
