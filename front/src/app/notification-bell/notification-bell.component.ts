@@ -53,8 +53,4 @@ export class NotificationBellComponent implements OnInit {
     this.notificationService.removeNotification(notification);
   }
 
-  // Méthode de débogage
-  addTestNotification() {
-    this.notificationService.addDebugNotification();
-  }
 }

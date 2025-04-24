@@ -113,16 +113,4 @@ export class NotificationService {
       ).subscribe();
   }
 
-  // Pour le débogage - ajoute une notification test
-  addDebugNotification() {
-    const headers = this.getAuthHeaders();
-    return this.http.post<Notification>(this.apiUrl, {message:"message_debug",link:"message2"}, { headers })
-      .pipe(
-        tap(notification => {
-          const current = this.notifications.value;
-          this.notifications.next([notification, ...current]);
-          this.updateUnreadCount([notification, ...current]);
-        })
-      ).subscribe();
-  }
 }
