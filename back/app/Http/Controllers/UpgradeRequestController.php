@@ -31,8 +31,10 @@ class UpgradeRequestController extends Controller
                 'nom' => $request->details['nom'],
                 'type_entreprise' => $request->details['type_entreprise'],
             ]);
+
         } else {
             $entreprise = Entreprise::find($request->details['entreprise_id']);
+
         }
     
         $upgradeRequest = UpgradeRequest::create([

@@ -60,14 +60,24 @@ upgradeAccount(data: any): void {
 
   if (userId && token) {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    console.log('data', data);
+    var payload: any;
+    if(data.details.entreprise_id){
+        payload = {
+        user_id: userId,
+        type: data.type,
+        details: data.details,
+        entreprise_id: data.details.entreprise_id.toString(),
+      };
+    }
+    else{
+      payload= {
+        user_id: userId,
+        type: data.type,
+        details: data.details,
+      };
+    }
 
-    // Préparer le payload en fonction des données du modal
-    const payload: any = {
-      user_id: userId,
-      type: data.type,
-      details: data.details,
-      entreprise_id: data.details.entreprise_id.toString(),
-    };
 
     // Définir role_id en fonction de la sélection du radioButton
     if (data.type === 'collectivity') {
