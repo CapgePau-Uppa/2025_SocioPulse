@@ -16,7 +16,7 @@ interface Entreprise {
 
 interface User {
   id: number;
-  nom: string;
+  name: string;
   prenom: string;
   email: string;
   role_id: number;
@@ -61,7 +61,9 @@ export class AdminUpgradeRequestsComponent implements OnInit {
   ngOnInit(): void {
     this.companyService.getUpgradeRequests().subscribe((data: UpgradeRequest[]) => {
       this.upgradeRequests = data.filter(req => req.status === 'pending');
+      console.log(this.upgradeRequests);
     });
+    console.log(this.requests);
   }
 
   approveRequest(upgradeRequestId: number): void {

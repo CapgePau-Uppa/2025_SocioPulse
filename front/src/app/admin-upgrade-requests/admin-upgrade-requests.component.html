@@ -9,7 +9,7 @@
         </div>
 
         <div *ngFor="let request of upgradeRequests" class="request-item">
-          <p><strong>Utilisateur :</strong> {{ request.user?.nom || 'Inconnu' }}</p>
+          <p><strong>Utilisateur :</strong> {{ request.user?.name || 'Inconnu' }}</p>
           <p><strong>Entreprise :</strong> {{ request.entreprise?.nom || 'N/A' }}</p>
           <p><strong>Rôle demandé :</strong> {{ getRoleLabel(request.role_id) }}</p>
           <p><strong>Date :</strong> {{ request.created_at | date:'short' }}</p>
