@@ -9,7 +9,8 @@ class UpgradeRequest extends Model
     protected $table = 'upgrade_request';
     protected $fillable = [
         'role_id',
-        'user_id'
+        'user_id',
+        'entreprise_id'
     ];
     public function user()
     {

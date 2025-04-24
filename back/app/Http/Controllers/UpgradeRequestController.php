@@ -16,6 +16,7 @@ class UpgradeRequestController extends Controller
             'role_id' => 'required|string',
             'user_id' => 'required|exists:users,id',
             'details' => 'required|array',
+            'entreprise_id' => 'nullable|exists:entreprise,id',
         ]);
     
         if (!empty($request->details['siren']) && empty($request->details['entreprise_id'])) {

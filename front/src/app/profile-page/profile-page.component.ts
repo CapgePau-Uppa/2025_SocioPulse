@@ -65,7 +65,8 @@ upgradeAccount(data: any): void {
     const payload: any = {
       user_id: userId,
       type: data.type,
-      details: data.details
+      details: data.details,
+      entreprise_id: data.details.entreprise_id.toString(),
     };
 
     // Définir role_id en fonction de la sélection du radioButton
