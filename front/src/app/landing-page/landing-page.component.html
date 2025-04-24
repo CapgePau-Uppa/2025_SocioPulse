@@ -2,6 +2,11 @@
 
   <div class="maDiv">
     <div>
+      <div class="filters">
+      <button mat-raised-button color="primary" (click)="toggleFavorite()" class="fav-button">
+        {{ filteredByFavorite ? 'Tout les projets' : 'Projets favoris' }}
+      </button>
+    </div>
       <h2>Liste des Projets</h2>
       <div class="tableau-container">
         <table class="tableau">
@@ -31,5 +36,3 @@
   </div>
   <div class="map-container"><app-map/></div>
 </div>
-
-
