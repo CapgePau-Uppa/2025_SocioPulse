@@ -40,6 +40,8 @@ export class NotificationBellComponent implements OnInit {
 
   markAsRead(notification: Notification) {
     this.notificationService.markAsRead(notification);
+    console.log("read");
+
   }
 
   markAllAsRead() {

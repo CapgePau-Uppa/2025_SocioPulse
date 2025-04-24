@@ -65,7 +65,7 @@ export class NotificationService {
           this.notifications.next([newNotification, ...current]);
           this.updateUnreadCount([newNotification, ...current]);
         })
-      );
+      ).subscribe();
   }
 
   markAsRead(notification: Notification) {
@@ -80,7 +80,7 @@ export class NotificationService {
           this.notifications.next(updated);
           this.updateUnreadCount(updated);
         })
-      );
+      ).subscribe();
   }
 
   markAllAsRead() {
@@ -93,7 +93,7 @@ export class NotificationService {
           this.notifications.next(updated);
           this.unreadCount.next(0);
         })
-      );
+      ).subscribe();
   }
 
   removeNotification(notification: Notification, event?: Event) {
@@ -110,7 +110,7 @@ export class NotificationService {
           this.notifications.next(updated);
           this.updateUnreadCount(updated);
         })
-      );
+      ).subscribe();
   }
 
   // Pour le débogage - ajoute une notification test

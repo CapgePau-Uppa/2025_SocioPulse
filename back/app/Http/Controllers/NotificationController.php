@@ -41,7 +41,7 @@ class NotificationController extends Controller
             ->firstOrFail();
 
         $notification->update(['read' => true]);
-
+        dd('read');
         return response()->json($notification);
     }
 
