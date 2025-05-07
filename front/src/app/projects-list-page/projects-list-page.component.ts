@@ -48,7 +48,7 @@ import { MatInputModule } from '@angular/material/input';
   ]
 })
 export class ProjectsListPageComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'description', 'city', 'created_at'];
+  displayedColumns: string[] = ['name', 'notation_general','department', 'city', 'description', 'volet_relance', 'mesure', 'filiere', 'created_at', 'status'];
   projects: any[] = [];
   sortedByNewest: boolean = false;
   originalProjects: any[] = [];
@@ -136,12 +136,14 @@ export class ProjectsListPageComponent implements OnInit {
     this.projectService.getProjects().subscribe(data => {
       this.originalProjects = [...data]; // Store original order
       this.projects = data;
+      console.log(this.projects);
     });
+    console.log(this.projects);
   }
 
   ngOnInit(): void {
     this.loadProjects();
-
+    
   }
 
   applySearch(): void {

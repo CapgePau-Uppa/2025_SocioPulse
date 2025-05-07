@@ -23,7 +23,7 @@ export class LandingPageComponent implements OnInit {
   projects_all: any[] = [];
   filteredByFavorite = false;
   favoriteIds: number[] = [];
-
+  connected: boolean = false;
   constructor(
     private projectService: ProjectsService,
     private router: Router,
@@ -36,14 +36,16 @@ export class LandingPageComponent implements OnInit {
       this.projects_all = data;
       this.projects = data;
     });
-
     if (token) {
+      this.connected = true;
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       this.http.get<any[]>(`http://localhost:8000/api/favorites`, { headers })
         .subscribe(favs => {
           this.favoriteIds = favs.map(f => f.project_id);
         }, err => console.error(err));
     }
+    else {this.connected = false;}
+
   }
 
   toggleFavorite(): void {
