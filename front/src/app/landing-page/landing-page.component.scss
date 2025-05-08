@@ -1,23 +1,28 @@
 .flex-container {
   display: flex;
-  gap: 10px; /* Espace entre le tableau et la carte */
-  padding: 30px; /* Espace autour du conteneur */
+  gap: 10px;
+  padding: 30px;
   box-sizing: border-box;
+  flex-wrap: wrap; // Support responsive
 }
 
 .maDiv {
-  flex: 0 0 40%; /* Occupe 40% de l'espace */
+  flex: 0 0 40%;
   padding: 10px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .map-container {
-  flex: 1; /* Prend le reste de l'espace */
+  flex: 1;
   position: relative;
-  height: 100%; /* Assurez-vous que le conteneur de la carte prend toute la hauteur disponible */
-  border-radius: 30px; /* Ajoute des coins arrondis si nécessaire */
-  overflow: hidden; /* Cache tout débordement pour les coins arrondis */
+  height: 100%;
+  border-radius: 30px;
+  overflow: hidden;
+  min-height: 500px; // pour éviter le bug d'affichage carte trop petite
 }
+
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -25,11 +30,14 @@
   gap: 15px;
   margin-bottom: 20px;
 }
+
 .fav-button {
   align-self: flex-end;
   padding: 6px 16px;
   border-radius: 4px;
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+              0 2px 2px 0 rgba(0, 0, 0, .14),
+              0 1px 5px 0 rgba(0, 0, 0, .12);
   transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
@@ -40,75 +48,53 @@
   background-color: rgb(21, 83, 36);
 }
 
-.tableau {
+.search-container {
+  margin-bottom: 20px;
+}
+
+.search-field {
   width: 100%;
-  border-collapse: collapse;
-  box-shadow: 0 5px 50px rgba(0, 0, 0, 0.15);
-  cursor: pointer;
-  border: 2px solid midnightblue;
-  font-family: "Candara", sans-serif;
+  max-width: 100%;
 }
 
-h1 {
-  color: whitesmoke;
-  font-size: 12rem;
-  text-align: left;
-  margin-left: 30px;
-  margin-top: 60px;
-  font-family: "Candara", sans-serif;
-  @media (max-width: 768px) {
-    margin-left: 0;
-    margin-top: 80px;
-    text-align: center;
-    font-size: 3rem;
-  }
-
-  @media (max-width: 480px) {
-    margin-top: 80px;
-    margin-left: 0;
-    text-align: center;
-    font-size: 2rem;
-  }
-}
-
-//carousel
-h2{
+h2 {
   color: whitesmoke;
   font-size: 2rem;
   text-align: center;
-  margin-top: 160px;
+  margin-top: 40px;
   font-family: 'Candara', sans-serif;
 }
 
-
-button{
-  font-size: 25px; /* Increase font size */
-  padding: 24px 50px; /* Increase padding */
-  border-radius : 25px; /* Rounded corners */
-  cursor: pointer; /* Cursor on hover */
-  margin-right: 10px;
+.tableau-container {
+  max-height: 60vh;
+  overflow-y: auto;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  background-color: white;
 }
-thead tr{
+
+.tableau {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Candara", sans-serif;
+}
+
+thead tr {
   background-color: midnightblue;
-  color:#fff;
+  color: #fff;
   text-align: left;
-
 }
 
-th, td{
+th, td {
   padding: 15px 20px;
-}
-
-tbody tr, td, th{
   border: 1px solid #ddd;
-
 }
 
-tbody tr:nth-child(even){
+tbody tr:nth-child(even) {
   background-color: #f3f3f3;
 }
 
-tbody tr:nth-child(odd){
+tbody tr:nth-child(odd) {
   background-color: #fff;
 }
 
@@ -116,15 +102,48 @@ tbody tr:nth-child(odd){
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 20vw; /* Ajuste la largeur selon ton besoin */
+  max-width: 20vw;
 }
 
-.tableau th, .tableau td {
-  padding: 8px;
-  border: 1px solid #ddd;
-  text-align: left;
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
-.tableau-container {
-  max-height: 60vh; /* Ajuste la hauteur en fonction de la taille des lignes */
-  overflow-y: auto; /* Active le scroll vertical si nécessaire */
+.clickable-row:hover {
+  background-color: #e0e0e0;
+}
+
+button {
+  font-size: 16px;
+  padding: 12px 24px;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+@media (max-width: 1024px) {
+  .flex-container {
+    flex-direction: column;
+  }
+
+  .maDiv, .map-container {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+
+  .map-container {
+    height: 400px;
+  }
+}
+.search-container {
+  margin-bottom: 15px;
+  padding-left: 40px;
+  padding-right: 40px;
+  background-color: whitesmoke;
+  border-radius: 45px;
+}
+@media (max-width: 768px) {
+  .search-field {
+    max-width: 100%;
+  }
 }
